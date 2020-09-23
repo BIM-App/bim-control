@@ -36,8 +36,8 @@ export default {
     return {
       msg: '',	//接收数据
       ruleForm: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: 'admin'
       },
       rules: {
         username: [
@@ -61,11 +61,16 @@ export default {
               username: _this.ruleForm.username,
               password: _this.ruleForm.password
             }).then((result) => {
-              console.log(result.data);
+              // console.log(result.data);
               this.msg = result.data.msg
 
               if (result.data.msg == '登录成功') {
                 _this.$router.push('/index')
+                _this.$notify({
+                  title: '成功',
+                  message: '登录成功',
+                  type: 'success'
+                })
               }
 
             }).catch((err) => {
@@ -97,6 +102,7 @@ export default {
   border-radius: 10px;
   box-shadow: 0 0 25px #909399;
   .login-title {
+    margin: 20px 0;
     text-align: center;
   }
 }

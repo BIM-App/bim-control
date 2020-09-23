@@ -1,5 +1,6 @@
 <template>
   <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="register-box" label-width="100px" label-position="left" status-icon>
+    <el-link class="back" type="primary" @click="back">返回</el-link>
     <h2 class="register-title">欢迎注册</h2>
     <el-form-item label="用户名" prop="username">
       <el-input type="text" v-model="ruleForm.username" maxlength="12" autocomplete="off"></el-input>
@@ -10,8 +11,8 @@
     <el-form-item label="确认密码" prop="checkPass">
       <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
     </el-form-item>
-    <el-form-item label="邮箱" prop="email">
-      <el-input v-model="ruleForm.email"></el-input>
+    <el-form-item label="电话" prop="phone">
+      <el-input v-model="ruleForm.phone"></el-input>
     </el-form-item>
     <el-form-item class="register-btn">
       <el-button type="primary" @click="registerForm('ruleForm')">注册</el-button>
@@ -49,7 +50,7 @@ export default {
         username: '',
         password: '',
         checkPass: '',
-        email: ''
+        phone: ''
       },
       rules: {
         username: [
@@ -62,14 +63,21 @@ export default {
         checkPass: [
           { required: true, validator: validatePass2, trigger: 'blur' }
         ],
-        email: [
-          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+        phone: [
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          {
+            pattern: /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/,
+            // pattern: /^[1]([3-9])[0-9]{9}$/,   //若太过严谨则使用这个
+            message: '请输入正确的手机号码', trigger: ['blur', 'change']
+          }
         ]
       }
     }
   },
   methods: {
+    back() {
+      this.$router.push('/login')
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
@@ -82,12 +90,21 @@ export default {
             {
               username: _this.ruleForm.username,
               password: _this.ruleForm.password,
-              email: _this.ruleForm.email
+              phone: _this.ruleForm.phone
             }).then((result) => {
-              console.log(result.data);
+              // console.log(result.data);
               this.msg = result.data.msg
+              if (result.data.status == 200) {
+                this.$alert('注册成功', '提示', {
+                  confirmButtonText: '确定',
+                  callback: () => {
+                    this.$router.push('/index')
+                  }
+                })
+              }
             }).catch((err) => {
               console.log(err);
+
             });
         } else {
           console.log('error register!!');
@@ -100,6 +117,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.back {
+  float: left;
+}
 .register-box {
   margin: 150px auto;
   padding: 10px 20px;
@@ -107,6 +127,7 @@ export default {
   border-radius: 10px;
   box-shadow: 0 0 25px #909399;
   .register-title {
+    margin: 20px 0;
     text-align: center;
   }
 }
