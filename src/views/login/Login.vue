@@ -36,8 +36,8 @@ export default {
     return {
       msg: '',	//接收数据
       ruleForm: {
-        username: 'admin',
-        password: 'admin'
+        username: '',
+        password: ''
       },
       rules: {
         username: [
