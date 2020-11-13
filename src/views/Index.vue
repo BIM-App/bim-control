@@ -35,7 +35,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .el-header,
 .el-footer {
   background-color: #b3c0d1;
@@ -45,11 +44,13 @@ export default {
 }
 
 .el-aside {
+  height: 100vh;
   // background-color: #d3dce6;
   background-color: #545c64;
   color: #333;
   text-align: center;
   line-height: 200px;
+  position: fixed;
   .el-menu {
     border-right: 0;
   }
@@ -60,6 +61,7 @@ export default {
   color: #333;
   // text-align: center;
   // line-height: 160px;
+  overflow: hidden;
 }
 
 body > .el-container {

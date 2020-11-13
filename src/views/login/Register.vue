@@ -1,9 +1,11 @@
 <template>
-  <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="register-box" label-width="100px" label-position="left" status-icon>
+  <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="register-box" label-width="100px"
+    label-position="left" status-icon>
     <el-link class="back" type="primary" @click="back">返回</el-link>
     <h2 class="register-title">欢迎注册</h2>
     <el-form-item label="用户名" prop="username">
-      <el-input type="text" v-model="ruleForm.username" maxlength="12" autocomplete="off"></el-input>
+      <el-input type="text" v-model="ruleForm.username" maxlength="12" autocomplete="off">
+      </el-input>
     </el-form-item>
     <el-form-item label="密码" prop="password">
       <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
@@ -86,15 +88,15 @@ export default {
         if (valid) {
           const _this = this
           this.$axios.post(
-            'http://localhost:4000/api/register',
+            'http://47.112.132.91:8080/BIM/register',
             {
               username: _this.ruleForm.username,
               password: _this.ruleForm.password,
               phone: _this.ruleForm.phone
             }).then((result) => {
-              // console.log(result.data);
+              console.log(result.data);
               this.msg = result.data.msg
-              if (result.data.status == 200) {
+              if (result.data.code == 1) {
                 this.$alert('注册成功', '提示', {
                   confirmButtonText: '确定',
                   callback: () => {

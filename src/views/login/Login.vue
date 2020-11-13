@@ -1,8 +1,10 @@
 <template>
-  <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="login-box" label-width="100px" label-position="left" status-icon>
+  <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="login-box" label-width="100px"
+    label-position="left" status-icon>
     <h2 class="login-title">欢迎登录</h2>
     <el-form-item label="用户名" prop="username">
-      <el-input type="text" v-model="ruleForm.username" maxlength="12" autocomplete="off"></el-input>
+      <el-input type="text" v-model="ruleForm.username" maxlength="12" autocomplete="off">
+      </el-input>
     </el-form-item>
     <el-form-item label="密码" prop="password">
       <el-input type="password" v-model="ruleForm.password"></el-input>
@@ -56,26 +58,29 @@ export default {
         if (valid) {
           const _this = this
           this.$axios.post(
-            'http://localhost:4000/api/login',
-            {
-              username: _this.ruleForm.username,
-              password: _this.ruleForm.password
-            }).then((result) => {
-              // console.log(result.data);
-              this.msg = result.data.msg
+            'http://47.112.132.91:8080/BIM/login', {
+            // params: {
+            username: _this.ruleForm.username,
+            password: _this.ruleForm.password
+            // }
+          }
+          ).then((result) => {
+            console.log(result.data);
 
-              if (result.data.msg == '登录成功') {
-                _this.$router.push('/index')
-                _this.$notify({
-                  title: '成功',
-                  message: '登录成功',
-                  type: 'success'
-                })
-              }
+            if (result.data) {
+              window.localStorage.setItem('token', result.data.token)
+              _this.$router.push('/index')
+              _this.$notify({
+                title: '成功',
+                message: '登录成功',
+                type: 'success',
+                duration: 1000
+              })
+            }
 
-            }).catch((err) => {
-              console.log(err);
-            });
+          }).catch((err) => {
+            console.log(err);
+          });
 
         } else {
           console.log('error submit!!');

@@ -5,9 +5,8 @@ import Login from '../views/login/Login.vue'
 import Register from '../views/login/Register.vue'
 import Test from '../components/Test.vue'
 
-
 // 路由懒加载
-const Management = () => import('../views/user/Management.vue')
+const ProjectAdd = () => import('../views/user/ProjectAdd.vue')
 const ModelList = () => import('../views/user/ModelList.vue')
 const Profile = () => import('../views/user/Profile.vue')
 
@@ -27,22 +26,34 @@ const routes = [
       {
         path: '/test',
         name: 'Test',
-        component: Test
+        component: Test,
+        meta: {
+          requiresAuth: true
+        }
       },
       {
-        path: '/management',
-        name: 'Management',
-        component: Management
+        path: '/projectAdd',  //添加项目
+        name: 'ProjectAdd',
+        component: ProjectAdd,
+        meta: {
+          requiresAuth: true
+        }
       },
       {
         path: '/modellist',
         name: 'ModelList',
-        component: ModelList
+        component: ModelList,
+        meta: {
+          requiresAuth: true
+        }
       },
       {
         path: '/profile',
         name: 'Profile',
-        component: Profile
+        component: Profile,
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   },
@@ -61,5 +72,22 @@ const routes = [
 const router = new VueRouter({
   routes
 })
+
+// 路由导航守卫
+// router.beforeEach((to, form, next) => {
+//   let token = window.localStorage.getItem('token')
+//   if (to.meta.requiresAuth) {
+//     if (token) {
+//       next()
+//     } else {
+//       next({
+//         path: '/login',
+//         query: { redirect: to.fullPath }
+//       })
+//     }
+//   } else {
+//     next()
+//   }
+// })
 
 export default router
