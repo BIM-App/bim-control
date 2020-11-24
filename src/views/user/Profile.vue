@@ -1,6 +1,6 @@
 <template>
   <div id="profile">
-    这是profile页面组件
+    profile组件
   </div>
 </template>
 

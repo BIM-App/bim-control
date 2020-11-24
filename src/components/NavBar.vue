@@ -5,17 +5,10 @@
     <el-menu-item disabled>
       <span slot="title">$$$$$$$$$$</span>
     </el-menu-item>
-    <el-submenu index="/management">
-      <template slot="title">
-        <i class="el-icon-location"></i>
-        <span>项目管理</span>
-      </template>
-      <el-menu-item index="/projectAdd">添加项目</el-menu-item>
-    </el-submenu>
-    <!-- <el-menu-item index="/management">
+    <el-menu-item index="/projectlist">
       <i class="el-icon-menu"></i>
-      <span slot="title">项目管理</span>
-    </el-menu-item> -->
+      <span slot="title">项目列表</span>
+    </el-menu-item>
     <el-menu-item index="/modellist">
       <i class="el-icon-document"></i>
       <span slot="title">模型列表</span>

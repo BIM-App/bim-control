@@ -3,10 +3,9 @@ import VueRouter from 'vue-router'
 import Index from '../views/Index.vue'
 import Login from '../views/login/Login.vue'
 import Register from '../views/login/Register.vue'
-import Test from '../components/Test.vue'
 
 // 路由懒加载
-const ProjectAdd = () => import('../views/user/ProjectAdd.vue')
+const ProjectList = () => import('../views/user/ProjectList.vue')
 const ModelList = () => import('../views/user/ModelList.vue')
 const Profile = () => import('../views/user/Profile.vue')
 
@@ -21,20 +20,12 @@ const routes = [
     path: '/index',
     name: 'Index',
     component: Index,
-    redirect: '/test',
+    redirect: '/projectlist',
     children: [
       {
-        path: '/test',
-        name: 'Test',
-        component: Test,
-        meta: {
-          requiresAuth: true
-        }
-      },
-      {
-        path: '/projectAdd',  //添加项目
-        name: 'ProjectAdd',
-        component: ProjectAdd,
+        path: '/projectlist',
+        name: 'ProjectList',
+        component: ProjectList,
         meta: {
           requiresAuth: true
         }

@@ -2446,7 +2446,6 @@ export default {
 
 <style lang="scss">
 .app-container {
-  margin: 0 0 0 200px;
   flex: 1;
   padding: 10px;
   display: flex;
