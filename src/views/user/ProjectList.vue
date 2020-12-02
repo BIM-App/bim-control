@@ -18,11 +18,16 @@
           <!-- 关联图片 -->
           <el-col :span="24">
             <el-form-item label="关联图片" prop="pictureFileURL" required>
-              <el-upload class="upload-pic" action="" :on-change="handleChange"
-                :http-request="allUpload" ref="upload" :auto-upload="false"
-                list-type="picture-card">
+              <el-upload action="" :on-change="handleChange" :http-request="allUpload" ref="upload" :auto-upload="false" list-type="picture-card">
                 <i class="el-icon-plus"></i>
                 <div class="el-upload__tip" slot="tip">只能上传jpg/png文件</div>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="上传模型" prop="modelZipURL">
+              <el-upload action="" :on-change="handleChange" :http-request="allUpload" ref="upload" :auto-upload="false" list-type="text">
+                <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
             </el-form-item>
           </el-col>
@@ -38,9 +43,9 @@
     <ul class="cards">
       <li class="card_item" v-for="(item, index) in lists" :key="index">
         项目名称{{item.name}}
-        <img :src="item.imgUrl" />
+        <img :src="item.imgUrl" @click="goModel(item.pid)" />
         <el-button type="mini" @click="lists.splice(index,1);subProject()" :data-index="item.id">
-          删除 id{{item.id}}
+          删除 id{{item.pid}}
         </el-button>
       </li>
     </ul>
@@ -56,20 +61,21 @@ export default {
   data() {
     return {
       lists: [
-        // { id: 1, name: 'zakke', imgUrl: 'https://tva2.sinaimg.cn/large/0072Vf1pgy1foxlo91kiwj31hc0u0k9u.jpg' },
-        // { id: 2, name: 'zhangsan', imgUrl: 'https://tva4.sinaimg.cn/large/87c01ec7gy1frmbm526o7j21hc0u0ajj.jpg' },
-        // {
-        // }
+        // { pid: 1, name: 'zakke', imgUrl: 'http://www.dmoe.cc/random.php' },
+        // { pid: 5, name: 'zhangsan', imgUrl: 'http://www.dmoe.cc/random.php' },
+        // { pid: 3, name: 'lisi', imgUrl: 'http://www.dmoe.cc/random.php' },
       ],
       dialogFormVisible: false,
       form: {
         name: '',
         pictureFile: '',
+        modelZip: ''
       }
     }
   },
   created() {
     // console.log('created');
+    // console.log(window.localStorage);
   },
   updated() {
     // console.log('updated');
@@ -83,6 +89,7 @@ export default {
       let formData = new FormData()
       formData.append('name', this.form.name);
       formData.append('pictureFile', this.form.pictureFile)
+      formData.append('modelZip', this.form.modelZip)
 
       let config = {
         headers: {
@@ -97,6 +104,9 @@ export default {
     },
     submitUpload(param) {
       this.$refs.upload.submit();
+    },
+    goModel(pid) {
+      console.log(pid);
     }
   }
 }

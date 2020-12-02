@@ -17,8 +17,7 @@
       </el-card>
     </el-container>
 
-    <el-dialog title="模型展示" :visible.sync="linkageDia" width="90%" top="5vh" class="linkage"
-      @close="closeDia" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog title="模型展示" :visible.sync="linkageDia" width="90%" top="5vh" class="linkage" @close="closeDia" :close-on-click-modal="false" :close-on-press-escape="false">
       <linkagepopup v-if="linkageDia" :linkageDia="linkageDia" :modelData="modelData" ref="linkage">
       </linkagepopup>
     </el-dialog>

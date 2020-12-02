@@ -1,6 +1,5 @@
 <template>
-  <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="login-box" label-width="100px"
-    label-position="left" status-icon>
+  <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="login-box" label-width="100px" label-position="left" status-icon>
     <h2 class="login-title">欢迎登录</h2>
     <el-form-item label="用户名" prop="username">
       <el-input type="text" v-model="ruleForm.username" maxlength="12" autocomplete="off">
@@ -38,8 +37,8 @@ export default {
     return {
       msg: '',	//接收数据
       ruleForm: {
-        username: '',
-        password: ''
+        username: 'zakkel',
+        password: '1234'
       },
       rules: {
         username: [
@@ -58,17 +57,18 @@ export default {
         if (valid) {
           const _this = this
           this.$axios.post(
-            'http://47.112.132.91:8080/BIM/login', {
+            'http://47.112.132.91:8080/Test/login', {
             // params: {
             username: _this.ruleForm.username,
             password: _this.ruleForm.password
             // }
           }
           ).then((result) => {
-            console.log(result.data);
+            console.log(result);
 
             if (result.data) {
               window.localStorage.setItem('token', result.data.token)
+              window.localStorage.setItem('Uid', result.data.Uid)
               _this.$router.push('/index')
               _this.$notify({
                 title: '成功',

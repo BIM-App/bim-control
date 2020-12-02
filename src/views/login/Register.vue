@@ -1,6 +1,5 @@
 <template>
-  <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="register-box" label-width="100px"
-    label-position="left" status-icon>
+  <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="register-box" label-width="100px" label-position="left" status-icon>
     <el-link class="back" type="primary" @click="back">返回</el-link>
     <h2 class="register-title">欢迎注册</h2>
     <el-form-item label="用户名" prop="username">
@@ -88,15 +87,15 @@ export default {
         if (valid) {
           const _this = this
           this.$axios.post(
-            'http://47.112.132.91:8080/BIM/register',
+            'http://47.112.132.91:8080/Test/register',
             {
               username: _this.ruleForm.username,
               password: _this.ruleForm.password,
               phone: _this.ruleForm.phone
             }).then((result) => {
               console.log(result.data);
-              this.msg = result.data.msg
-              if (result.data.code == 1) {
+              // this.msg = result.data.msg
+              if (result.data) {
                 this.$alert('注册成功', '提示', {
                   confirmButtonText: '确定',
                   callback: () => {
