@@ -33,6 +33,11 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: Profile
+  },
+  {
+    path: '/modellist',
+    name: 'ModelList',
+    component: () => import('@/views/ModelList.vue')
   }
 ]
 
