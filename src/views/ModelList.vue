@@ -27,13 +27,13 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <linkagepopup
+      <linkage-popup
         v-if="linkageDia"
         :linkageDia="linkageDia"
         :modelData="modelData"
         ref="linkage"
       >
-      </linkagepopup>
+      </linkage-popup>
     </el-dialog>
   </div>
 </template>
@@ -41,7 +41,7 @@
 <script>
 import LinkagePopup from '@/views/LinkagePopup'
 export default {
-  name: 'Login',
+  name: 'ModelList',
   components: {
     LinkagePopup,
   },

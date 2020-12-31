@@ -4,6 +4,7 @@ import Index from '@/views/Index'
 import Login from '@/views/Login'
 import Register from '@/views/Register'
 import Profile from '@/views/Profile'
+import Test from '@/views/Test'
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,11 @@ const routes = [
     path: '/modellist',
     name: 'ModelList',
     component: () => import('@/views/ModelList.vue')
+  },
+  {
+    path: '/test',
+    name: 'Tets',
+    component: Test
   }
 ]
 

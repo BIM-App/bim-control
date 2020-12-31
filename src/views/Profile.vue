@@ -40,7 +40,7 @@ export default {
         id: '',
         nickname: '笑傲江湖',
         username: 'Zakke',
-        avatar: 'https://api.ixiaowai.cn/api/api.php',
+        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
         gender: '',
         age: '',
         workUnit: '',

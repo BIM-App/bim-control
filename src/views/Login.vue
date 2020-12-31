@@ -1,31 +1,39 @@
 <template>
-  <el-form
-    ref="ruleForm"
+  <el-form ref="ruleForm"
     :model="ruleForm"
     :rules="rules"
-    class="login-box"
+    class="content"
     label-width="100px"
     label-position="left"
-    status-icon
-  >
-    <h2 class="login-title">欢迎登录</h2>
-    <el-form-item label="用户名" prop="username">
-      <el-input type="text" v-model="ruleForm.username" maxlength="12" autocomplete="off">
+    status-icon>
+    <h2 class="login-title">Sign In</h2>
+    <el-form-item prop="username">
+      <label for="username">Username</label>
+      <el-input
+        id="username"
+        type="text"
+        v-model="ruleForm.username"
+        maxlength="12"
+        autocomplete="off"
+      >
       </el-input>
     </el-form-item>
-    <el-form-item label="密码" prop="password">
-      <el-input type="password" v-model="ruleForm.password"></el-input>
+    <el-form-item prop="password">
+      <label for="password">Password</label>
+      <el-input id="password" type="password" v-model="ruleForm.password"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-link class="lost" type="danger" :underline="false">忘记密码</el-link>
-      <el-link @click="toRegister" class="register" type="primary" :underline="false"
-        >立即注册</el-link
-      >
+      <ul class="forget">
+        <li>
+          <el-link>Forgot Username Or Password ?</el-link>
+        </li>
+        <li>
+          <span>Don't have an Account ? <el-link @click="toRegister">Register</el-link></span>
+        </li>
+      </ul>
     </el-form-item>
-    <el-form-item class="login-btn">
-      <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
-      <el-button @click="resetForm('ruleForm')">重置</el-button>
-      <!-- <el-button type="primary" @click="registerForm('ruleForm')">注册</el-button> -->
+    <el-form-item>
+      <el-button class="login" type="primary" @click="submitForm('ruleForm')">Sign In</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -108,30 +116,69 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.login-box {
-  margin: 150px auto;
-  padding: 10px 20px;
-  width: 480px;
-  // background-color: pink;
-  border-radius: 10px;
-  box-shadow: 0 0 25px #909399;
-  .login-title {
-    margin: 20px 0;
-    text-align: center;
+.content {
+  margin: 0 auto;
+  margin-top: 15vh;
+  display: flex;
+  width: 700px;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  // background-color: purple;
+  h2 {
+    margin-bottom: 55px;
+    font-size: 36px;
+    color: #464d5f;
   }
-}
-
-.lost,
-.register {
-  margin-left: 50px;
-}
-
-.login-btn {
-  margin-left: -60px;
-  text-align: center;
-  .el-button {
-    width: 100px;
-    margin-right: 50px;
+  .el-input {
+    width: 620px;
+  }
+  .forget {
+    margin-left: -30px;
+    display: flex;
+    width: 620px;
+    font-size: 16px;
+    flex-direction: row;
+    justify-content: space-between;
+    li:nth-child(1) {
+      float: left;
+      // background-color: red;
+      .el-link {
+        font-size: 16px;
+        color: #91949c;
+      }
+    }
+    li:nth-last-child(1) {
+      float: right;
+      color: #91949c;
+      // background-color: green;
+      .el-link {
+        padding-bottom: 4px;
+        font-size: 16px;
+        color: #7C8089;
+      }
+    }
+  }
+  .login {
+    margin: 18px 0 0 -30px;
+    width: 620px;
+    height: 60px;
+    font-size: 16px;
+    background-color: #5a84fd;
+    box-shadow: 3px 3px 5px #90a1d4;
+  }
+  .el-form-item {
+    margin-left: -50px;
+    label {
+      font-size: 16px;
+      font-weight: 500;
+      color: #7c8089;
+      // text-transform: capitalize;
+    }
+  }
+  ::v-deep .el-input__inner {
+    height: 46px;
+    font-size: 16px;
   }
 }
 </style>

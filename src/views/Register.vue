@@ -3,33 +3,50 @@
     ref="ruleForm"
     :model="ruleForm"
     :rules="rules"
-    class="register-box"
+    class="content"
     label-width="100px"
-    label-position="left"
     status-icon
   >
-    <el-link class="back" type="primary" @click="back">返回</el-link>
-    <h2 class="register-title">欢迎注册</h2>
-    <el-form-item label="用户名" prop="username">
-      <el-input type="text" v-model="ruleForm.username" maxlength="12" autocomplete="off">
-      </el-input>
+    <h2 class="login-title">Sign Up</h2>
+    <div class="form-box">
+      <el-form-item prop="username">
+        <label for="username">Username</label>
+        <el-input
+          id="username"
+          type="text"
+          v-model="ruleForm.username"
+          maxlength="12"
+          autocomplete="off"
+        >
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="phone" style="margin-right: 30px">
+        <label for="phone">Phone</label>
+        <el-input id="phone" v-model="ruleForm.phone" maxlength="11"></el-input>
+      </el-form-item>
+    </div>
+    <el-form-item prop="password">
+      <label for="password">Password</label>
+      <el-input id="password" type="password" v-model="ruleForm.password"></el-input>
     </el-form-item>
-    <el-form-item label="密码" prop="password">
-      <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
+    <el-form-item prop="checkPass">
+      <label for="checkPass">Retype Password</label>
+      <el-input id="checkPass" type="password" v-model="ruleForm.checkPass"></el-input>
     </el-form-item>
-    <el-form-item label="确认密码" prop="checkPass">
-      <el-input
-        type="password"
-        v-model="ruleForm.checkPass"
-        autocomplete="off"
-      ></el-input>
+    <el-form-item>
+      <ul class="forget">
+        <li>
+          <el-link>Register represent accept our terms</el-link>
+        </li>
+        <li>
+          <span>Already member ? <el-link @click="toLogin">Sing In</el-link></span>
+        </li>
+      </ul>
     </el-form-item>
-    <el-form-item label="电话" prop="phone">
-      <el-input v-model="ruleForm.phone"></el-input>
-    </el-form-item>
-    <el-form-item class="register-btn">
-      <el-button type="primary" @click="registerForm('ruleForm')">注册</el-button>
-      <el-button @click="resetForm('ruleForm')">重置</el-button>
+    <el-form-item>
+      <el-button class="register" type="primary" @click="registerForm('ruleForm')"
+        >Sign In</el-button
+      >
     </el-form-item>
   </el-form>
 </template>
@@ -85,7 +102,7 @@ export default {
     }
   },
   methods: {
-    back() {
+    toLogin() {
       this.$router.push('/login')
     },
     resetForm(formName) {
@@ -126,26 +143,84 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.back {
-  float: left;
-}
-.register-box {
-  margin: 150px auto;
-  padding: 10px 20px;
-  width: 480px;
-  border-radius: 10px;
-  box-shadow: 0 0 25px #909399;
-  .register-title {
-    margin: 20px 0;
-    text-align: center;
+.content {
+  margin: 0 auto;
+  margin-top: 15vh;
+  display: flex;
+  width: 700px;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  // background-color: purple;
+  h2 {
+    margin-bottom: 55px;
+    font-size: 36px;
+    color: #464d5f;
   }
-}
-.register-btn {
-  margin-left: -60px;
-  text-align: center;
-  .el-button {
-    width: 100px;
-    margin-right: 50px;
+  .form-box {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .forget {
+    margin-left: -30px;
+    display: flex;
+    width: 620px;
+    font-size: 16px;
+    flex-direction: row;
+    justify-content: space-between;
+    li:nth-child(1) {
+      float: left;
+      // background-color: red;
+      .el-link {
+        font-size: 16px;
+        color: #91949c;
+      }
+    }
+    li:nth-last-child(1) {
+      float: right;
+      color: #91949c;
+      // background-color: green;
+      .el-link {
+        padding-bottom: 4px;
+        font-size: 16px;
+        color: #7c8089;
+      }
+    }
+  }
+  .register {
+    margin: 15px 0 0 -30px;
+    width: 620px;
+    height: 60px;
+    font-size: 16px;
+    background-color: #5a84fd;
+    box-shadow: 3px 3px 5px #90a1d4;
+  }
+  .el-form-item {
+    margin-left: -50px;
+    label {
+      font-size: 16px;
+      font-weight: 500;
+      color: #7c8089;
+      // text-transform: capitalize;
+    }
+  }
+  ::v-deep .el-input__inner {
+    height: 46px;
+    font-size: 16px;
+  }
+
+  ::v-deep #username {
+    width: 280px;
+  }
+  ::v-deep #phone {
+    width: 290px;
+  }
+  ::v-deep #password {
+    width: 620px;
+  }
+  ::v-deep #checkPass {
+    width: 620px;
   }
 }
 </style>

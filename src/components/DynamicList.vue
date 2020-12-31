@@ -4,15 +4,17 @@
       <el-col :span="4" v-for="item in ListData" :key="item.classId" :offset="1">
         <div style="margin-top: 15px">
           <el-card :body-style="{ padding: '0px' }" shadow="hover">
-            <img
-              src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-              class="image"
-            />
+            <a href="#">
+              <img
+                src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                class="image"
+              />
+            </a>
             <div>
-              <span>{{ item.id }} {{ item.name }}</span>
+              <span>项目id：{{ item.id }} <br />项目名称：{{ item.name }}</span>
               <div class="bottom clearfix">
-                <time class="time">{{ currentDate }}</time>
-                <el-button type="text" class="button">操作按钮</el-button>
+                <!-- <time class="time">{{ currentDate }}</time> -->
+                <!-- <el-button type="text" class="button">操作按钮</el-button> -->
               </div>
             </div>
           </el-card>
