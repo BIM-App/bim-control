@@ -3,13 +3,13 @@
 
 import axios from 'axios'
 import store from '@/store'
+import { Message } from 'element-ui'
 
-// axios.defaults.headers.post['Content-Type'] = ''
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 
 const service = axios.create({
-  //baseURL: process.env.VUE_APP_BASE_API, 
   // url = base url + request url
-  baseURL: 'http://47.112.132.91:8080/Test',
+  baseURL: process.env.VUE_APP_BASE_API,
   timeout: 5 * 1000
 })
 
@@ -25,7 +25,8 @@ service.interceptors.request.use(
     return config
   },
   error => {
-    return Promise.error(error);
+    console.log(error) // for debug
+    return Promise.error(error)
   }
 )
 
@@ -37,6 +38,12 @@ service.interceptors.response.use(
     if (response.status === 200) {
       return Promise.resolve(response)
     } else {
+      Message({
+        message: response.message || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
+
       return Promise.reject(response)
     }
   },

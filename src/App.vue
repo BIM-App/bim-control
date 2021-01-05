@@ -3,6 +3,13 @@
     <router-view />
   </div>
 </template>
-<style lang="scss">
-  @import '~@/assets/styles/reset.css';
+
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
+<style lang="scss" scoped>
+  @import '~@/styles/reset.css'
 </style>

@@ -1,33 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import getters from './getters'
+import app from './modules/app'
+import settings from './modules/settings'
+import user from './modules/user'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  state: {
-    Uid: '',
-    token: '',
-  },
-
-  mutations: {
-    set_Uid(state, Uid) {
-      state.Uid = Uid
-    },
-
-    set_token(state, token) {
-      state.token = token
-    },
-
-    del_all(state, Uid, token,) {
-      state.token = ''
-      window.localStorage.removeItem('Uid')
-      window.localStorage.removeItem('token')
-    }
-  },
-
-  actions: {
-  },
-
+const store = new Vuex.Store({
   modules: {
-  }
+    app,
+    settings,
+    user
+  },
+  getters
 })
+
+export default store
