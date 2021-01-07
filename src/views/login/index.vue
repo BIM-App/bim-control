@@ -87,15 +87,15 @@ export default {
             password: _this.ruleForm.password
           }
           login(params)
-            .then((result) => {
-              // console.log(result) // for debug
-              if (result.status === 200) {
+            .then((res) => {
+              // console.log(res) // for debug
+              if (res.data.id) {
                 // console.log(_this.$store)
-                setUser(result.data)
+                setUser(res.data)
                 // console.log(getUser())
 
-                // _this.$store.commit('user/SET_UID', result.data.id)
-                // window.localStorage.setItem('uid', result.data.id)
+                _this.$store.commit('user/SET_USER', res.data)
+                // window.localStorage.setItem('uid', res.data.id)
                 _this.$router.push('/dashboard')
                 _this.$notify({
                   title: '成功',
@@ -104,15 +104,21 @@ export default {
                   duration: 1000,
                   offset: 80
                 })
+              } else if (res.data.status === 404) {
+                // console.log(res)
+                this.$message({
+                  type: 'danger',
+                  message: '用户名或密码错误，请重新登录'
+                })
               }
 
               // 验证token
-              // if (result.data.token) {
-              //   window.localStorage.setItem('token', result.data.token)
-              //   window.localStorage.setItem('Uid', result.data.Uid)
+              // if (res.data.token) {
+              //   window.localStorage.setItem('token', res.data.token)
+              //   window.localStorage.setItem('Uid', res.data.Uid)
 
-            //   _this.$store.commit('set_token', result.data.token)
-            //   _this.$store.commit('set_Uid', result.data.Uid)
+            //   _this.$store.commit('set_token', res.data.token)
+            //   _this.$store.commit('set_Uid', res.data.Uid)
             // }
             })
             .catch((err) => {

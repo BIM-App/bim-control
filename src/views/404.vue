@@ -14,19 +14,28 @@
         </div>
         <div class="bullshit__headline">{{ message }}</div>
         <div class="bullshit__info">请检查您输入的网址是否正确，或者单击下面的按钮返回主页。</div>
-        <a href="" class="bullshit__return-home">回到主页</a>
+        <a class="bullshit__return-home" @click="toLink()">回到主页</a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
+// import { getUser } from '../utils/auth'
 export default {
   name: 'Page404',
   computed: {
     message() {
       return '您无法进入此页面...'
+    }
+  },
+  methods: {
+    toLink() {
+      if (this.$store.state.user.user.id) {
+        this.$router.push('/dashboard')
+      } else {
+        this.$router.push('/login')
+      }
     }
   }
 }

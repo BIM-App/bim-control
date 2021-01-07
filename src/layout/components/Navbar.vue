@@ -40,7 +40,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import { getUser, removeUser } from '@/utils/auth'
+import { getUser, removeMember, removeProjectPID, removeUser } from '@/utils/auth'
 import eventVue from '@/utils/eventVue'
 export default {
   components: {
@@ -74,8 +74,10 @@ export default {
     },
 
     async logout() {
-      // await this.$store.dispatch('user/logout')
+      await this.$store.commit('user/SET_USER', '')
       removeUser()
+      removeMember()
+      removeProjectPID()
       this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
       // localStorage.removeItem('uid')
       // localStorage.removeItem('avatar')

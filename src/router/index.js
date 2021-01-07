@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { getUser } from '@/utils/auth'
 
 Vue.use(Router)
 
@@ -63,12 +62,44 @@ export const constantRoutes = [
   {
     path: '/project',
     component: Layout,
+    redirect: '/project/index',
     children: [
       {
         path: 'index',
         name: 'Project',
         component: () => import('@/views/project/index'),
         meta: { title: '项目管理', icon: 'dashboard' }
+      },
+      {
+        path: 'index/:pid',
+        name: 'Member',
+        hidden: true,
+        component: () => import('@/views/member/index'),
+        meta: { title: '成员管理', icon: 'dashboard' }
+      }
+    ]
+  },
+  {
+    path: '/model',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Model',
+        component: () => import('@/views/model/index'),
+        meta: { title: '图模管理', icon: 'dashboard' }
+      }
+    ]
+  },
+  {
+    path: '/task',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Task',
+        component: () => import('@/views/task/index'),
+        meta: { title: '任务管理', icon: 'dashboard' }
       }
     ]
   },
@@ -96,21 +127,6 @@ const createRouter = () => new Router({
 
 const router = createRouter()
 
-// 路由导航守卫
-router.beforeEach((to, form, next) => {
-  if (to.meta.requiresAuth) {
-    if (getUser()) {
-      next()
-    } else {
-      next({
-        path: '/login',
-        query: { redirect: to.fullPath }
-      })
-    }
-  } else {
-    next()
-  }
-})
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter()

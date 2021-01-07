@@ -91,7 +91,7 @@
       </el-dialog>
       <!-- 动态渲染卡片部分 -->
       <el-col v-for="item in projectList" :key="item.pid" :span="4" :offset="1">
-        <div style="margin-top: 15px">
+        <div style="margin-top: 20px">
           <el-card :body-style="{ padding: '0px' }" shadow="hover">
             <div class="projectTool">
               <el-tooltip class="item" effect="dark" content="修改项目" placement="bottom-start">
@@ -106,22 +106,55 @@
                   "
                 />
               </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="上传项目预览图" placement="bottom-start">
+                <el-upload
+                  ref=""
+                  class="uploadBtn"
+                  action=""
+                  :on-change="handleChange"
+                  :http-request="uploadProjectPicture"
+                  :auto-upload="true"
+                  :show-file-list="false"
+                >
+                  <el-button
+                    size="mini"
+                    type="warning"
+                    icon="el-icon-picture-outline"
+                    circle
+                    @click="
+                      pictureDialogVisible = true;
+                      getProjectInfo(item.pid)"
+                  />
+                </el-upload>
+              </el-tooltip>
               <el-tooltip class="item" effect="dark" content="项目成员" placement="bottom-start">
                 <el-button
                   size="mini"
-                  type="warning"
+                  type="info"
                   icon="el-icon-user"
                   circle
+                  @click="
+                    getProjectMember(item.pid);
+                    toLink(item.pid)"
                 />
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除项目" placement="bottom-start">
-                <el-button
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  circle
-                  @click="deleteDialogVisible = true"
-                />
+                <el-popconfirm
+                  confirm-button-text="确定"
+                  cancel-button-text="取消"
+                  icon="el-icon-info"
+                  icon-color="red"
+                  title="确定要删除此项目吗？"
+                  @onConfirm="deleteProject(item.pid)"
+                >
+                  <el-button
+                    slot="reference"
+                    size="mini"
+                    type="danger"
+                    icon="el-icon-delete"
+                    circle
+                  />
+                </el-popconfirm>
               </el-tooltip>
 
             </div>
@@ -138,26 +171,6 @@
             </div>
           </el-card>
         </div>
-        <!-- 删除项目 -->
-        <el-dialog
-          title="删除项目提示"
-          :visible.sync="deleteDialogVisible"
-          width="30%"
-          center
-        >
-          <span>确认删除此项目吗？</span>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="deleteDialogVisible = false">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="
-                deleteDialogVisible = false;
-                deleteProject(item.pid);
-              "
-            >确 定</el-button>
-          </span>
-        </el-dialog>
-
         <!-- 编辑更新项目 -->
         <el-dialog
           title="修改项目"
@@ -165,7 +178,7 @@
           style="margin-top: -40px"
         >
           <el-row :gutter="15">
-            <el-form ref="form" :model="form" label-width="100px">
+            <el-form ref="editForm" :model="editForm" label-width="100px">
               <!-- 项目名称 -->
               <el-col :span="15">
                 <el-form-item label="项目名称" prop="pname">
@@ -278,9 +291,11 @@ import {
   addProject,
   deleteByPID,
   findByPID,
-  updateProject
+  updateProject,
+  addProjectPicture,
+  findProjectMembersByPID
 } from '@/api/project'
-import { getUser } from '@/utils/auth'
+import { getUser, setMember, setProjectPID } from '@/utils/auth'
 
 export default {
   name: 'Project',
@@ -288,8 +303,8 @@ export default {
     return {
       key: '',
       dialogFormVisible: false,
-      deleteDialogVisible: false,
       editDialogVisible: false,
+      pictureDialogVisible: false,
       currentDate: new Date(),
       projectList: [],
       // regionChange: '',
@@ -334,8 +349,25 @@ export default {
       })
   },
   methods: {
+    toLink(pid) {
+      this.$router.push(`/project/index/${pid}`)
+    },
+    // 获取上传的图片
+    handleChange(file, fileList) {
+      this.pictureFile = file.raw
+      // console.log(this.form.Picture);
+    },
+    // 获取新建项目的地址部分信息
+    regionChange(data) {
+      console.log(data)
+      this.form.province = data.province ? data.province.value : ''
+      this.form.city = data.city ? data.city.value : ''
+      this.form.district = data.area ? data.area.value : ''
+      this.form.street = data.town ? data.town.value : ''
+    },
     // 获取项目信息
     getProjectInfo(pid) {
+      // 调用根据项目id查询项目信息接口
       findByPID(pid)
         .then((res) => {
           // console.log(res.data)
@@ -346,14 +378,6 @@ export default {
         .catch((err) => {
           console.log(err)
         })
-    },
-    // 新建项目的地址信息
-    regionChange(data) {
-      console.log(data)
-      this.form.province = data.province ? data.province.value : ''
-      this.form.city = data.city ? data.city.value : ''
-      this.form.district = data.area ? data.area.value : ''
-      this.form.street = data.town ? data.town.value : ''
     },
     // 提交新建项目表单
     submitAddForm() {
@@ -493,6 +517,53 @@ export default {
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 上传项目预览图
+    uploadProjectPicture() {
+      const _this = this
+      const data = new FormData()
+      data.append('uid', getUser().id)
+      data.append('pid', this.editForm.pid)
+      data.append('pictureFile', this.pictureFile)
+      // 调用上传项目预览图接口
+      addProjectPicture(data).then((res) => {
+        console.log(res)
+        if (res.status === 200) {
+          // 调用查询用户项目接口
+          findProjects(getUser().username)
+            .then((res) => {
+              console.log(res)
+              if (res.data instanceof Array) {
+                _this.projectList = res.data
+              }
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+          _this.$notify({
+            title: '成功',
+            message: '上传成功',
+            type: 'success',
+            duration: 1000,
+            offset: 80
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 查询项目成员列表
+    getProjectMember(pid) {
+      findProjectMembersByPID(pid).then((res) => {
+        // console.log(res)
+        if (res.status === 200) {
+          // this.tableData = res.data
+          setMember(res.data)
+          setProjectPID(pid)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   }
 }
@@ -516,10 +587,15 @@ export default {
 
 .image {
   width: 100%;
+  height: 120px;
+  background-size:120px;
   display: block;
 }
 .projectTool {
-  margin-left: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 80px;
   margin-bottom: 5px;
   position: sticky;
   bottom: 0;
@@ -552,8 +628,32 @@ export default {
       text-align: center;
     }
   }
+
   .el-card:hover {
     border-color: #409eff;
   }
 }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>

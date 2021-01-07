@@ -19,6 +19,17 @@ export function register(data) {
   })
 }
 
+// 用户注册
+export function deleteByID(id, username) {
+  return request({
+    url: '/springbootBim/User/deleteByID/' + id + '/' + username,
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
 // 根据用户id查询用户信息
 export function findByID(uid) {
   return request({

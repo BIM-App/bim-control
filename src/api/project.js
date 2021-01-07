@@ -44,3 +44,20 @@ export function findByPID(pid) {
   })
 }
 
+// 上传项目预览图
+export function addProjectPicture(data) {
+  return request({
+    url: '/springbootBim/Project/addPicture',
+    method: 'post',
+    header: { 'Content-Type': 'multipart/form-data' },
+    data
+  })
+}
+
+// 根据项目pid返回成员列表
+export function findProjectMembersByPID(pid) {
+  return request({
+    url: '/springbootBim/Project/findProjectMembersByPID/' + pid,
+    method: 'get'
+  })
+}

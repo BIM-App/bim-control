@@ -17,6 +17,7 @@
         </div>
         <div class="change">
           <el-button type="primary" @click.native="dialogFormVisible = true">修改个人信息</el-button>
+          <el-button type="danger" @click="deleteUser()">注销用户</el-button>
         </div>
       </div>
       <div class="other-info">
@@ -32,6 +33,7 @@
         </ul>
       </div>
     </div>
+    <!-- 修改个人资料Dialog -->
     <el-dialog title="修改个人资料" :visible.sync="dialogFormVisible" style="margin-top:-40px">
       <el-row :gutter="15">
         <el-form ref="form" :model="form" label-width="100px">
@@ -93,8 +95,8 @@
 </template>
 
 <script>
-import { getUser, setUser } from '@/utils/auth'
-import { findByID, updateUser, addPicture } from '@/api/user'
+import { getUser, setUser, removeUser, removeMember, removeProjectPID } from '@/utils/auth'
+import { findByID, updateUser, addPicture, deleteByID } from '@/api/user'
 import eventVue from '@/utils/eventVue'
 
 export default {
@@ -110,7 +112,7 @@ export default {
   mounted() {
     // 查询用户信息
     findByID(getUser().id).then((res) => {
-      // console.log(res.data)
+      console.log(res.data)
       this.user = res.data
       this.form = res.data
     }).catch((err) => {
@@ -118,6 +120,12 @@ export default {
     })
   },
   methods: {
+    // 获取上传的图片
+    handleChange(file, fileList) {
+      this.pictureFile = file.raw
+      // console.log(this.form.Picture);
+    },
+    // 提交修改用户信息表单
     submitForm() {
       const _this = this
       const data = {
@@ -150,10 +158,6 @@ export default {
         console.log(err)
       })
     },
-    handleChange(file, fileList) {
-      this.pictureFile = file.raw
-      // console.log(this.form.Picture);
-    },
     // 上传用户头像
     uploadPicture() {
       const _this = this
@@ -173,6 +177,30 @@ export default {
             eventVue.$emit('avatar', res.data.avatar)
           }).catch((err) => {
             console.log(err)
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 注销用户
+    deleteUser() {
+      const _this = this
+      // console.log(getUser().id)
+      deleteByID(getUser().id, getUser().username).then((res) => {
+        // console.log(res)
+        if (res.data.status === 204) {
+          this.$store.commit('user/SET_USER', '')
+          removeUser()
+          removeMember()
+          removeProjectPID()
+          this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
+          _this.$notify({
+            title: '成功',
+            message: '注销成功',
+            type: 'success',
+            duration: 1000,
+            offset: 80
           })
         }
       }).catch((err) => {
@@ -219,8 +247,15 @@ export default {
         }
       }
       .change {
-        margin-left: 70px;
+        margin-left: 90px;
         line-height: 86px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        // background-color: red;
+        :nth-child(2) {
+          margin-left: 30px;
+        }
       }
     }
     .other-info {
