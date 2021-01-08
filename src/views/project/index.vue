@@ -158,9 +158,7 @@
               </el-tooltip>
 
             </div>
-            <a href="#">
-              <img :src="item.picture" class="image">
-            </a>
+            <img :src="item.picture" class="project-image" title="进入项目详情" @click="toInfo(item.pid)">
             <div>
               <div>项目pid：{{ item.pid }}</div>
               <div>项目名称：{{ item.pname }}</div>
@@ -349,8 +347,15 @@ export default {
       })
   },
   methods: {
+    toInfo(pid) {
+      setProjectPID(pid)
+      this.$router.push(`/project/index/${pid}/info`)
+      console.log(pid)
+    },
+    // 跳转到成员管理路由
     toLink(pid) {
-      this.$router.push(`/project/index/${pid}`)
+      setProjectPID(pid)
+      this.$router.push(`/project/index/${pid}/member`)
     },
     // 获取上传的图片
     handleChange(file, fileList) {
@@ -585,11 +590,12 @@ export default {
   float: right;
 }
 
-.image {
+.project-image {
   width: 100%;
   height: 120px;
   background-size:120px;
   display: block;
+  cursor: pointer;
 }
 .projectTool {
   display: flex;

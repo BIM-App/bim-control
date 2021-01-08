@@ -71,11 +71,18 @@ export const constantRoutes = [
         meta: { title: '项目管理', icon: 'dashboard' }
       },
       {
-        path: 'index/:pid',
+        path: 'index/:pid/member',
         name: 'Member',
         hidden: true,
         component: () => import('@/views/member/index'),
         meta: { title: '成员管理', icon: 'dashboard' }
+      },
+      {
+        path: 'index/:pid/info',
+        name: 'ProjectInfo',
+        hidden: true,
+        component: () => import('@/views/projectInfo/index'),
+        meta: { title: '项目详情', icon: 'dashboard' }
       }
     ]
   },
