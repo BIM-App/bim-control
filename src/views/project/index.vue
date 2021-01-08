@@ -347,6 +347,7 @@ export default {
       })
   },
   methods: {
+    // 跳转到项目详情页面，页面内即模型联动
     toInfo(pid) {
       setProjectPID(pid)
       this.$router.push(`/project/index/${pid}/info`)
