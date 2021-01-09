@@ -128,13 +128,21 @@ export default {
             .then((res) => {
               // console.log(res)
               // this.msg = res.data.msg
-              if (res.status === 200) {
+              if (res.data.status === 201) {
                 _this.$alert('注册成功', '提示', {
                   confirmButtonText: '确定',
                   callback: () => {
                     _this.$router.push('/login')
                   }
                 })
+              }
+              if (res.data.status === 404) {
+                setTimeout(() => {
+                  _this.$alert('该用户名重复，请重新注册', '提示', {
+                    confirmButtonText: '确定',
+                    closeOnClickModal: true
+                  })
+                }, 500)
               }
             })
             .catch((err) => {

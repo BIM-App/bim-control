@@ -193,7 +193,7 @@ export default {
           })
         } else if (res.data.status === 404) {
           setTimeout(() => {
-            this.$alert('添加的用户不存在', '提示', {
+            _this.$alert('添加的用户不存在', '提示', {
               confirmButtonText: '确定',
               closeOnClickModal: true,
               callback: action => {
