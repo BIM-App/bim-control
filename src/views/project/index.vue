@@ -409,7 +409,7 @@ export default {
         username: getUser().username
       }
       // 调用新建项目接口
-      addProject(JSON.stringify(data))
+      addProject(data)
         .then((res) => {
           // console.log(res.data) // for debug
           if (res.data.status === 201) {

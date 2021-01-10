@@ -11,34 +11,32 @@
           <el-form ref="form" :model="form" label-width="100px">
             <!-- 模型名称 -->
             <el-col :span="15">
-              <el-form-item label="模型名称" prop="mname">
+              <el-form-item label="模型名称" prop="MName">
                 <el-input
-                  v-model="form.mname"
+                  v-model="form.MName"
                   autocomplete="off"
-                  prefix-icon="el-icon-mobile"
-                >
-                </el-input>
+                />
               </el-form-item>
             </el-col>
             <!-- 模型描述 -->
             <el-col :span="21">
-              <el-form-item label="项目描述信息" prop="description">
-                <el-input v-model="form.description" autocomplete="off" />
+              <el-form-item label="项目描述信息" prop="MDescription">
+                <el-input v-model="form.MDescription" autocomplete="off" />
               </el-form-item>
             </el-col>
             <!-- 模型预览图 -->
             <el-col :span="24">
-              <el-form-item label="模型预览图" prop="pictureFile" required>
+              <el-form-item label="模型预览图" prop="MPicture" required>
                 <el-upload
+                  ref=""
                   action=""
-                  :on-change="handleChange"
+                  :on-change="handleChangePic"
                   :http-request="allUpload"
-                  ref="upload"
                   :auto-upload="false"
                   list-type="picture-card"
                 >
-                  <i class="el-icon-plus"></i>
-                  <div class="el-upload__tip" slot="tip">
+                  <i class="el-icon-plus" />
+                  <div slot="tip" class="el-upload__tip">
                     只能上传jpg/png文件
                   </div>
                 </el-upload>
@@ -46,12 +44,12 @@
             </el-col>
             <!-- 上传模型 -->
             <el-col :span="24">
-              <el-form-item label="上传模型" prop="modelZip">
+              <el-form-item label="上传模型" prop="MFile">
                 <el-upload
+                  ref=""
                   action=""
-                  :on-change="handleChange"
+                  :on-change="handleChangeMod"
                   :http-request="allUpload"
-                  ref="upload"
                   :auto-upload="false"
                   list-type="text"
                 >
@@ -67,12 +65,13 @@
             type="primary"
             @click="
               dialogFormVisible = false;
-              submitUpload();
+              allUpload()
             "
-            >确 定
+          >确 定
           </el-button>
         </div>
       </el-dialog>
+
       <el-col v-for="item in modelList" :key="item.mid" :span="4" :offset="1">
         <div style="margin-top: 20px">
           <el-card :body-style="{ padding: '0px' }" shadow="hover">
@@ -119,7 +118,7 @@
               </el-tooltip>
             </div>
             <a href="#">
-              <img :src="item.picture" class="image" />
+              <img :src="item.picture" class="image">
             </a>
             <div>
               <div>{{ item.pname }}</div>
@@ -137,13 +136,13 @@
           style="margin-top: -40px"
         >
           <el-col :span="15">
-            <el-form-item label="模型名称" prop="mname">
-              <el-input v-model="editForm.mname" autocomplete="off" />
+            <el-form-item label="模型名称" prop="MName">
+              <el-input v-model="editForm.MName" autocomplete="off" />
             </el-form-item>
           </el-col>
           <el-col :span="15">
-            <el-form-item label="模型描述" prop="description">
-              <el-input v-model="editForm.description" autocomplete="off" />
+            <el-form-item label="模型描述" prop="MDescription">
+              <el-input v-model="editForm.MDescription" autocomplete="off" />
             </el-form-item>
           </el-col>
         </el-dialog>
@@ -171,120 +170,129 @@ import {
   delModelByPID,
   updateModelByMId,
   findmodelByPID,
-  findModelByMid,
-} from "@/api/model";
-import { getProjectPID, getUser } from "@/utils/auth";
+  findModelByMid
+} from '@/api/model'
+import { getProjectPID, getUser } from '@/utils/auth'
 export default {
-  name: "Model",
+  name: 'Model',
   data() {
     return {
       dialogFormVisible: false,
       editDialogVisible: false,
       modelList: [],
       form: {
-        mname: "",
-        pictureFile: "",
-        description: "",
-        modelZip: "",
+        MName: '',
+        Creator: '',
+        PID: '',
+        MDescription: '',
+        MPicture: '',
+        MFile: ''
       },
-      editForm: {},
-    };
+      editForm: {}
+    }
   },
   created() {
-    const _this = this;
+    const _this = this
     findmodelByPID(getProjectPID())
       .then((res) => {
-        console.log(project);
+        console.log(res)
         // console.log(res.data);
         if (res.data instanceof Array) {
           // console.log(res.data)
-          _this.modelList = res.data;
+          _this.modelList = res.data
         }
       })
       .catch((err) => {
-        console.log(err);
-      });
+        console.log(err)
+      })
   },
   methods: {
-    handleChange(file, fileList) {
-      this.pictureFile = file.raw;
+    handleChangePic(file, fileList) {
+      // console.log(file)
+      this.form.MPicture = file.raw
+      // console.log(this.pictureFile)
+    },
+    handleChangeMod(file, fileList) {
+      // console.log(file)
+      this.form.MFile = file.raw
+      // console.log(this.pictureFile)
     },
     allUpload() {
-      const _this = this;
-      const data = new FormData();
-      data.append("pid", getProjectPID());
-      data.append("Creator", getUser().id);
-      data.append("mname", this.form.mname);
-      data.append("pictureFile", this.form.pictureFile);
-      data.append("description", this.form.description);
-      data.append("modelZip", this.form.modelZip);
+      const _this = this
+      const data = new FormData()
+      data.append('PID', getProjectPID())
+      data.append('Creator', getUser().id)
+      data.append('MName', this.form.MName)
+      data.append('MPicture', this.form.MPicture)
+      data.append('MDescription', this.form.MDescription)
+      data.append('MFile', this.form.MFile)
       addModel(data)
         .then((res) => {
-          // console.log(res)
+          console.log(229, res)
           if (res.code === 200) {
             findmodelByPID(getProjectPID())
               .then((res) => {
                 if (res.data instanceof Array) {
-                  _this.modelList = res.data;
+                  _this.modelList = res.data
                 }
               })
               .catch((err) => {
-                console.log(err);
-              });
+                console.log(err)
+              })
             _this.$notify({
-              title: "成功",
-              message: "新建成功",
-              type: "success",
+              title: '成功',
+              message: '新建成功',
+              type: 'success',
               duration: 1000,
-              offset: 80,
-            });
+              offset: 80
+            })
           }
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(250, err)
+        })
     },
     getModelInfo(mid) {
       findModelByMid(mid)
         .then((res) => {
-          this.editForm = res.data;
-          this.editForm.mid = mid;
+          this.editForm = res.data
+          this.editForm.mid = mid
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
     submitUpload(param) {
-      this.$refs.upload.submit();
+      this.$refs.upload.submit()
     },
     deleteModel(mid) {
-      const _this = this;
+      const _this = this
       delModel(mid).then((res) => {
         if (res.code === 200) {
           findmodelByPID(getProjectPID())
             .then((res) => {
-              console.log(project);
+              // console.log(project)
               // console.log(res.data);
               if (res.data instanceof Array) {
                 // console.log(res.data)
-                _this.modelList = res.data;
+                _this.modelList = res.data
               }
             })
             .catch((err) => {
-              console.log(err);
-            });
+              console.log(err)
+            })
           _this.$notify({
-            title: "成功",
-            message: "删除成功",
-            type: "success",
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
             duration: 1000,
-            offset: 80,
-          });
+            offset: 80
+          })
         }
-      });
-    },
-  },
-};
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
