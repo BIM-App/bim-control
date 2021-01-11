@@ -85,7 +85,7 @@
               dialogFormVisible = false;
               submitAddForm();
             "
-          >确 定
+            >确 定
           </el-button>
         </div>
       </el-dialog>
@@ -94,7 +94,12 @@
         <div style="margin-top: 20px">
           <el-card :body-style="{ padding: '0px' }" shadow="hover">
             <div class="projectTool">
-              <el-tooltip class="item" effect="dark" content="修改项目" placement="bottom-start">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="修改项目"
+                placement="bottom-start"
+              >
                 <el-button
                   size="mini"
                   type="primary"
@@ -102,11 +107,16 @@
                   circle
                   @click="
                     editDialogVisible = true;
-                    getProjectInfo(item.pid)
+                    getProjectInfo(item.pid);
                   "
                 />
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="上传项目预览图" placement="bottom-start">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="上传项目预览图"
+                placement="bottom-start"
+              >
                 <el-upload
                   ref=""
                   class="uploadBtn"
@@ -123,11 +133,17 @@
                     circle
                     @click="
                       pictureDialogVisible = true;
-                      getProjectInfo(item.pid)"
+                      getProjectInfo(item.pid);
+                    "
                   />
                 </el-upload>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="项目成员" placement="bottom-start">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="项目成员"
+                placement="bottom-start"
+              >
                 <el-button
                   size="mini"
                   type="info"
@@ -135,10 +151,16 @@
                   circle
                   @click="
                     getProjectMember(item.pid);
-                    toLink(item.pid)"
+                    toLink(item.pid);
+                  "
                 />
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="删除项目" placement="bottom-start">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="删除项目"
+                placement="bottom-start"
+              >
                 <el-popconfirm
                   confirm-button-text="确定"
                   cancel-button-text="取消"
@@ -156,9 +178,13 @@
                   />
                 </el-popconfirm>
               </el-tooltip>
-
             </div>
-            <img :src="item.picture" class="project-image" title="进入项目详情" @click="toInfo(item.pid)">
+            <img
+              :src="item.picture"
+              class="project-image"
+              title="进入项目详情"
+              @click="toInfo(item.pid)"
+            />
             <div>
               <div>项目pid：{{ item.pid }}</div>
               <div>项目名称：{{ item.pname }}</div>
@@ -262,7 +288,7 @@
                 editDialogVisible = false;
                 submitEditForm();
               "
-            >确 定
+              >确 定
             </el-button>
           </div>
         </el-dialog>
@@ -284,22 +310,22 @@
 </template>
 
 <script>
-import { findProjects } from '@/api/user'
+import { findProjects } from "@/api/user";
 import {
   addProject,
   deleteByPID,
   findByPID,
   updateProject,
   addProjectPicture,
-  findProjectMembersByPID
-} from '@/api/project'
-import { getUser, setMember, setProjectPID } from '@/utils/auth'
+  findProjectMembersByPID,
+} from "@/api/project";
+import { getUser, setMember, setProjectPID } from "@/utils/auth";
 
 export default {
-  name: 'Project',
+  name: "Project",
   data() {
     return {
-      key: '',
+      key: "",
       dialogFormVisible: false,
       editDialogVisible: false,
       pictureDialogVisible: false,
@@ -307,69 +333,69 @@ export default {
       projectList: [],
       // regionChange: '',
       form: {
-        pid: '', // 项目编号
-        pname: '', // 项目名称
-        picture: '', // 项目预览图，URL
-        category: '', // 项目类别
-        description: '', // 项目描述信息
-        province: '', // 省
-        city: '', // 市
-        district: '', // 区
-        street: '', // 街道
-        town: '', // 镇
-        address: '', // 详细地址
-        unit: '', // 项目的建设单位
-        pmid: '', // 项目负责人编号
-        video: '', // 项目宣传视频
-        investamount: '', // 投资额
-        planstarttime: '', // 计划开始时间
-        planendtime: '', // 计划完成时间
-        creator: '', // 创建者用户编号
-        username: ''
+        pid: "", // 项目编号
+        pname: "", // 项目名称
+        picture: "", // 项目预览图，URL
+        category: "", // 项目类别
+        description: "", // 项目描述信息
+        province: "", // 省
+        city: "", // 市
+        district: "", // 区
+        street: "", // 街道
+        town: "", // 镇
+        address: "", // 详细地址
+        unit: "", // 项目的建设单位
+        pmid: "", // 项目负责人编号
+        video: "", // 项目宣传视频
+        investamount: "", // 投资额
+        planstarttime: "", // 计划开始时间
+        planendtime: "", // 计划完成时间
+        creator: "", // 创建者用户编号
+        username: "",
       },
-      editForm: {} // 编辑项目的表单
-    }
+      editForm: {}, // 编辑项目的表单
+    };
   },
   created() {
-    const _this = this
+    const _this = this;
     // 调用查询用户下项目接口，根据用户名查询项目
     findProjects(getUser().username)
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         // FIXME:需要判断
         if (res.data instanceof Array) {
           // console.log(res.data)
-          _this.projectList = res.data
+          _this.projectList = res.data;
         }
       })
       .catch((err) => {
-        console.log(err)
-      })
+        console.log(err);
+      });
   },
   methods: {
     // 跳转到项目详情页面，页面内即模型联动
     toInfo(pid) {
-      setProjectPID(pid)
-      this.$router.push(`/project/index/${pid}/info`)
-      console.log(pid)
+      setProjectPID(pid);
+      this.$router.push(`/project/index/${pid}/info`);
+      console.log(pid);
     },
     // 跳转到成员管理路由
     toLink(pid) {
-      setProjectPID(pid)
-      this.$router.push(`/project/index/${pid}/member`)
+      setProjectPID(pid);
+      this.$router.push(`/project/index/${pid}/member`);
     },
     // 获取上传的图片
     handleChange(file, fileList) {
-      this.pictureFile = file.raw
+      this.pictureFile = file.raw;
       // console.log(this.form.Picture);
     },
     // 获取新建项目的地址部分信息
     regionChange(data) {
-      console.log(data)
-      this.form.province = data.province ? data.province.value : ''
-      this.form.city = data.city ? data.city.value : ''
-      this.form.district = data.area ? data.area.value : ''
-      this.form.street = data.town ? data.town.value : ''
+      console.log(data);
+      this.form.province = data.province ? data.province.value : "";
+      this.form.city = data.city ? data.city.value : "";
+      this.form.district = data.area ? data.area.value : "";
+      this.form.street = data.town ? data.town.value : "";
     },
     // 获取项目信息
     getProjectInfo(pid) {
@@ -377,17 +403,17 @@ export default {
       findByPID(pid)
         .then((res) => {
           // console.log(res.data)
-          this.editForm = res.data
-          this.editForm.pid = pid
+          this.editForm = res.data;
+          this.editForm.pid = pid;
           // console.log(pid)
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
     },
     // 提交新建项目表单
     submitAddForm() {
-      const _this = this
+      const _this = this;
       const data = {
         pname: this.form.pname,
         picture: this.form.picture,
@@ -406,41 +432,41 @@ export default {
         planstarttime: this.form.planstarttime,
         planendtime: this.form.planendtime,
         creator: getUser().id,
-        username: getUser().username
-      }
+        username: getUser().username,
+      };
       // 调用新建项目接口
       addProject(data)
         .then((res) => {
           // console.log(res.data) // for debug
           if (res.data.status === 201) {
-            _this.$refs.form.resetFields()
+            _this.$refs.form.resetFields();
             // 调用查询用户项目接口
             findProjects(getUser().username)
               .then((res) => {
-                console.log(res)
+                console.log(res);
                 if (res.data instanceof Array) {
-                  _this.projectList = res.data
+                  _this.projectList = res.data;
                 }
               })
               .catch((err) => {
-                console.log(err)
-              })
+                console.log(err);
+              });
             _this.$notify({
-              title: '成功',
-              message: '新建成功',
-              type: 'success',
+              title: "成功",
+              message: "新建成功",
+              type: "success",
               duration: 1000,
-              offset: 80
-            })
+              offset: 80,
+            });
           }
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
     },
     // 提交编辑更新项目表单
     submitEditForm() {
-      const _this = this
+      const _this = this;
       const data = {
         pid: this.editForm.pid,
         pname: this.editForm.pname,
@@ -459,8 +485,8 @@ export default {
         investamount: this.editForm.investamount,
         planstarttime: this.editForm.planstarttime,
         planendtime: this.editForm.planendtime,
-        updater: getUser().id
-      }
+        updater: getUser().id,
+      };
       // 调用编辑更新项目接口
       updateProject(data)
         .then((res) => {
@@ -469,30 +495,30 @@ export default {
             // 调用查询用户项目接口
             findProjects(getUser().username)
               .then((res) => {
-                console.log(res)
+                console.log(res);
                 if (res.data instanceof Array) {
-                  _this.projectList = res.data
+                  _this.projectList = res.data;
                 }
               })
               .catch((err) => {
-                console.log(err)
-              })
+                console.log(err);
+              });
             _this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
+              title: "成功",
+              message: "更新成功",
+              type: "success",
               duration: 1000,
-              offset: 80
-            })
+              offset: 80,
+            });
           }
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
     },
     // 删除项目
     deleteProject(pid) {
-      const _this = this
+      const _this = this;
       // 调用删除项目接口
       deleteByPID(pid)
         .then((res) => {
@@ -501,78 +527,82 @@ export default {
             // 调用查询用户项目接口
             findProjects(getUser().username)
               .then((res) => {
-                console.log(res)
+                console.log(res);
                 if (res.data.status === 404) {
-                  _this.projectList = []
+                  _this.projectList = [];
                 } else {
-                  _this.projectList = res.data
+                  _this.projectList = res.data;
                 }
               })
               .catch((err) => {
-                console.log(err)
-              })
+                console.log(err);
+              });
             _this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
+              title: "成功",
+              message: "删除成功",
+              type: "success",
               duration: 1000,
-              offset: 80
-            })
+              offset: 80,
+            });
           }
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
     },
     // 上传项目预览图
     uploadProjectPicture() {
-      const _this = this
-      const data = new FormData()
-      data.append('uid', getUser().id)
-      data.append('pid', this.editForm.pid)
-      data.append('pictureFile', this.pictureFile)
+      const _this = this;
+      const data = new FormData();
+      data.append("uid", getUser().id);
+      data.append("pid", this.editForm.pid);
+      data.append("pictureFile", this.pictureFile);
       // 调用上传项目预览图接口
-      addProjectPicture(data).then((res) => {
-        console.log(res)
-        if (res.status === 200) {
-          // 调用查询用户项目接口
-          findProjects(getUser().username)
-            .then((res) => {
-              console.log(res)
-              if (res.data instanceof Array) {
-                _this.projectList = res.data
-              }
-            })
-            .catch((err) => {
-              console.log(err)
-            })
-          _this.$notify({
-            title: '成功',
-            message: '上传成功',
-            type: 'success',
-            duration: 1000,
-            offset: 80
-          })
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      addProjectPicture(data)
+        .then((res) => {
+          console.log(res);
+          if (res.status === 200) {
+            // 调用查询用户项目接口
+            findProjects(getUser().username)
+              .then((res) => {
+                console.log(res);
+                if (res.data instanceof Array) {
+                  _this.projectList = res.data;
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+            _this.$notify({
+              title: "成功",
+              message: "上传成功",
+              type: "success",
+              duration: 1000,
+              offset: 80,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     // 查询项目成员列表
     getProjectMember(pid) {
-      findProjectMembersByPID(pid).then((res) => {
-        // console.log(res)
-        if (res.status === 200) {
-          // this.tableData = res.data
-          setMember(res.data)
-          setProjectPID(pid)
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
-    }
-  }
-}
+      findProjectMembersByPID(pid)
+        .then((res) => {
+          // console.log(res)
+          if (res.status === 200) {
+            // this.tableData = res.data
+            setMember(res.data);
+            setProjectPID(pid);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -594,7 +624,7 @@ export default {
 .project-image {
   width: 100%;
   height: 120px;
-  background-size:120px;
+  background-size: 120px;
   display: block;
   cursor: pointer;
 }
@@ -640,27 +670,27 @@ export default {
     border-color: #409eff;
   }
 }
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>

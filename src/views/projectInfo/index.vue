@@ -12,10 +12,7 @@
             <!-- 模型名称 -->
             <el-col :span="15">
               <el-form-item label="模型名称" prop="MName">
-                <el-input
-                  v-model="form.MName"
-                  autocomplete="off"
-                />
+                <el-input v-model="form.MName" autocomplete="off" />
               </el-form-item>
             </el-col>
             <!-- 模型描述 -->
@@ -31,7 +28,6 @@
                   ref=""
                   action=""
                   :on-change="handleChangePic"
-                  :http-request="allUpload"
                   :auto-upload="false"
                   list-type="picture-card"
                 >
@@ -49,7 +45,6 @@
                   ref=""
                   action=""
                   :on-change="handleChangeMod"
-                  :http-request="allUpload"
                   :auto-upload="false"
                   list-type="text"
                 >
@@ -65,14 +60,14 @@
             type="primary"
             @click="
               dialogFormVisible = false;
-              allUpload()
+              allUpload();
             "
-          >确 定
+            >确 定
           </el-button>
         </div>
       </el-dialog>
-
-      <el-col v-for="item in modelList" :key="item.mid" :span="4" :offset="1">
+      <!-- 列表渲染 -->
+      <el-col v-for="item in modelList" :key="item.MId" :span="4" :offset="1">
         <div style="margin-top: 20px">
           <el-card :body-style="{ padding: '0px' }" shadow="hover">
             <div class="modelTool">
@@ -89,7 +84,7 @@
                   circle
                   @click="
                     editDialogVisible = true;
-                    getModelInfo(item.Mid);
+                    getModelInfo(item.MId);
                   "
                 />
               </el-tooltip>
@@ -105,7 +100,7 @@
                   icon="el-icon-info"
                   icon-color="red"
                   title="确定要删除此模型吗？"
-                  @onConfirm="deleteModel(item.Mid)"
+                  @onConfirm="deleteModel(item.MId)"
                 >
                   <el-button
                     slot="reference"
@@ -117,11 +112,9 @@
                 </el-popconfirm>
               </el-tooltip>
             </div>
-            <a href="#">
-              <img :src="item.picture" class="image">
-            </a>
-            <div>
-              <div>{{ item.pname }}</div>
+            <img :src="item.MPicture" class="model-image" />
+            <div class="text">
+              <div>{{ item.MName }}</div>
               <div class="bottom clearfix">
                 <!-- <time class="time">{{ currentDate }}</time> -->
                 <!-- <el-button type="text" class="button">操作按钮</el-button> -->
@@ -135,19 +128,37 @@
           :visible.sync="editDialogVisible"
           style="margin-top: -40px"
         >
-          <el-col :span="15">
-            <el-form-item label="模型名称" prop="MName">
-              <el-input v-model="editForm.MName" autocomplete="off" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="15">
-            <el-form-item label="模型描述" prop="MDescription">
-              <el-input v-model="editForm.MDescription" autocomplete="off" />
-            </el-form-item>
-          </el-col>
+          <el-row :gutter="15">
+            <el-form ref="editForm" :model="editForm" label-width="100px">
+              <el-col :span="15">
+                <el-form-item label="模型名称" prop="MName">
+                  <el-input v-model="editForm.MName" autocomplete="off" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="15">
+                <el-form-item label="模型描述" prop="MDescription">
+                  <el-input
+                    v-model="editForm.MDescription"
+                    autocomplete="off"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-form>
+          </el-row>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="editDialogVisible = false">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="
+                editDialogVisible = false;
+                submitUpload();
+              "
+              >确 定
+            </el-button>
+          </div>
         </el-dialog>
       </el-col>
-      <!-- 添加项目 -->
+      <!-- 添加模型 -->
       <el-col
         :span="4"
         class="preCard"
@@ -170,143 +181,184 @@ import {
   delModelByPID,
   updateModelByMId,
   findmodelByPID,
-  findModelByMid
-} from '@/api/model'
-import { getProjectPID, getUser } from '@/utils/auth'
+  findModelByMid,
+} from "@/api/model";
+import { getProjectPID, getUser } from "@/utils/auth";
 export default {
-  name: 'Model',
+  name: "Model",
   data() {
     return {
       dialogFormVisible: false,
       editDialogVisible: false,
       modelList: [],
       form: {
-        MName: '',
-        Creator: '',
-        PID: '',
-        MDescription: '',
-        MPicture: '',
-        MFile: ''
+        MId: "",
+        MName: "",
+        Creator: "",
+        PID: "",
+        MDescription: "",
+        MPicture: "",
+        MFile: "",
       },
-      editForm: {}
-    }
+      editForm: {},
+    };
   },
   created() {
-    const _this = this
+    //根据项目id查模型
     findmodelByPID(getProjectPID())
       .then((res) => {
-        console.log(res)
+        console.log(res);
         // console.log(res.data);
-        if (res.data instanceof Array) {
-          // console.log(res.data)
-          _this.modelList = res.data
-        }
+        this.modelList = res.data.data;
+        // console.log(this.modelList);
       })
       .catch((err) => {
-        console.log(err)
-      })
+        console.log(err);
+      });
   },
   methods: {
+    //获取图片
     handleChangePic(file, fileList) {
       // console.log(file)
-      this.form.MPicture = file.raw
+      this.form.MPicture = file.raw;
       // console.log(this.pictureFile)
     },
+    //获取文件
     handleChangeMod(file, fileList) {
       // console.log(file)
-      this.form.MFile = file.raw
+      this.form.MFile = file.raw;
       // console.log(this.pictureFile)
     },
+    //提交添加模型表单
     allUpload() {
-      const _this = this
-      const data = new FormData()
-      data.append('PID', getProjectPID())
-      data.append('Creator', getUser().id)
-      data.append('MName', this.form.MName)
-      data.append('MPicture', this.form.MPicture)
-      data.append('MDescription', this.form.MDescription)
-      data.append('MFile', this.form.MFile)
+      const _this = this;
+      const data = new FormData();
+      data.append("PID", getProjectPID());
+      data.append("Creator", getUser().id);
+      data.append("MName", this.form.MName);
+      data.append("MPicture", this.form.MPicture);
+      data.append("MDescription", this.form.MDescription);
+      data.append("MFile", this.form.MFile);
+      //调用添加模型接口
       addModel(data)
         .then((res) => {
-          console.log(229, res)
-          if (res.code === 200) {
+          console.log(229, res);
+          if (res.data.code === 200) {
             findmodelByPID(getProjectPID())
               .then((res) => {
-                if (res.data instanceof Array) {
-                  _this.modelList = res.data
-                }
+                this.modelList = res.data.data;
               })
               .catch((err) => {
-                console.log(err)
-              })
+                console.log(err);
+              });
             _this.$notify({
-              title: '成功',
-              message: '新建成功',
-              type: 'success',
+              title: "成功",
+              message: "新建成功",
+              type: "success",
               duration: 1000,
-              offset: 80
-            })
+              offset: 80,
+            });
           }
         })
         .catch((err) => {
-          console.log(250, err)
-        })
+          console.log(250, err);
+        });
     },
-    getModelInfo(mid) {
-      findModelByMid(mid)
+    //提交修改模型模型表单
+    submitUpload() {
+      const _this = this;
+      const data = new FormData();
+      data.append("MName", this.editForm.MName);
+      data.append("MDescription", this.editForm.MDescription);
+      //调用修改模型接口
+      updateModelByMId(data)
         .then((res) => {
-          this.editForm = res.data
-          this.editForm.mid = mid
+          console.log(res);
+          if (res.data.code === 200) {
+            findmodelByPID(getProjectPID())
+              .then((res) => {
+                this.modelList = res.data.data;
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+            _this.$notify({
+              title: "成功",
+              message: "修改成功",
+              type: "success",
+              duration: 1000,
+              offset: 80,
+            });
+          }
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
+        });
+    },
+    //根据模型id获取模型信息
+    getModelInfo(MId) {
+      console.log(MId);
+      //调用根据模型id查模型接口
+      findModelByMid(MId)
+        .then((res) => {
+          this.editForm = res.data.data;
         })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    submitUpload(param) {
-      this.$refs.upload.submit()
-    },
-    deleteModel(mid) {
-      const _this = this
-      delModel(mid).then((res) => {
-        if (res.code === 200) {
+    //删除模型
+    deleteModel(MId) {
+      const _this = this;
+      //调用删除模型接口
+      delModel(MId).then((res) => {
+        console.log(res);
+        if (res.data.code === 200) {
           findmodelByPID(getProjectPID())
             .then((res) => {
-              // console.log(project)
-              // console.log(res.data);
-              if (res.data instanceof Array) {
-                // console.log(res.data)
-                _this.modelList = res.data
-              }
+              this.modelList = res.data.data;
             })
             .catch((err) => {
-              console.log(err)
-            })
+              console.log(err);
+            });
           _this.$notify({
-            title: '成功',
-            message: '删除成功',
-            type: 'success',
+            title: "成功",
+            message: "删除成功",
+            type: "success",
             duration: 1000,
-            offset: 80
-          })
+            offset: 80,
+          });
         }
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .modelTool {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  margin-left: 80px;
-  margin-bottom: 5px;
+  margin: 5px 0;
   position: sticky;
-  bottom: 0;
   font-size: 8px;
   text-align: center;
   // background-color: red;
+}
+.model-image {
+  width: 100%;
+  height: 120px;
+  background-size: 120px;
+  display: block;
+  cursor: pointer;
+}
+.text {
+  text-align: center;
+  margin: 10px 0;
+}
+.item {
+  margin: 0 5px;
 }
 .preCard {
   margin-left: 60px;
