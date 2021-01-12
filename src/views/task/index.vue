@@ -13,8 +13,7 @@
               type="primary"
               icon="el-icon-plus"
               @click="taskDialogVisible = true"
-              >添加任务</el-button
-            >
+            >添加任务</el-button>
             <!-- <el-input
               v-model="search"
               disabled
@@ -30,14 +29,12 @@
               handleEdit(scope.$index, scope.row);
               open();
             "
-            >查看</el-button
-          >
+          >查看</el-button>
           <el-button
             size="medium"
             type="danger"
             @click="delTaskByTid(scope.$index, scope.row)"
-            >删除</el-button
-          >
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -63,15 +60,15 @@
           <el-col :span="24">
             <el-form-item label="任务照片" prop="photoFileURL" required>
               <el-upload
+                ref="upload"
                 action=""
                 :on-change="handleChange"
                 :http-request="addTaskForm"
-                ref="upload"
                 :auto-upload="false"
                 list-type="picture-card"
               >
-                <i class="el-icon-plus"></i>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件</div>
+                <i class="el-icon-plus" />
+                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
               </el-upload>
             </el-form-item>
           </el-col>
@@ -85,7 +82,7 @@
             taskDialogVisible = false;
             addTaskForm();
           "
-          >确 定
+        >确 定
         </el-button>
       </div>
     </el-dialog>
@@ -93,105 +90,105 @@
 </template>
 
 <script>
-import { getMember, getProjectPID, getUser, setMember } from "../../utils/auth";
-import { findProjectMembersByPID } from "../../api/project";
-import { addTask, findTaskByPid, delTasksByTid } from "../../api/task";
+// eslint-disable-next-line no-unused-vars
+import { getMember, getProjectPID, getUser, setMember } from '../../utils/auth'
+// eslint-disable-next-line no-unused-vars
+import { findProjectMembersByPID } from '../../api/project'
+import { addTask, findTaskByPid, delTasksByTid } from '../../api/task'
 export default {
   data() {
     return {
       taskDialogVisible: false,
       tableData: [],
       taskForm: {
-        tName: "",
-        description: "",
-        photo: [],
+        tName: '',
+        description: '',
+        photo: []
       },
-      search: "",
-    };
+      search: ''
+    }
   },
   created() {
-    const _this = this;
-    const pid = getProjectPID();
-    //调用查询任务列表接口
-    console.log(pid);
+    const pid = getProjectPID()
+    // 调用查询任务列表接口
+    console.log(pid)
     findTaskByPid(pid)
       .then((res) => {
-        console.log(res);
+        console.log(res)
+        // eslint-disable-next-line eqeqeq
         if (res.data.code != 404) {
-          this.tableData = res.data;
-          console.log(this.tableData);
+          this.tableData = res.data
+          console.log(this.tableData)
         }
       })
       .catch((err) => {
-        console.log(err);
-      });
+        console.log(err)
+      })
   },
 
   methods: {
     // 获取上传的照片
     handleChange(file, fileList) {
-      this.photo = file.raw;
-      console.log("this.photo:" + this.photo);
+      this.photo = file.raw
+      console.log('this.photo:' + this.photo)
     },
     // 添加任务信息
     addTaskForm() {
-      const _this = this;
-      const data = new FormData();
-      data.append("pid", getProjectPID());
-      data.append("tName", this.taskForm.tName);
-      data.append("description", this.taskForm.description);
-      data.append("photo", this.photo);
-      data.append("creator", getUser().id);
+      const data = new FormData()
+      data.append('pid', getProjectPID())
+      data.append('tName', this.taskForm.tName)
+      data.append('description', this.taskForm.description)
+      data.append('photo', this.photo)
+      data.append('creator', getUser().id)
       // 调用添加任务信息接口
       addTask(data)
         .then((res) => {
           if (res.data.code === 200) {
             findTaskByPid(getProjectPID())
               .then((e) => {
-                console.log("PID" + getProjectPID());
-                this.tableData = e.data;
-                console.log(this.tableData);
+                console.log('PID' + getProjectPID())
+                this.tableData = e.data
+                console.log(this.tableData)
               })
               .catch((err) => {
-                console.log(err);
-              });
+                console.log(err)
+              })
           }
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    //根据任务编号tid来删除任务
+    // 根据任务编号tid来删除任务
     delTaskByTid(index, row) {
-      const _this = this;
-      const tid = "/" + row.TId;
+      const tid = '/' + row.TId
       delTasksByTid(tid)
         .then((res) => {
-          console.log(res);
+          console.log(res)
           if (res.data.code === 200) {
             findTaskByPid(getProjectPID())
               .then((e) => {
-                console.log(e);
+                console.log(e)
                 if (e.data.code === 404) {
-                  this.tableData = "";
+                  this.tableData = ''
                 } else {
-                  this.tableData = e.data;
-                  console.log(this.tableData);
+                  this.tableData = e.data
+                  console.log(this.tableData)
                 }
               })
               .catch((err) => {
-                console.log(err);
-              });
+                console.log(err)
+              })
           }
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    //查看任务
-    handleEdit() {},
-  },
-};
+    // 查看任务
+    handleEdit() {}
+  }
+}
 </script>
 
 <style lang="scss" scoped>

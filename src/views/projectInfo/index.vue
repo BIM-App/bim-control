@@ -62,7 +62,7 @@
               dialogFormVisible = false;
               allUpload();
             "
-            >确 定
+          >确 定
           </el-button>
         </div>
       </el-dialog>
@@ -112,7 +112,7 @@
                 </el-popconfirm>
               </el-tooltip>
             </div>
-            <img :src="item.MPicture" class="model-image" />
+            <img :src="item.MPicture" class="model-image">
             <div class="text">
               <div>{{ item.MName }}</div>
               <div class="bottom clearfix">
@@ -153,7 +153,7 @@
                 editDialogVisible = false;
                 submitUpload();
               "
-              >确 定
+            >确 定
             </el-button>
           </div>
         </el-dialog>
@@ -178,161 +178,162 @@
 import {
   addModel,
   delModel,
+  // eslint-disable-next-line no-unused-vars
   delModelByPID,
   updateModelByMId,
   findmodelByPID,
-  findModelByMid,
-} from "@/api/model";
-import { getProjectPID, getUser } from "@/utils/auth";
+  findModelByMid
+} from '@/api/model'
+import { getProjectPID, getUser } from '@/utils/auth'
 export default {
-  name: "Model",
+  name: 'Model',
   data() {
     return {
       dialogFormVisible: false,
       editDialogVisible: false,
       modelList: [],
       form: {
-        MId: "",
-        MName: "",
-        Creator: "",
-        PID: "",
-        MDescription: "",
-        MPicture: "",
-        MFile: "",
+        MId: '',
+        MName: '',
+        Creator: '',
+        PID: '',
+        MDescription: '',
+        MPicture: '',
+        MFile: ''
       },
-      editForm: {},
-    };
+      editForm: {}
+    }
   },
   created() {
-    //根据项目id查模型
+    // 根据项目id查模型
     findmodelByPID(getProjectPID())
       .then((res) => {
-        console.log(res);
+        console.log(res)
         // console.log(res.data);
-        this.modelList = res.data.data;
+        this.modelList = res.data.data
         // console.log(this.modelList);
       })
       .catch((err) => {
-        console.log(err);
-      });
+        console.log(err)
+      })
   },
   methods: {
-    //获取图片
+    // 获取图片
     handleChangePic(file, fileList) {
       // console.log(file)
-      this.form.MPicture = file.raw;
+      this.form.MPicture = file.raw
       // console.log(this.pictureFile)
     },
-    //获取文件
+    // 获取文件
     handleChangeMod(file, fileList) {
       // console.log(file)
-      this.form.MFile = file.raw;
+      this.form.MFile = file.raw
       // console.log(this.pictureFile)
     },
-    //提交添加模型表单
+    // 提交添加模型表单
     allUpload() {
-      const _this = this;
-      const data = new FormData();
-      data.append("PID", getProjectPID());
-      data.append("Creator", getUser().id);
-      data.append("MName", this.form.MName);
-      data.append("MPicture", this.form.MPicture);
-      data.append("MDescription", this.form.MDescription);
-      data.append("MFile", this.form.MFile);
-      //调用添加模型接口
+      const _this = this
+      const data = new FormData()
+      data.append('PID', getProjectPID())
+      data.append('Creator', getUser().id)
+      data.append('MName', this.form.MName)
+      data.append('MPicture', this.form.MPicture)
+      data.append('MDescription', this.form.MDescription)
+      data.append('MFile', this.form.MFile)
+      // 调用添加模型接口
       addModel(data)
         .then((res) => {
-          console.log(229, res);
+          console.log(229, res)
           if (res.data.code === 200) {
             findmodelByPID(getProjectPID())
               .then((res) => {
-                this.modelList = res.data.data;
+                this.modelList = res.data.data
               })
               .catch((err) => {
-                console.log(err);
-              });
+                console.log(err)
+              })
             _this.$notify({
-              title: "成功",
-              message: "新建成功",
-              type: "success",
+              title: '成功',
+              message: '新建成功',
+              type: 'success',
               duration: 1000,
-              offset: 80,
-            });
+              offset: 80
+            })
           }
         })
         .catch((err) => {
-          console.log(250, err);
-        });
+          console.log(250, err)
+        })
     },
-    //提交修改模型模型表单
+    // 提交修改模型模型表单
     submitUpload() {
-      const _this = this;
-      const data = new FormData();
-      data.append("MName", this.editForm.MName);
-      data.append("MDescription", this.editForm.MDescription);
-      //调用修改模型接口
+      const _this = this
+      const data = new FormData()
+      data.append('MName', this.editForm.MName)
+      data.append('MDescription', this.editForm.MDescription)
+      // 调用修改模型接口
       updateModelByMId(data)
         .then((res) => {
-          console.log(res);
+          console.log(res)
           if (res.data.code === 200) {
             findmodelByPID(getProjectPID())
               .then((res) => {
-                this.modelList = res.data.data;
+                this.modelList = res.data.data
               })
               .catch((err) => {
-                console.log(err);
-              });
+                console.log(err)
+              })
             _this.$notify({
-              title: "成功",
-              message: "修改成功",
-              type: "success",
+              title: '成功',
+              message: '修改成功',
+              type: 'success',
               duration: 1000,
-              offset: 80,
-            });
+              offset: 80
+            })
           }
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    //根据模型id获取模型信息
+    // 根据模型id获取模型信息
     getModelInfo(MId) {
-      console.log(MId);
-      //调用根据模型id查模型接口
+      console.log(MId)
+      // 调用根据模型id查模型接口
       findModelByMid(MId)
         .then((res) => {
-          this.editForm = res.data.data;
+          this.editForm = res.data.data
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    //删除模型
+    // 删除模型
     deleteModel(MId) {
-      const _this = this;
-      //调用删除模型接口
+      const _this = this
+      // 调用删除模型接口
       delModel(MId).then((res) => {
-        console.log(res);
+        console.log(res)
         if (res.data.code === 200) {
           findmodelByPID(getProjectPID())
             .then((res) => {
-              this.modelList = res.data.data;
+              this.modelList = res.data.data
             })
             .catch((err) => {
-              console.log(err);
-            });
+              console.log(err)
+            })
           _this.$notify({
-            title: "成功",
-            message: "删除成功",
-            type: "success",
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
             duration: 1000,
-            offset: 80,
-          });
+            offset: 80
+          })
         }
-      });
-    },
-  },
-};
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
