@@ -40,7 +40,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import { getUser, removeMember, removeProjectPID, removeUser } from '@/utils/auth'
+import { getUser, removeMember, removeProjectPID, removeUser, removeRole } from '@/utils/cookie'
 import eventVue from '@/utils/eventVue'
 export default {
   components: {
@@ -59,7 +59,7 @@ export default {
     ])
   },
   created() {
-    // 接收从Peofile组件传来的avatar值
+    // 接收从Profile组件传来的avatar值
     eventVue.$on('avatar', (avatar) => {
       // 一些操作，message就是从top组件传过来的值
       // console.log(message)
@@ -78,9 +78,10 @@ export default {
       removeUser()
       removeMember()
       removeProjectPID()
-      this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
-      // localStorage.removeItem('uid')
-      // localStorage.removeItem('avatar')
+      removeRole()
+      sessionStorage.removeItem('uid')
+      await this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
+      location.reload()
     }
   }
 }

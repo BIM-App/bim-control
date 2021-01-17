@@ -1,8 +1,7 @@
 import request from '@/utils/request'
-// import qs from 'qs'
 
 // 新建项目
-export function addProject(data) {
+export const addProjectApi = data => {
   return request({
     url: '/springbootBim/Project/add',
     method: 'post',
@@ -14,7 +13,7 @@ export function addProject(data) {
 }
 
 // 根据项目id删除项目
-export function deleteByPID(pid) {
+export const deleteProjectApi = pid => {
   return request({
     url: '/springbootBim/Project/deleteByPID/' + pid,
     method: 'delete',
@@ -25,7 +24,7 @@ export function deleteByPID(pid) {
 }
 
 // 编辑更新项目
-export function updateProject(data) {
+export const updateProjectApi = data => {
   return request({
     url: '/springbootBim/Project/update',
     method: 'put',
@@ -37,7 +36,7 @@ export function updateProject(data) {
 }
 
 // 根据项目id查询项目信息
-export function findByPID(pid) {
+export const findProjectInfoApi = pid => {
   return request({
     url: '/springbootBim/Project/findByPID/' + pid,
     method: 'get'
@@ -45,7 +44,7 @@ export function findByPID(pid) {
 }
 
 // 上传项目预览图
-export function addProjectPicture(data) {
+export const addProjectPictureApi = data => {
   return request({
     url: '/springbootBim/Project/addPicture',
     method: 'post',
@@ -55,7 +54,7 @@ export function addProjectPicture(data) {
 }
 
 // 根据项目pid返回成员列表
-export function findProjectMembersByPID(pid) {
+export const findProjectMembersApi = pid => {
   return request({
     url: '/springbootBim/Project/findProjectMembersByPID/' + pid,
     method: 'get'

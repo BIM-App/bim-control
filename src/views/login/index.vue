@@ -1,7 +1,7 @@
 <template>
   <el-form
-    ref="ruleForm"
-    :model="ruleForm"
+    ref="form"
+    :model="form"
     :rules="rules"
     class="content"
     label-width="100px"
@@ -13,7 +13,7 @@
       <label for="username">用户名</label>
       <el-input
         id="username"
-        v-model="ruleForm.username"
+        v-model="form.username"
         type="text"
         maxlength="12"
         autocomplete="off"
@@ -21,7 +21,7 @@
     </el-form-item>
     <el-form-item prop="password">
       <label for="password">密码</label>
-      <el-input id="password" v-model="ruleForm.password" type="password" />
+      <el-input id="password" v-model="form.password" type="password" />
     </el-form-item>
     <el-form-item prop="forget">
       <ul class="forget">
@@ -37,31 +37,30 @@
       <el-button
         class="login"
         type="primary"
-        @click="submitForm('ruleForm')"
+        @click="login('form')"
       >立即登录</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
-import { login } from '@/api/user'
-import { setUser } from '@/utils/auth'
+import { loginApi } from '@/api/user'
+import { setUser, setRole } from '@/utils/cookie'
 export default {
   name: 'Login',
   data() {
-    var validatePass = (rule, value, callback) => {
+    const validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
       } else {
-        if (this.ruleForm.checkPass !== '') {
-          this.$refs.ruleForm.validateField('checkPass')
+        if (this.form.checkPass !== '') {
+          this.$refs.form.validateField('checkPass')
         }
         callback()
       }
     }
     return {
-      msg: '', // 接收数据
-      ruleForm: {
+      form: {
         username: 'zakke',
         password: '123456'
       },
@@ -75,52 +74,41 @@ export default {
     }
   },
   methods: {
-    submitForm(formName) {
+    // 用户登录
+    login(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const _this = this
-          // const params = new FormData()
-          // params.append('username', this.ruleForm.username)
-          // params.append('password', this.ruleForm.password)
           const params = {
-            username: _this.ruleForm.username,
-            password: _this.ruleForm.password
+            username: _this.form.username,
+            password: _this.form.password
           }
-          login(params)
-            .then((res) => {
-              // console.log(res) // for debug
-              if (res.data.id) {
-                // console.log(_this.$store)
-                setUser(res.data)
-                // console.log(getUser())
-
-                _this.$store.commit('user/SET_USER', res.data)
-                // window.localStorage.setItem('uid', res.data.id)
-                _this.$router.push('/dashboard')
-                _this.$notify({
-                  title: '成功',
-                  message: '登录成功',
-                  type: 'success',
-                  duration: 1000,
-                  offset: 80
-                })
-              } else if (res.data.status === 404) {
-                // console.log(res)
-                this.$message({
-                  type: 'danger',
-                  message: '用户名或密码错误，请重新登录'
-                })
-              }
-
-              // 验证token
-              // if (res.data.token) {
-              //   window.localStorage.setItem('token', res.data.token)
-              //   window.localStorage.setItem('Uid', res.data.Uid)
-
-            //   _this.$store.commit('set_token', res.data.token)
-            //   _this.$store.commit('set_Uid', res.data.Uid)
-            // }
-            })
+          loginApi(params).then((res) => {
+            // console.log(res) // for debug
+            if (res.data.id) {
+              setUser(res.data)
+              setRole(res.data.role)
+              sessionStorage.setItem('uid', res.data.id)
+              _this.$store.commit('user/SET_USER', res.data)
+              _this.$store.commit('user/SET_ROLE', res.data.role)
+              _this.$router.push('/dashboard')
+              _this.$notify({
+                title: '成功',
+                message: '登录成功',
+                type: 'success',
+                duration: 1000,
+                offset: 80
+              })
+            }
+            // 404状态码回应
+            if (res.data.status === 404) {
+              // console.log(res)
+              this.$message({
+                type: 'danger',
+                message: '用户名或密码错误，请重新登录'
+              })
+            }
+          })
             .catch((err) => {
               console.log(err)
             })

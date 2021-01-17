@@ -1,20 +1,24 @@
-import router from './router'
-import store from './store'
-import { getUser } from './utils/auth'
+import router, { adminRoutes, endRoutes } from './router'
+// import store from './store'
+import { getRole } from '@/utils/cookie'
 
+let flag = false
 router.beforeEach((to, from, next) => {
   if (from.path === '/' && to.path === '/dashboard') {
-    next(`/login?redirect=${to.path}`)
+    if (sessionStorage.getItem('uid')) {
+      next()
+    } else {
+      next(`/login?redirect=${to.path}`)
+    }
   } else {
-    if (to.meta.requiresAuth) {
-      // 检查vuex或 cookie内是否存在用户信息
-      if (store.state.user.user.id) {
-        next()
-      } else if (getUser()) {
-        next()
-      } else {
-        next(`/login?redirect=${to.path}`)
-      }
+    if (getRole() && flag === false) {
+      console.log('添加前路由', router.options.routes)
+      const addRoutes = getRole() === 'admin' ? [...adminRoutes, ...endRoutes] : endRoutes
+      router.addRoutes(addRoutes)
+      router.options.routes = router.options.routes.concat(addRoutes)
+      console.log('添加后路由', router.options.routes)
+      flag = true
+      next()
     } else {
       next()
     }

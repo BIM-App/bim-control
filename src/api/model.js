@@ -26,7 +26,7 @@ export function delModel(mid) {
 export function delModelByPID(pid) {
   return request({
     url: '/Model/delModelByPID/' + pid,
-    method: 'delect'
+    method: 'delete'
   })
 }
 

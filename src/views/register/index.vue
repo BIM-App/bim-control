@@ -1,7 +1,7 @@
 <template>
   <el-form
-    ref="ruleForm"
-    :model="ruleForm"
+    ref="form"
+    :model="form"
     :rules="rules"
     class="content"
     label-width="100px"
@@ -13,7 +13,7 @@
         <label for="username">用户名</label>
         <el-input
           id="username"
-          v-model="ruleForm.username"
+          v-model="form.username"
           type="text"
           maxlength="12"
           autocomplete="off"
@@ -21,21 +21,35 @@
       </el-form-item>
       <el-form-item prop="mobile" style="margin-right: 30px">
         <label for="mobile">手机</label>
-        <el-input id="mobile" v-model="ruleForm.mobile" maxlength="11" />
+        <el-input id="mobile" v-model="form.mobile" maxlength="11" />
       </el-form-item>
     </div>
     <el-form-item prop="password">
       <label for="password">密码</label>
-      <el-input id="password" v-model="ruleForm.password" type="password" />
+      <el-input id="password" v-model="form.password" type="password" />
     </el-form-item>
     <el-form-item prop="checkPass">
       <label for="checkPass">确认密码</label>
-      <el-input id="checkPass" v-model="ruleForm.checkPass" type="password" />
+      <el-input id="checkPass" v-model="form.checkPass" type="password" />
+    </el-form-item>
+    <el-form-item v-if="checked" prop="invitationCode">
+      <label for="invitationCode">邀请码</label>
+      <el-input id="invitationCode" v-model="form.invitationCode" />
     </el-form-item>
     <el-form-item>
       <ul class="forget">
         <li>
-          <el-link>Register represent accept our terms</el-link>
+          <el-checkbox v-model="checked">通过邀请码注册用户
+            <el-popover
+              placement="right"
+              title="Tip"
+              width="200"
+              trigger="hover"
+              content="通过邀请码注册成为该邀请码所属的公司员工"
+            >
+              <i slot="reference" class="el-icon-question" />
+            </el-popover>
+          </el-checkbox>
         </li>
         <li>
           <span>已经有账号？ <el-link @click="toLogin">马上登录</el-link></span>
@@ -46,44 +60,46 @@
       <el-button
         class="register"
         type="primary"
-        @click="registerForm('ruleForm')"
+        @click="registerForm('form')"
       >立即注册</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
-import { register } from '@/api/user'
+import { registerApi } from '@/api/user'
 
 export default {
   name: 'Register',
   data() {
-    var validatePass = (rule, value, callback) => {
+    const validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
       } else {
-        if (this.ruleForm.checkPass !== '') {
-          this.$refs.ruleForm.validateField('checkPass')
+        if (this.form.checkPass !== '') {
+          this.$refs.form.validateField('checkPass')
         }
         callback()
       }
     }
-    var validatePass2 = (rule, value, callback) => {
+    const validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
-      } else if (value !== this.ruleForm.password) {
+      } else if (value !== this.form.password) {
         callback(new Error('两次输入密码不一致!'))
       } else {
         callback()
       }
     }
     return {
-      msg: '', // 接收数据
-      ruleForm: {
+      checked: false,
+      form: {
         username: '',
         password: '',
         checkPass: '',
-        mobile: ''
+        mobile: '',
+        invitationCode: '',
+        role: ''
       },
       rules: {
         username: [
@@ -100,7 +116,9 @@ export default {
             message: '请输入正确的手机号码',
             trigger: ['blur', 'change']
           }
-        ]
+        ],
+        invitationCode: [{ required: true, message: '请输入正确邀请码', trigger: 'blur' },
+          { min: 6, max: 6, message: '长度为6个字符', trigger: ['blur', 'change'] }]
       }
     }
   },
@@ -108,43 +126,45 @@ export default {
     toLogin() {
       this.$router.push('/login')
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-    },
+    // 用户注册
     registerForm(formName) {
+      const _this = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const _this = this
-          // const params = new FormData()
-          // params.append('username', this.ruleForm.username)
-          // params.append('password', this.ruleForm.password)
-          // params.append('mobile', this.ruleForm.mobile)
           const data = {
-            'username': _this.ruleForm.username,
-            'password': _this.ruleForm.password,
-            'mobile': _this.ruleForm.mobile
+            username: _this.form.username,
+            password: _this.form.password,
+            mobile: _this.form.mobile,
+            invitationCode: _this.form.invitationCode,
+            role: _this.checked ? 'staff' : 'admin'
           }
-          register(data)
-            .then((res) => {
-              // console.log(res)
-              // this.msg = res.data.msg
-              if (res.data.status === 201) {
-                _this.$alert('注册成功', '提示', {
+          registerApi(data).then((res) => {
+            console.log(res)
+            if (res.data.status === 201) {
+              _this.$alert('注册成功', '提示', {
+                confirmButtonText: '确定',
+                callback: () => {
+                  _this.$router.push('/login')
+                }
+              })
+            }
+            if (res.data.status === 402) {
+              setTimeout(() => {
+                _this.$alert('邀请码错误，请重新注册', '提示', {
                   confirmButtonText: '确定',
-                  callback: () => {
-                    _this.$router.push('/login')
-                  }
+                  closeOnClickModal: true
                 })
-              }
-              if (res.data.status === 404) {
-                setTimeout(() => {
-                  _this.$alert('该用户名重复，请重新注册', '提示', {
-                    confirmButtonText: '确定',
-                    closeOnClickModal: true
-                  })
-                }, 500)
-              }
-            })
+              }, 500)
+            }
+            if (res.data.status === 404) {
+              setTimeout(() => {
+                _this.$alert('该用户名重复，请重新注册', '提示', {
+                  confirmButtonText: '确定',
+                  closeOnClickModal: true
+                })
+              }, 500)
+            }
+          })
             .catch((err) => {
               console.log(err)
             })
@@ -153,6 +173,9 @@ export default {
           return false
         }
       })
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
     }
   }
 }
@@ -169,7 +192,7 @@ export default {
   flex-direction: column;
   // background-color: purple;
   h2 {
-    margin-bottom: 55px;
+    margin-bottom: 50px;
     font-size: 36px;
     color: #464d5f;
   }
@@ -213,6 +236,7 @@ export default {
     box-shadow: 3px 3px 5px #90a1d4;
   }
   .el-form-item {
+    margin-top: -10px;
     margin-left: -50px;
     label {
       font-size: 16px;
@@ -236,6 +260,9 @@ export default {
     width: 620px;
   }
   ::v-deep #checkPass {
+    width: 620px;
+  }
+  ::v-deep #invitationCode {
     width: 620px;
   }
 }

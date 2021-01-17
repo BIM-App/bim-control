@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
-// 根据项目pid返回成员列表
-export function addMembersData(data) {
+// 新增项目成员
+export const addMembersApi = data => {
   return request({
     url: 'springbootBim/ProjectMember/add',
     method: 'post',
@@ -12,8 +12,8 @@ export function addMembersData(data) {
   })
 }
 
-// 根据成员id删除项目成员   FIXME:此id为成员id不是用户id
-export function deleteMemberByID(id) {
+// 根据成员id删除项目成员   TODO:此id为成员id不是用户id
+export const deleteMemberApi = id => {
   return request({
     url: '/springbootBim/ProjectMember/deleteByID/' + id,
     method: 'delete',
@@ -24,7 +24,7 @@ export function deleteMemberByID(id) {
 }
 
 // 根据成员id更新成员信息
-export function updateMemberByID(data) {
+export const updateMemberApi = data => {
   return request({
     url: '/springbootBim/ProjectMember/update',
     method: 'put',

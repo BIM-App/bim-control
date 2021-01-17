@@ -13,7 +13,9 @@
           <img :src="user.avatar" alt="">
         </el-upload>
         <div class="user-info">
-          <div><span>用户名：{{ user.username }}</span></div>
+          <div>
+            <span>用户名：{{ user.username }}</span><br>
+          </div>
         </div>
         <div class="change">
           <el-button type="primary" @click.native="dialogFormVisible = true">修改个人信息</el-button>
@@ -85,7 +87,7 @@
           type="primary"
           @click="
             dialogFormVisible = false
-            submitForm()
+            updateUser()
           "
         >确 定
         </el-button>
@@ -95,8 +97,8 @@
 </template>
 
 <script>
-import { getUser, setUser, removeUser, removeMember, removeProjectPID } from '@/utils/auth'
-import { findByID, updateUser, addPicture, deleteByID } from '@/api/user'
+import { getUser, setUser, removeUser, removeMember, removeProjectPID } from '@/utils/cookie'
+import { findUserApi, updateUserApi, addUserPictureApi, deleteUserApi } from '@/api/user'
 import eventVue from '@/utils/eventVue'
 
 export default {
@@ -111,7 +113,7 @@ export default {
   },
   mounted() {
     // 查询用户信息
-    findByID(getUser().id).then((res) => {
+    findUserApi(getUser().id).then((res) => {
       console.log(res.data)
       this.user = res.data
       this.form = res.data
@@ -126,7 +128,7 @@ export default {
       // console.log(this.form.Picture);
     },
     // 提交修改用户信息表单
-    submitForm() {
+    updateUser() {
       const _this = this
       const data = {
         id: this.user.id,
@@ -140,12 +142,11 @@ export default {
         qq: this.form.qq,
         email: this.form.email
       }
-      // console.log(data)
-      // 更新用户信息
-      updateUser(data).then((res) => {
+      updateUserApi(data).then((res) => {
         // console.log(res)
         if (res.data.status === 200) {
-          findByID((getUser().id))
+          // 查询用户信息
+          findUserApi((getUser().id))
           _this.$notify({
             title: '成功',
             message: '更新成功',
@@ -164,15 +165,14 @@ export default {
       const data = new FormData()
       data.append('uid', getUser().id)
       data.append('pictureFile', this.pictureFile)
-      // 调用上传头像接口
-      addPicture(data).then((res) => {
-        // console.log(res)
+      addUserPictureApi(data).then((res) => {
+        console.log(res)
         if (res.data.status === 201) {
-        //  查询用户信息
-          findByID(getUser().id).then((res) => {
+          // 查询用户信息
+          findUserApi(getUser().id).then((res) => {
             // console.log(res)
             _this.user.avatar = res.data.avatar // 更新页面头像
-            setUser(res.data)
+            setUser(res.data) // 更新cookie里的用户信息
             // 向兄弟组件传值
             eventVue.$emit('avatar', res.data.avatar)
           }).catch((err) => {
@@ -186,15 +186,14 @@ export default {
     // 注销用户
     deleteUser() {
       const _this = this
-      // console.log(getUser().id)
-      deleteByID(getUser().id, getUser().username).then((res) => {
+      deleteUserApi(getUser().id, getUser().username).then((res) => {
         // console.log(res)
         if (res.data.status === 204) {
-          this.$store.commit('user/SET_USER', '')
+          _this.$store.commit('user/SET_USER', '')
           removeUser()
           removeMember()
           removeProjectPID()
-          this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
+          _this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
           _this.$notify({
             title: '成功',
             message: '注销成功',
@@ -212,6 +211,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+body {
+  overflow:auto
+}
 .user {
   // margin-top: -5px;
   display: flex;

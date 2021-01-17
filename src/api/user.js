@@ -1,8 +1,8 @@
-import request from '@/utils/request'
+import request from '../utils/request'
 import qs from 'qs'
 
 // 用户登录
-export function login(params) {
+export const loginApi = params => {
   return request({
     url: '/springbootBim/User/login',
     method: 'get',
@@ -11,7 +11,7 @@ export function login(params) {
 }
 
 // 用户注册
-export function register(data) {
+export const registerApi = data => {
   return request({
     url: '/springbootBim/User/register',
     method: 'post',
@@ -19,8 +19,8 @@ export function register(data) {
   })
 }
 
-// 用户注册
-export function deleteByID(id, username) {
+// 用户注销
+export const deleteUserApi = (id, username) => {
   return request({
     url: '/springbootBim/User/deleteByID/' + id + '/' + username,
     method: 'delete',
@@ -31,7 +31,7 @@ export function deleteByID(id, username) {
 }
 
 // 根据用户id查询用户信息
-export function findByID(uid) {
+export const findUserApi = uid => {
   return request({
     url: '/springbootBim/User/findByID/' + uid,
     method: 'get'
@@ -39,7 +39,7 @@ export function findByID(uid) {
 }
 
 // 更新用户信息
-export function updateUser(data) {
+export const updateUserApi = data => {
   return request({
     url: 'springbootBim/User/update',
     method: 'put',
@@ -48,7 +48,7 @@ export function updateUser(data) {
 }
 
 // 上传用户头像
-export function addPicture(data) {
+export const addUserPictureApi = data => {
   return request({
     url: '/springbootBim/User/addPicture',
     method: 'post',
@@ -58,9 +58,10 @@ export function addPicture(data) {
 }
 
 // 根据用户名查询用户项目
-export function findProjects(username) {
+export const findProjectsApi = username => {
   return request({
     url: 'springbootBim/User/findProjectsByUserName/' + username,
     method: 'get'
   })
 }
+

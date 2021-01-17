@@ -76,25 +76,14 @@
 </template>
 
 <script>
-import { getMember, getProjectPID, getUser, setMember } from '@/utils/cookie'
-import { findProjectMembersApi } from '@/api/project'
-import { addMembersApi, deleteMemberApi, updateMemberApi } from '@/api/member'
+
 export default {
   data() {
     return {
-      memberDialogVisible: false,
-      tableData: [],
-      memberForm: {
-        username: '',
-        roleinproject: ''
-      },
-      search: ''
+    
     }
   },
-  created() {
-    console.log(getMember()) // for debug
-    this.tableData = getMember()
-  },
+
   methods: {
     handleEdit(index, row) {
       const _this = this

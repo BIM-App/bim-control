@@ -7,28 +7,9 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 /**
- * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
- *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
- *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
- */
-
-/**
  * constantRoutes
  * a base page that does not have permission requirements
- * all roles can be accessed
+ * all role can be accessed
  */
 export const constantRoutes = [
   {
@@ -41,13 +22,6 @@ export const constantRoutes = [
     component: () => import('@/views/register/index'),
     hidden: true
   },
-
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
-
   {
     path: '/',
     component: Layout,
@@ -56,29 +30,30 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard', requiresAuth: true }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
   },
   {
     path: '/project',
     component: Layout,
     redirect: '/project/index',
+    meta: { title: '项目管理', icon: 'dashboard' },
     children: [
       {
         path: 'index',
         name: 'Project',
         component: () => import('@/views/project/index'),
-        meta: { title: '项目管理', icon: 'dashboard' }
+        hidden: true
       },
       {
-        path: 'index/:pid/member',
+        path: ':pid/member',
         name: 'Member',
         hidden: true,
         component: () => import('@/views/member/index'),
-        meta: { title: '成员管理', icon: 'dashboard' }
+        meta: { title: '项目成员', icon: 'dashboard' }
       },
       {
-        path: 'index/:pid/info',
+        path: ':pid/info',
         name: 'ProjectInfo',
         hidden: true,
         component: () => import('@/views/projectInfo/index'),
@@ -87,16 +62,15 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/model',
+    path: '/profile',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Model',
-        component: () => import('@/views/model/index'),
-        meta: { title: '图模管理', icon: 'dashboard' }
-      }
-    ]
+    hidden: true,
+    children: [{
+      path: '',
+      name: 'Profile',
+      component: () => import('@/views/profile/index'),
+      meta: { title: 'Profile' }
+    }]
   },
   {
     path: '/task',
@@ -111,19 +85,10 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/profile',
-    component: Layout,
-    hidden: true,
-    children: [{
-      path: '',
-      name: 'Profile',
-      component: () => import('@/views/profile/index'),
-      meta: { title: 'Profile', icon: 'dashboard', requiresAuth: true }
-    }]
-  },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+    path: '/404',
+    component: () => import('@/views/404'),
+    hidden: true
+  }
 ]
 
 const createRouter = () => new Router({
@@ -141,3 +106,34 @@ export function resetRouter() {
 }
 
 export default router
+
+/**
+ * asyncRoutes
+ */
+export const adminRoutes = [
+
+  {
+    path: '/system',
+    name: 'System',
+    component: Layout,
+    meta: { title: '系统管理', icon: 'nested', roles: ['admin'] },
+    children: [
+      {
+        path: 'company',
+        name: 'Company',
+        component: () => import('@/views/system/company/index'),
+        meta: { title: '公司管理', icon: 'dashboard', roles: ['admin'] }
+      },
+      {
+        path: 'staff',
+        name: 'staff',
+        component: () => import('@/views/system/staff/index'),
+        meta: { title: '员工管理', icon: 'dashboard', roles: ['admin'] }
+      }
+    ]
+  }
+  // // 404 page must be placed at the end !!!
+  // { path: '*', redirect: '/404', hidden: true }
+]
+
+export const endRoutes = [{ path: '*', redirect: '/404', hidden: true }]
