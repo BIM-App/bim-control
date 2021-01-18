@@ -1,10 +1,14 @@
 {
   "cSpell.words": [
+    "checkstatus",
     "clearfix",
+    "cname",
     "instanceof",
     "investamount",
+    "invitationcode",
     "lightgreen",
     "maxlength",
+    "orgnizationno",
     "planendtime",
     "planstarttime",
     "pmid",
@@ -12,6 +16,7 @@
     "popconfirm",
     "roleinproject",
     "springboot",
+    "starttime",
     "workunit"
   ]
 }

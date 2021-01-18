@@ -12,7 +12,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (getRole() && flag === false) {
-      console.log('添加前路由', router.options.routes)
+      // console.log('添加前路由', router.options.routes)
       const addRoutes = getRole() === 'admin' ? [...adminRoutes, ...endRoutes] : endRoutes
       router.addRoutes(addRoutes)
       router.options.routes = router.options.routes.concat(addRoutes)
@@ -20,6 +20,7 @@ router.beforeEach((to, from, next) => {
       flag = true
       next()
     } else {
+      console.log(router.options.routes)
       next()
     }
   }

@@ -1,72 +1,93 @@
 <template>
-  <div class="table-box">
-    <el-table
-      :data="tableData"
-      style="width: 100%"
+  <div>
+    <el-button size="medium" type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">注册公司</el-button>
+    <ul v-for="item in companyData" :key="item.cid" class="company-info" @click="print(item.cid)">
+      <li>公司名称：{{ item.cname }}</li>
+      <li>法定代表人：{{ item.representative }}</li>
+      <li>注册资金：{{ item.investamount }}</li>
+      <li>公司类型：{{ item.type }}</li>
+      <li>公司级别：{{ item.grade }}</li>
+      <li>成立日期：{{ item.starttime }}</li>
+      <li>组织机构代码证号：{{ item.orgnizationno }}</li>
+      <li>公司所在地址：{{ item.address }}</li>
+      <li>公司简介：{{ item.description }}</li>
+      <li>审核状态：{{ item.checkstatus == 0 ? '审核中' : '已通过' }}</li>
+      <li v-if="item.checkstatus == 1">公司邀请码：{{ item.invitationcode }}</li>
+    </ul>
+    <el-dialog
+      title="注册公司"
+      :visible.sync="dialogFormVisible"
+      style="margin-top: -40px"
     >
-      <el-table-column
-        label="用户名"
-        prop="username"
-      />
-      <el-table-column
-        label="角色"
-        prop="roleinproject"
-      />
-      <el-table-column
-        align="right"
-      >
-        <template slot="header" slot-scope="">
-          <div class="right-bar">
-            <el-button size="medium" class="addMember" type="primary" icon="el-icon-plus" @click="memberDialogVisible = true">添加成员</el-button>
-            <!-- <el-input
-              v-model="search"
-              disabled
-              size="medium"
-              placeholder="输入关键字搜索"
-            /> -->
-          </div>
-        </template>
-        <template slot-scope="scope">
-          <el-button
-            v-if="!scope.$index ==0"
-            size="medium"
-            @click="handleEdit(scope.$index, scope.row);
-                    open()"
-          >编辑</el-button>
-          <el-button
-            v-if="!scope.$index ==0"
-            size="medium"
-            type="danger"
-            @click="deleteMember(scope.$index, scope.row);
-
-            "
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 添加项目成员Dialog -->
-    <el-dialog title="添加项目成员" :visible.sync="memberDialogVisible" style="margin-top:-40px">
       <el-row :gutter="15">
-        <el-form ref="memberForm" :model="memberForm" label-width="100px">
-          <el-col :span="22">
-            <el-form-item label="用户名" prop="username">
-              <el-input v-model="memberForm.username" autocomplete="off" />
+        <el-form ref="form" :model="form" label-width="100px">
+          <el-col :span="21">
+            <el-form-item label="公司名称" prop="cname" required="">
+              <el-input v-model="form.cname" autocomplete="off" />
             </el-form-item>
           </el-col>
-          <el-col :span="22">
-            <el-form-item label="用户角色" prop="roleinproject">
-              <el-input v-model="memberForm.roleinproject" autocomplete="off" />
+          <el-col :span="21">
+            <el-form-item label="法定代表人" prop="representative" required>
+              <el-input v-model="form.representative" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="21">
+            <el-form-item label="注册资金" prop="investamount" required>
+              <el-input v-model="form.investamount" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="21">
+            <el-form-item label="公司类型" prop="type" required>
+              <el-select v-model="form.type" placeholder="请选择">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="21">
+            <el-form-item label="公司级别" prop="grade" required>
+              <el-input v-model="form.grade" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="21">
+            <el-form-item label="成立日期" prop="starttime" required>
+              <el-date-picker
+                v-model="form.starttime"
+                type="date"
+                placeholder="选择日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="timestamp"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="21">
+            <el-form-item label="组织机构代码证号" prop="orgnizationno" required>
+              <el-input v-model="form.orgnizationno" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="21">
+            <el-form-item label="公司所在地址" prop="address" required>
+              <el-input v-model="form.address" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="21">
+            <el-form-item label="公司简介" prop="description">
+              <el-input v-model="form.description" autocomplete="off" />
             </el-form-item>
           </el-col>
         </el-form>
       </el-row>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="memberDialogVisible = false">取 消</el-button>
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button
           type="primary"
           @click="
-            memberDialogVisible = false;
-            addMember()
+            dialogFormVisible = false;
+            addCompany()
           "
         >确 定
         </el-button>
@@ -76,150 +97,114 @@
 </template>
 
 <script>
-
+import { getUser } from '@/utils/cookie'
+import { addCompanyApi, findCompanyApi } from '@/api/company'
 export default {
   data() {
     return {
-    
+      dialogFormVisible: false,
+      form: {
+        cname: '',
+        representative: '',
+        investamount: '',
+        type: '',
+        grade: '',
+        starttime: '',
+        orgnizationno: '',
+        address: '',
+        description: '',
+        creator: getUser().id
+      },
+      options: [
+        {
+          value: '有限责任公司',
+          label: '有限责任公司'
+        },
+        {
+          value: '股份有限公司',
+          label: '股份有限公司'
+        },
+        {
+          value: '有限合伙企业',
+          label: '有限合伙企业'
+        },
+        {
+          value: '外商独资公司',
+          label: '外商独资公司'
+        },
+        {
+          value: '个人独资企业',
+          label: '个人独资企业'
+        },
+        {
+          value: '国有独资公司',
+          label: '国有独资公司'
+        }
+      ],
+      companyList: [],
+      companyData: [],
+      search: ''
     }
   },
-
-  methods: {
-    handleEdit(index, row) {
-      const _this = this
-      console.log(index, row)
-      this.$prompt('编辑成员角色', '提示', {
-        inputValue: row.roleinproject,
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        closeOnClickModal: false
-      }).then(({ value }) => {
-        const data = {
-          id: row.id,
-          roleinproject: value,
-          updater: getUser().id
-        }
-        updateMemberApi(data).then((res) => {
-          console.log(res)
-          if (res.data.status === 200) {
-            // 调用根据PID查询项目下所有成员列表接口
-            findProjectMembersApi(getProjectPID()).then((res) => {
-              console.log(res)
-              setMember(res.data)
-              _this.tableData = res.data
-            }).catch((err) => {
-              console.log(err)
-            })
-            this.$message({
-              type: 'success',
-              message: '成员信息更新成功'
-            })
-          }
-        }).catch((err) => {
-          console.log(err)
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消输入'
-        })
-      })
-    },
-    // 根据成员id删除项目成员
-    deleteMember(index, row) {
-      const _this = this
-      // console.log(index, row)
-      deleteMemberApi(row.id).then((res) => {
-        console.log(res)
-        if (res.data.status === 204) {
-          // 调用根据PID查询项目下所有成员列表接口
-          findProjectMembersApi(getProjectPID()).then((res) => {
-            console.log(res)
-            setMember(res.data)
-            _this.tableData = res.data
-            _this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 1000,
-              offset: 80
-            })
-          }).catch((err) => {
-            console.log(err)
-          })
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
-    // 添加项目成员
-    addMember() {
-      const _this = this
-      const data = {
-        projectid: getProjectPID(),
-        username: this.memberForm.username,
-        roleinproject: this.memberForm.roleinproject,
-        creator: getUser().id
+  created() {
+    findCompanyApi().then((res) => {
+      console.log(res)
+      if (res.data instanceof Array) {
+        this.companyData = res.data.filter((item) => item.creator === getUser().id)
+        // console.log(this.companyData)
       }
-      // 调用添加项目成员接口
-      addMembersApi(data).then((res) => {
+    }).catch((err) => {
+      console.log(err)
+    })
+  },
+  methods: {
+    print(cid) {
+      console.log(cid)
+    },
+    handleEdit(index, row) {
+      console.log(index, row)
+    },
+    handleDelete(index, row) {
+      console.log(index, row)
+    },
+    // 注册添加公司
+    addCompany() {
+      const _this = this
+      const data = this.form
+      addCompanyApi(data).then((res) => {
         console.log(res)
         if (res.data.status === 201) {
-        // 清空添加项目成员表单
-          _this.$refs.memberForm.resetFields()
-          // 调用根据PID查询项目下所有成员列表接口
-          findProjectMembersApi(getProjectPID()).then((res) => {
+          findCompanyApi().then((res) => {
             console.log(res)
-            setMember(res.data)
-            _this.tableData = res.data
-            _this.$notify({
-              title: '成功',
-              message: '添加成功',
-              type: 'success',
-              duration: 1000,
-              offset: 80
-            })
+            if (res.data instanceof Array) {
+              this.companyData = res.data.filter((item) => item.creator === getUser().id)
+              // console.log(this.companyData)
+            }
           }).catch((err) => {
             console.log(err)
           })
-        } else if (res.data.status === 404) {
           setTimeout(() => {
-            _this.$alert('添加的用户不存在', '提示', {
+            _this.$alert('公司注册成功，系统管理员审核中。', '提示', {
               confirmButtonText: '确定',
-              closeOnClickModal: true,
-              callback: action => {
-              // this.$message({
-              //   type: 'info',
-              //   message: `action: ${action}`
-              // })
-              }
+              closeOnClickModal: true
             })
           }, 500)
-        } else {
-          console.log('其他错误')
         }
       }).catch((err) => {
         console.log(err)
       })
-    },
-    open() {
-
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.table-box {
-  margin: 15px;
-  // border: 2px solid red ;
-  // .right-bar {
-  //   display: flex;
-  //   justify-content: space-around;
-  //   align-items: center;
-  //   .addMember {
-  //     margin-right: 20px;
-  //   }
-  // }
+.company-info {
+  margin: 20px 80px;
+  width: 800px;
+  background-color: lightgreen;
+  li {
+    margin-top: 15px;
+  }
 }
 </style>

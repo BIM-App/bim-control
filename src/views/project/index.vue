@@ -162,7 +162,7 @@ export default {
     const _this = this
     // 根据用户名查询项目
     findProjectsApi(getUser().username).then((res) => {
-      console.log(res.data)
+      // console.log(res.data)
       // FIXME:需要判断
       if (res.data instanceof Array) {
         // console.log(res.data)
