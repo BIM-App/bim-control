@@ -1,8 +1,5 @@
 <template>
   <div>
-<<<<<<< HEAD
-    Info
-=======
     <el-row>
       <!-- 添加模型表单dialog框 -->
       <el-dialog
@@ -115,7 +112,7 @@
                 </el-popconfirm>
               </el-tooltip>
             </div>
-            <img :src="item.MPicture" class="model-image">
+            <img :src="item.MPicture" class="model-image" @click="lookDetail(item)">
             <div class="text">
               <div>{{ item.MName }}</div>
               <div class="bottom clearfix">
@@ -161,6 +158,23 @@
           </div>
         </el-dialog>
       </el-col>
+      <!-- 二三维联动 -->
+      <el-dialog
+        ref="bimFaceBim"
+        title="模型展示"
+        :visible.sync="linkageBim"
+        width="90%"
+        top="5vh"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <bimfacelinkage
+          v-if="linkageBim"
+          ref="linkBimFace"
+          :model-file-id="modelFileId"
+          :file-name="fileName"
+        />
+      </el-dialog>
       <!-- 添加模型 -->
       <el-col
         :span="4"
@@ -174,30 +188,29 @@
         </div>
       </el-col>
     </el-row>
->>>>>>> 898219b7b58fb4f5a91861e6401114e9b2a418bc
   </div>
 </template>
 
 <script>
-<<<<<<< HEAD
-export default {
-=======
 import {
   addModel,
   delModel,
-  // eslint-disable-next-line no-unused-vars
-  delModelByPID,
   updateModelByMId,
   findmodelByPID,
   findModelByMid
 } from '@/api/model'
-import { getProjectPID, getUser } from '@/utils/auth'
+import { getProjectPID, getUser } from '@/utils/cookie'
+import bimfacelinkage from './bimfacelinkage'
 export default {
   name: 'Model',
+  components: {
+    bimfacelinkage
+  },
   data() {
     return {
       dialogFormVisible: false,
       editDialogVisible: false,
+      linkageBim: false,
       modelList: [],
       form: {
         MId: '',
@@ -208,7 +221,9 @@ export default {
         MPicture: '',
         MFile: ''
       },
-      editForm: {}
+      editForm: {},
+      fileName: '',
+      modelFileId: ''
     }
   },
   created() {
@@ -338,15 +353,56 @@ export default {
           })
         }
       })
+    },
+    // 查看模型详情L
+    lookDetail(modelList) {
+      this.modelFileId = modelList.MId
+      this.fileName = modelList.MName
+      this.linkageBim = true
     }
   }
 }
 </script>
->>>>>>> 898219b7b58fb4f5a91861e6401114e9b2a418bc
 
+<style lang="scss" scoped>
+.modelTool {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 5px 0;
+  position: sticky;
+  font-size: 8px;
+  text-align: center;
+  // background-color: red;
 }
-</script>
-
-<style>
-
+.model-image {
+  width: 100%;
+  height: 120px;
+  background-size: 120px;
+  display: block;
+  cursor: pointer;
+}
+.text {
+  text-align: center;
+  margin: 10px 0;
+}
+.item {
+  margin: 0 5px;
+}
+.preCard {
+  margin-left: 60px;
+  height: 100%;
+  .el-card {
+    text-align: center;
+    border: 2px dashed #d9d9d9;
+    .el-icon-plus {
+      font-size: 28px;
+      color: #8c939d;
+      // width: 178px;
+      // height: 178px;
+      line-height: 178px;
+      text-align: center;
+    }
+  }
+}
 </style>

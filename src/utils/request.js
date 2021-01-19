@@ -1,7 +1,7 @@
 // axios封装，请求拦截、响应拦截、错误统一处理
 
 import axios from 'axios'
-import { Loading, Message } from 'element-ui'
+import { Message } from 'element-ui'
 
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 
@@ -9,9 +9,6 @@ const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
   timeout: 5 * 1000
 })
-
-let loadingInstance
-
 // 添加请求拦截器
 service.interceptors.request.use(
   config => {

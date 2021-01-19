@@ -90,17 +90,11 @@
 </template>
 
 <script>
-<<<<<<< HEAD
+// eslint-disable-next-line no-unused-vars
 import { getMember, getProjectPID, getUser, setMember } from '@/utils/cookie'
+// eslint-disable-next-line no-unused-vars
 import { findProjectMembersApi } from '@/api/project'
 import { addTask, findTaskByPid, delTasksByTid } from '@/api/task'
-=======
-// eslint-disable-next-line no-unused-vars
-import { getMember, getProjectPID, getUser, setMember } from '../../utils/auth'
-// eslint-disable-next-line no-unused-vars
-import { findProjectMembersByPID } from '../../api/project'
-import { addTask, findTaskByPid, delTasksByTid } from '../../api/task'
->>>>>>> 898219b7b58fb4f5a91861e6401114e9b2a418bc
 export default {
   data() {
     return {
@@ -115,20 +109,14 @@ export default {
     }
   },
   created() {
-<<<<<<< HEAD
-    const _this = this
-=======
->>>>>>> 898219b7b58fb4f5a91861e6401114e9b2a418bc
+    // const _this = this
     const pid = getProjectPID()
     // 调用查询任务列表接口
     console.log(pid)
     findTaskByPid(pid)
       .then((res) => {
         console.log(res)
-<<<<<<< HEAD
-=======
         // eslint-disable-next-line eqeqeq
->>>>>>> 898219b7b58fb4f5a91861e6401114e9b2a418bc
         if (res.data.code != 404) {
           this.tableData = res.data
           console.log(this.tableData)
@@ -147,10 +135,7 @@ export default {
     },
     // 添加任务信息
     addTaskForm() {
-<<<<<<< HEAD
-      const _this = this
-=======
->>>>>>> 898219b7b58fb4f5a91861e6401114e9b2a418bc
+      // const _this = this
       const data = new FormData()
       data.append('pid', getProjectPID())
       data.append('tName', this.taskForm.tName)
@@ -178,10 +163,7 @@ export default {
     },
     // 根据任务编号tid来删除任务
     delTaskByTid(index, row) {
-<<<<<<< HEAD
-      const _this = this
-=======
->>>>>>> 898219b7b58fb4f5a91861e6401114e9b2a418bc
+      // const _this = this
       const tid = '/' + row.TId
       delTasksByTid(tid)
         .then((res) => {
