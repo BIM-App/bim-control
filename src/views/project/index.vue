@@ -100,9 +100,10 @@
               @click="toProjectInfo(item.pid)"
             >
             <div>
-              <div>项目pid：{{ item.pid }}</div>
-              <div>项目名称：{{ item.pname }}</div>
+              <!-- <div>项目pid：{{ item.pid }}</div> -->
               <div class="bottom clearfix" />
+              <div>项目名称：{{ item.pname }}</div>
+              <!-- <div class="bottom clearfix" /> -->
             </div>
           </el-card>
         </div>
@@ -173,11 +174,11 @@ export default {
     })
   },
   methods: {
-    // 跳转到项目详情页面，页面内即模型联动
+    // 跳转到项目详情页面
     toProjectInfo(pid) {
       setProjectPID(pid)
       this.$router.push(`/project/${pid}/info`)
-      console.log(pid)
+      // console.log(pid)
     },
     // 获取新建项目的地址部分信息
     regionChange(data) {

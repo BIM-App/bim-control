@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-button size="medium" type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">注册公司</el-button>
-    <ul v-for="item in companyData" :key="item.cid" class="company-info" @click="print(item.cid)">
+    <ul v-for="item in companyData" :key="item.cid" class="company-info">
       <li>公司名称：{{ item.cname }}</li>
       <li>法定代表人：{{ item.representative }}</li>
       <li>注册资金：{{ item.investamount }}</li>
@@ -13,6 +13,8 @@
       <li>公司简介：{{ item.description }}</li>
       <li>审核状态：{{ item.checkstatus == 0 ? '审核中' : '已通过' }}</li>
       <li v-if="item.checkstatus == 1">公司邀请码：{{ item.invitationcode }}</li>
+      <el-button type="primary">修改公司信息</el-button>
+      <el-button type="danger" @click="deleteCompany(item.cid)">删除公司</el-button>
     </ul>
     <el-dialog
       title="注册公司"
@@ -98,7 +100,7 @@
 
 <script>
 import { getUser } from '@/utils/cookie'
-import { addCompanyApi, findCompanyApi } from '@/api/company'
+import { addCompanyApi, findCompanyApi, deleteCompanyApi } from '@/api/company'
 export default {
   data() {
     return {
@@ -141,14 +143,13 @@ export default {
           label: '国有独资公司'
         }
       ],
-      companyList: [],
       companyData: [],
       search: ''
     }
   },
   created() {
     findCompanyApi().then((res) => {
-      console.log(res)
+      console.log(res.data)
       if (res.data instanceof Array) {
         this.companyData = res.data.filter((item) => item.creator === getUser().id)
         // console.log(this.companyData)
@@ -189,6 +190,32 @@ export default {
               closeOnClickModal: true
             })
           }, 500)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 删除公司
+    deleteCompany(cid) {
+      deleteCompanyApi(cid).then((res) => {
+        console.log(res)
+        if (res.data.status === 204) {
+          findCompanyApi().then((res) => {
+            console.log(res)
+            if (res.data instanceof Array) {
+              this.companyData = res.data.filter((item) => item.creator === getUser().id)
+              // console.log(this.companyData)
+            }
+          }).catch((err) => {
+            console.log(err)
+          })
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 1000,
+            offset: 80
+          })
         }
       }).catch((err) => {
         console.log(err)
