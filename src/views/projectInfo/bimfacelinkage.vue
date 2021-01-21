@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 <template>
   <div
     v-loading="loadModel"
@@ -52,7 +51,7 @@
 export default {
   name: 'Linka',
   // eslint-disable-next-line vue/require-prop-types
-  props: ['modelFileId', 'fileName', 'isIntegrate'],
+  props: ['modelFileId', 'fileName', 'isIntegrate', 'modelToken'],
   data() {
     return {
       viewer3D: '',
@@ -61,7 +60,6 @@ export default {
       modelIndex: 0,
       contentFlag: false,
       content: '', // 错误描述
-      modelToken: '',
       loadModel: false
     }
   },
@@ -109,7 +107,6 @@ export default {
           _this.app.addView(_this.modelToken)
           // 从WebApplication获取viewer3D对象
           _this.viewer3D = _this.app.getViewer()
-
           // 监听添加view完成的事件
           _this.viewer3D.addEventListener(
             // eslint-disable-next-line no-undef
@@ -132,7 +129,6 @@ export default {
                 _this.modelList = l
                 _this.map.showFloorById(l[0].id) // 显示某一张小地图
               }
-
               // 自适应屏幕大小
               window.onresize = function() {
                 _this.viewer3D.resize(
@@ -184,45 +180,40 @@ export default {
       }
     },
     getToken() {
+      console.log(this.modelToken)
+      this.init()
       console.log(this.fileName, '模型展示')
-      this.loadModel = true
-      this.$store
-        .dispatch({
-          type: 'demand/getBimFaceToken',
-          data: {
-            id: this.modelFileId,
-            IsIntegrateId: this.isIntegrate
-          }
-        })
-        .then((res) => {
-          this.loadModel = false
-          const data = JSON.parse(res)
-          if (data.data) {
-            this.modelToken = data.data
-            this.init()
-          } else {
-            this.contentFlag = true
-          }
-          if (data.code === 'authentication.failed') {
-            this.content = 'BIMFACE系统异常,请联系管理员'
-          }
-          if (data.code === 'system.error') {
-            this.content = 'API访问合法性校验失败,请联系管理员'
-          }
-          if (data.code === 'file.has.not.translated') {
-            this.content = '文件未转换,请联系管理员'
-          }
-          if (data.code === 'file.translate.failed') {
-            this.content = '文件转换失败,请联系管理员'
-          }
-          if (data.code === 'file.is.translating') {
-            this.content = '文件转换中,请稍后'
-          }
-        })
-        .catch((err) => {
-          this.loadModel = false
-          console.log(err)
-        })
+      // this.loadModel = true
+      // findModelByMid(this.modelFileId)
+      //   .then((res) => {
+      //     this.loadModel = false
+      //     const data = JSON.parse(res)
+      //     if (data.data) {
+      //       this.modelToken = data.data
+      //       this.init()
+      //     } else {
+      //       this.contentFlag = true
+      //     }
+      //     if (data.code === 'authentication.failed') {
+      //       this.content = 'BIMFACE系统异常,请联系管理员'
+      //     }
+      //     if (data.code === 'system.error') {
+      //       this.content = 'API访问合法性校验失败,请联系管理员'
+      //     }
+      //     if (data.code === 'file.has.not.translated') {
+      //       this.content = '文件未转换,请联系管理员'
+      //     }
+      //     if (data.code === 'file.translate.failed') {
+      //       this.content = '文件转换失败,请联系管理员'
+      //     }
+      //     if (data.code === 'file.is.translating') {
+      //       this.content = '文件转换中,请稍后'
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     this.loadModel = false
+      //     console.log(err)
+      //   })
     }
   }
 }

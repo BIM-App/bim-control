@@ -173,6 +173,7 @@
           ref="linkBimFace"
           :model-file-id="modelFileId"
           :file-name="fileName"
+          :model-token="modelToken"
         />
       </el-dialog>
       <!-- 添加模型 -->
@@ -223,7 +224,8 @@ export default {
       },
       editForm: {},
       fileName: '',
-      modelFileId: ''
+      modelFileId: '',
+      modelToken: ''
     }
   },
   created() {
@@ -358,6 +360,7 @@ export default {
     lookDetail(modelList) {
       this.modelFileId = modelList.MId
       this.fileName = modelList.MName
+      this.modelToken = modelList.ModelToken
       this.linkageBim = true
     }
   }
