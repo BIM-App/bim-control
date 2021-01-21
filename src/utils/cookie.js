@@ -28,15 +28,15 @@ export const removeMember = () => {
 
 // 存储项目信息
 export const setProjectPID = (pid) => {
-  return Cookies.set('project', pid)
+  return Cookies.set('pid', pid)
 }
 
 export const getProjectPID = () => {
-  return JSON.parse(Cookies.get('project'))
+  return JSON.parse(Cookies.get('pid'))
 }
 
 export const removeProjectPID = () => {
-  return Cookies.remove('project')
+  return Cookies.remove('pid')
 }
 
 export const setRole = data => {
@@ -49,4 +49,17 @@ export const getRole = () => {
 
 export const removeRole = () => {
   return Cookies.remove('role')
+}
+
+// 存储公司信息
+export const setCompanyCID = (cid) => {
+  return Cookies.set('cid', cid)
+}
+
+export const getCompanyCID = () => {
+  return JSON.parse(Cookies.get('cid'))
+}
+
+export const removeCompanyCID = () => {
+  return Cookies.remove('cid')
 }

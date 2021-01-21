@@ -1,275 +1,357 @@
 <template>
-  <div>
-    <el-row>
-      <!-- 添加模型表单dialog框 -->
-      <el-dialog
-        title="添加模型"
-        :visible.sync="dialogFormVisible"
-        style="margin-top: -60px"
-      >
-        <el-row :gutter="15">
-          <el-form ref="form" :model="form" label-width="100px">
-            <!-- 模型名称 -->
-            <el-col :span="15">
-              <el-form-item label="模型名称" prop="MName">
-                <el-input v-model="form.MName" autocomplete="off" />
-              </el-form-item>
-            </el-col>
-            <!-- 模型描述 -->
-            <el-col :span="21">
-              <el-form-item label="项目描述信息" prop="MDescription">
-                <el-input v-model="form.MDescription" autocomplete="off" />
-              </el-form-item>
-            </el-col>
-            <!-- 模型预览图 -->
-            <el-col :span="24">
-              <el-form-item label="模型预览图" prop="MPicture" required>
-                <el-upload
-                  ref=""
-                  action=""
-                  :on-change="handleChangePic"
-                  :auto-upload="false"
-                  list-type="picture-card"
-                >
-                  <i class="el-icon-plus" />
-                  <div slot="tip" class="el-upload__tip">
-                    只能上传jpg/png文件
-                  </div>
-                </el-upload>
-              </el-form-item>
-            </el-col>
-            <!-- 上传模型 -->
-            <el-col :span="24">
-              <el-form-item label="上传模型" prop="MFile">
-                <el-upload
-                  ref=""
-                  action=""
-                  :on-change="handleChangeMod"
-                  :auto-upload="false"
-                  list-type="text"
-                >
-                  <el-button size="small" type="primary">点击上传</el-button>
-                </el-upload>
-              </el-form-item>
-            </el-col>
-          </el-form>
-        </el-row>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
+  <div class="container">
+    <!-- 编辑更新项目 -->
+    <el-dialog
+      title="修改项目"
+      :visible.sync="editDialogVisible"
+      style="margin-top: -40px"
+    >
+      <el-row :gutter="15">
+        <el-form ref="project" :model="project" label-width="100px">
+          <!-- 项目名称 -->
+          <el-col :span="15">
+            <el-form-item label="项目名称" prop="pname">
+              <el-input v-model="project.pname" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <!-- 项目类别 -->
+          <el-col :span="10">
+            <el-form-item label="项目分类" prop="category">
+              <el-input v-model="project.category" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <!-- 项目描述信息 -->
+          <el-col :span="21">
+            <el-form-item label="项目描述信息" prop="description">
+              <el-input v-model="project.description" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <!-- 省市区街级联地址 -->
+          <el-col :span="30">
+            <el-form-item label="省/直辖市">
+              <el-input v-model="project.province" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="30">
+            <el-form-item label="市">
+              <el-input v-model="project.city" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="30">
+            <el-form-item label="区/县">
+              <el-input v-model="project.district" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="30">
+            <el-form-item label="乡/镇/街道">
+              <el-input v-model="project.street" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <!-- 详细地址 -->
+          <el-col :span="21">
+            <el-form-item label="详细地址" prop="address">
+              <el-input v-model="project.address" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <!-- 项目的建设单位 -->
+          <el-col :span="21">
+            <el-form-item label="项目建设单位" prop="unit">
+              <el-input v-model="project.unit" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <!-- 项目投资额 -->
+          <el-col :span="21">
+            <el-form-item label="项目投资额" prop="investamount">
+              <el-input
+                v-model="project.investamount"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </el-col>
+          <!-- 计划开始时间 -->
+          <el-col :span="25">
+            <el-form-item label="计划开始时间" prop="planstarttime">
+              <el-input
+                v-model="project.planstarttime"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </el-col>
+          <!-- 计划结束时间 -->
+          <el-col :span="25">
+            <el-form-item label="计划结束时间" prop="planendtime">
+              <el-input v-model="project.planendtime" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="
+            editDialogVisible = false;
+            updateProject()
+          "
+        >确 定
+        </el-button>
+      </div>
+    </el-dialog>
+    <div class="box-top">
+      <div class="project-image">
+        <img :src="project.picture" alt="">
+        <el-upload
+          ref=""
+          class="uploadBtn"
+          action=""
+          :on-change="handleChange"
+          :http-request="uploadProjectPicture"
+          :auto-upload="true"
+          :show-file-list="false"
+        >
           <el-button
+            size="mini"
             type="primary"
-            @click="
-              dialogFormVisible = false;
-              allUpload();
-            "
-          >确 定
-          </el-button>
-        </div>
-      </el-dialog>
-      <!-- 列表渲染 -->
-      <el-col v-for="item in modelList" :key="item.MId" :span="4" :offset="1">
-        <div style="margin-top: 20px">
-          <el-card :body-style="{ padding: '0px' }" shadow="hover">
-            <div class="modelTool">
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="编辑模型信息"
-                placement="bottom-start"
+          >上传预览图</el-button>
+        </el-upload>
+      </div>
+      <ul class="project-info">
+        <li>项目名称：{{ project.pname }}</li>
+        <li>项目类别：{{ project.category }}</li>
+        <li>项目描述：{{ project.description }}</li>
+        <li>项目地址：{{ project.province+project.city+project.district+project.street }}</li>
+        <li>详细地址：{{ project.address }}</li>
+        <li>项目开始时间：{{ project.planstarttime }}</li>
+        <li>项目结束时间：{{ project.planendtime }}</li>
+        <li>项目建设单位：{{ project.unit }}</li>
+        <li>项目宣传视频：{{ project.video }}</li>
+        <li>项目投资额：{{ project.investamount }}</li>
+      </ul>
+      <ul class="project-tools">
+        <li><el-button type="primary" @click="editDialogVisible = true">修改项目</el-button></li>
+        <li><el-button type="primary" @click="getMember()">项目成员</el-button></li>
+        <li>
+          <el-popconfirm
+            confirm-button-text="确定"
+            cancel-button-text="取消"
+            icon="el-icon-info"
+            icon-color="red"
+            title="确定要删除此项目吗？"
+            @onConfirm="deleteProject()"
+          >
+            <el-button
+              slot="reference"
+              type="danger"
+            >
+              删除项目
+            </el-button>
+          </el-popconfirm>
+        </li>
+      </ul>
+    </div>
+    <!-- 上传中 -->
+    <el-dialog
+      title="正在上传"
+      :visible.sync="loading"
+      style="margin-top: -40px"
+    >
+      <div
+        v-loading="loadModel"
+        element-loading-text="拼命上传中"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+      >
+        1
+      </div>
+    </el-dialog>
+    <!-- 上传模型 -->
+    <el-dialog
+      title="上传模型"
+      :visible.sync="addDialogVisible"
+      style="margin-top: -40px"
+    >
+      <el-row>
+        <el-form ref="form" :model="addModelFrom" label-width="100px">
+          <!-- 模型名称 -->
+          <el-col :span="15">
+            <el-form-item label="模型名称" prop="mName">
+              <el-input v-model="addModelFrom.mName" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <!-- 模型描述 -->
+          <el-col :span="15">
+            <el-form-item label="模型描述" prop="mDescription">
+              <el-input v-model="addModelFrom.mDescription" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <!-- 添加模型 -->
+          <el-col :span="24">
+            <el-form-item label="上传模型" prop="mFile">
+              <el-upload
+                ref=""
+                action=""
+                :on-change="handleChangeMod"
+                :auto-upload="false"
+                list-type="text"
               >
-                <el-button
-                  size="mini"
-                  type="primary"
-                  icon="el-icon-edit"
-                  circle
-                  @click="
-                    editDialogVisible = true;
-                    getModelInfo(item.MId);
-                  "
-                />
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="删除模型"
-                placement="bottom-start"
-              >
-                <el-popconfirm
-                  confirm-button-text="确定"
-                  cancel-button-text="取消"
-                  icon="el-icon-info"
-                  icon-color="red"
-                  title="确定要删除此模型吗？"
-                  @onConfirm="deleteModel(item.MId)"
-                >
-                  <el-button
-                    slot="reference"
-                    size="mini"
-                    type="danger"
-                    icon="el-icon-delete"
-                    circle
-                  />
-                </el-popconfirm>
-              </el-tooltip>
-            </div>
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="
+            allUpload();
+          "
+        >确 定
+        </el-button>
+      </div>
+    </el-dialog>
+    <!-- 二三维联动 -->
+    <el-dialog
+      ref="bimFaceBim"
+      title="模型展示"
+      :visible.sync="linkageBim"
+      width="90%"
+      top="2vh"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <bimfacelinkage
+        v-if="linkageBim"
+        ref="linkBimFace"
+        :model-file-id="modelFileId"
+        :file-name="fileName"
+        :model-token="modelToken"
+      />
+    </el-dialog>
+    <div class="box-bottom">
+      <!-- 动态渲染卡片部分 -->
+      <el-col v-for="item in model" :key="item.MId" :span="4" :offset="1">
+        <div style="margin-top: 40px">
+          <el-card :body-style="{ padding: '0px' }" shadow="hover" class="card">
             <img :src="item.MPicture" class="model-image" @click="lookDetail(item)">
             <div class="text">
               <div>{{ item.MName }}</div>
-              <div class="bottom clearfix">
-                <!-- <time class="time">{{ currentDate }}</time> -->
-                <!-- <el-button type="text" class="button">操作按钮</el-button> -->
-              </div>
+              <div class="bottom clearfix" />
             </div>
           </el-card>
         </div>
-        <!-- 编辑模型信息 -->
-        <el-dialog
-          title="模型信息"
-          :visible.sync="editDialogVisible"
-          style="margin-top: -40px"
-        >
-          <el-row :gutter="15">
-            <el-form ref="editForm" :model="editForm" label-width="100px">
-              <el-col :span="15">
-                <el-form-item label="模型名称" prop="MName">
-                  <el-input v-model="editForm.MName" autocomplete="off" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="15">
-                <el-form-item label="模型描述" prop="MDescription">
-                  <el-input
-                    v-model="editForm.MDescription"
-                    autocomplete="off"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-form>
-          </el-row>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="editDialogVisible = false">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="
-                editDialogVisible = false;
-                submitUpload();
-              "
-            >确 定
-            </el-button>
-          </div>
-        </el-dialog>
       </el-col>
-      <!-- 二三维联动 -->
-      <el-dialog
-        ref="bimFaceBim"
-        title="模型展示"
-        :visible.sync="linkageBim"
-        width="90%"
-        top="5vh"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-      >
-        <bimfacelinkage
-          v-if="linkageBim"
-          ref="linkBimFace"
-          :model-file-id="modelFileId"
-          :file-name="fileName"
-          :model-token="modelToken"
-        />
-      </el-dialog>
       <!-- 添加模型 -->
       <el-col
         :span="4"
         class="preCard"
-        @click.native="dialogFormVisible = true"
+        @click.native="addDialogVisible = true"
       >
-        <div style="margin-top: 15px">
+        <div style="margin-top: 40px">
           <el-card>
             <i class="el-icon-plus" />
           </el-card>
         </div>
       </el-col>
-    </el-row>
+    </div>
   </div>
 </template>
 
 <script>
-import {
-  addModel,
-  delModel,
-  updateModelByMId,
-  findmodelByPID,
-  findModelByMid
-} from '@/api/model'
-import { getProjectPID, getUser } from '@/utils/cookie'
+import { findProjectInfoApi, addProjectPictureApi, updateProjectApi, deleteProjectApi, findProjectMembersApi } from '@/api/project'
+// eslint-disable-next-line no-unused-vars
+import { addModelApi, delModelApi, updateModelByMIdApi, findmodelByPIDApi, findModelByMidApi } from '@/api/model'
+import { getUser, getProjectPID, setMember } from '@/utils/cookie'
 import bimfacelinkage from './bimfacelinkage'
 export default {
-  name: 'Model',
   components: {
     bimfacelinkage
   },
   data() {
     return {
-      dialogFormVisible: false,
+      project: {},
+      pictureFile: '',
       editDialogVisible: false,
+      addDialogVisible: false,
       linkageBim: false,
-      modelList: [],
-      form: {
-        MId: '',
-        MName: '',
-        Creator: '',
-        PID: '',
-        MDescription: '',
-        MPicture: '',
-        MFile: ''
+      loading: false,
+      loadModel: false,
+      addModelFrom: {
+        mName: '',
+        creator: '',
+        mFile: '',
+        mDescription: '',
+        PID: ''
       },
-      editForm: {},
-      fileName: '',
+      model: {},
       modelFileId: '',
+      fileName: '',
       modelToken: ''
     }
   },
   created() {
+    const _this = this
+    // 调用根据项目id查询项目信息接口
+    findProjectInfoApi(getProjectPID()).then((res) => {
+      console.log(res)
+      if (res.data.pid) {
+        _this.project = res.data
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+    // 根据项目pid返回成员列表
+    findProjectMembersApi(getProjectPID()).then((res) => {
+      // console.log(res.data)
+      if (res.data instanceof Array) {
+        setMember(res.data)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
     // 根据项目id查模型
-    findmodelByPID(getProjectPID())
-      .then((res) => {
-        console.log(res)
-        // console.log(res.data);
-        this.modelList = res.data.data
-        // console.log(this.modelList);
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    findmodelByPIDApi(getProjectPID()).then((res) => {
+      console.log(res)
+      this.model = res.data.data
+      // console.log(this.modelList);
+    }).catch((err) => {
+      console.log(err)
+    })
   },
   methods: {
-    // 获取图片
-    handleChangePic(file, fileList) {
-      // console.log(file)
-      this.form.MPicture = file.raw
-      // console.log(this.pictureFile)
+    getMember(pid) {
+      pid = getProjectPID()
+      this.$router.push(`/project/${pid}/member`)
+    },
+    // 获取上传的图片
+    handleChange(file, fileList) {
+      this.pictureFile = file.raw
+      // console.log(this.form.Picture);
     },
     // 获取文件
     handleChangeMod(file, fileList) {
       // console.log(file)
-      this.form.MFile = file.raw
+      this.addModelFrom.mFile = file.raw
       // console.log(this.pictureFile)
     },
-    // 提交添加模型表单
     allUpload() {
       const _this = this
       const data = new FormData()
       data.append('PID', getProjectPID())
-      data.append('Creator', getUser().id)
-      data.append('MName', this.form.MName)
-      data.append('MPicture', this.form.MPicture)
-      data.append('MDescription', this.form.MDescription)
-      data.append('MFile', this.form.MFile)
+      data.append('creator', getUser().id)
+      data.append('mName', this.addModelFrom.mName)
+      data.append('mDescription', this.addModelFrom.mDescription)
+      data.append('mFile', this.addModelFrom.mFile)
+      this.loading = true
+      this.loadModel = true
       // 调用添加模型接口
-      addModel(data)
+      addModelApi(data)
         .then((res) => {
-          console.log(229, res)
+          this.loading = false
+          this.addDialogVisible = false
           if (res.data.code === 200) {
-            findmodelByPID(getProjectPID())
+            findmodelByPIDApi(getProjectPID())
               .then((res) => {
                 this.modelList = res.data.data
               })
@@ -289,63 +371,63 @@ export default {
           console.log(250, err)
         })
     },
-    // 提交修改模型模型表单
-    submitUpload() {
+    // 上传项目预览图
+    uploadProjectPicture() {
       const _this = this
       const data = new FormData()
-      data.append('MName', this.editForm.MName)
-      data.append('MDescription', this.editForm.MDescription)
-      // 调用修改模型接口
-      updateModelByMId(data)
-        .then((res) => {
-          console.log(res)
-          if (res.data.code === 200) {
-            findmodelByPID(getProjectPID())
-              .then((res) => {
-                this.modelList = res.data.data
-              })
-              .catch((err) => {
-                console.log(err)
-              })
-            _this.$notify({
-              title: '成功',
-              message: '修改成功',
-              type: 'success',
-              duration: 1000,
-              offset: 80
-            })
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    // 根据模型id获取模型信息
-    getModelInfo(MId) {
-      console.log(MId)
-      // 调用根据模型id查模型接口
-      findModelByMid(MId)
-        .then((res) => {
-          this.editForm = res.data.data
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    // 删除模型
-    deleteModel(MId) {
-      const _this = this
-      // 调用删除模型接口
-      delModel(MId).then((res) => {
+      data.append('uid', getUser().id)
+      data.append('pid', getProjectPID())
+      data.append('pictureFile', this.pictureFile)
+      addProjectPictureApi(data).then((res) => {
         console.log(res)
-        if (res.data.code === 200) {
-          findmodelByPID(getProjectPID())
-            .then((res) => {
-              this.modelList = res.data.data
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+        if (res.status === 200) {
+          findProjectInfoApi(getProjectPID()).then((res) => {
+            // console.log(res)
+            if (res.data.pid) {
+              _this.project = res.data
+            }
+          }).catch((err) => {
+            console.log(err)
+          })
+          _this.$notify({
+            title: '成功',
+            message: '上传成功',
+            type: 'success',
+            duration: 1000,
+            offset: 80
+          })
+        }
+      })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 提交编辑更新项目表单
+    updateProject() {
+      const _this = this
+      updateProjectApi(this.project).then((res) => {
+        console.log(res)
+        if (res.data.status === 200) {
+          _this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 1000,
+            offset: 80
+          })
+        }
+      })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 删除项目
+    deleteProject() {
+      const _this = this
+      deleteProjectApi(getProjectPID()).then((res) => {
+        console.log(res)
+        if (res.data.status === 204) {
+          _this.$router.replace('/project/index')
           _this.$notify({
             title: '成功',
             message: '删除成功',
@@ -355,12 +437,16 @@ export default {
           })
         }
       })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     // 查看模型详情L
-    lookDetail(modelList) {
-      this.modelFileId = modelList.MId
-      this.fileName = modelList.MName
-      this.modelToken = modelList.ModelToken
+    lookDetail(model) {
+      this.modelFileId = model.MId
+      this.fileName = model.MName
+      this.modelToken = model.MFile
+      console.log(this.modelToken)
       this.linkageBim = true
     }
   }
@@ -368,20 +454,44 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modelTool {
+.box-top {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row;
+  justify-content: space-around;
   align-items: center;
-  margin: 5px 0;
-  position: sticky;
-  font-size: 8px;
-  text-align: center;
-  // background-color: red;
+  width: 100%;
+  height: 50vh;
+  background-color: skyblue;
+.project-image {
+  width: 200px;
+  // background-color: #fff;
+  img {
+    width: 100%;
+    height: 120px;
+    border-radius: 10px;
+  }
 }
+.project-info {
+  background-color: #fff;
+  li {
+    margin-top: 10px;
+  }
+}
+.project-tools {
+  background-color: #fff;
+}
+}
+
+.box-bottom {
+  width: 100%;
+  height: 50vh;
+  background-color: lightcoral;
+}
+
 .model-image {
   width: 100%;
-  height: 120px;
-  background-size: 120px;
+  height: 200px;
+  background-size: 200px;
   display: block;
   cursor: pointer;
 }
@@ -403,9 +513,25 @@ export default {
       color: #8c939d;
       // width: 178px;
       // height: 178px;
-      line-height: 178px;
+      line-height: 200px;
       text-align: center;
     }
   }
+}
+.remover{
+  width: 0;
+  height: 0;
+  border-top: 66rpx solid #abb2bf;
+  border-left: 66rpx solid transparent;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.icon{
+  width: 30rpx;
+  height: 30rpx;
+  position: absolute;
+  top: -60rpx;
+  right: 4rpx;
 }
 </style>

@@ -22,7 +22,7 @@
               </el-form-item>
             </el-col>
             <!-- 模型预览图 -->
-            <el-col :span="24">
+            <!-- <el-col :span="24">
               <el-form-item label="模型预览图" prop="MPicture" required>
                 <el-upload
                   ref=""
@@ -37,7 +37,7 @@
                   </div>
                 </el-upload>
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <!-- 上传模型 -->
             <el-col :span="24">
               <el-form-item label="上传模型" prop="MFile">
@@ -70,7 +70,7 @@
       <el-col v-for="item in modelList" :key="item.MId" :span="4" :offset="1">
         <div style="margin-top: 20px">
           <el-card :body-style="{ padding: '0px' }" shadow="hover">
-            <div class="modelTool">
+            <!-- <div class="modelTool">
               <el-tooltip
                 class="item"
                 effect="dark"
@@ -111,8 +111,8 @@
                   />
                 </el-popconfirm>
               </el-tooltip>
-            </div>
-            <img :src="item.MPicture" class="model-image">
+            </div> -->
+            <img :src="item.MPicture" class="model-image" @click="lookDetail(item)">
             <div class="text">
               <div>{{ item.MName }}</div>
               <div class="bottom clearfix">
@@ -158,6 +158,23 @@
           </div>
         </el-dialog>
       </el-col>
+      <!-- 二三维联动 -->
+      <el-dialog
+        ref="bimFaceBim"
+        title="模型展示"
+        :visible.sync="linkageBim"
+        width="90%"
+        top="5vh"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <bimfacelinkage
+          v-if="linkageBim"
+          ref="linkBimFace"
+          :model-file-id="modelFileId"
+          :file-name="fileName"
+        />
+      </el-dialog>
       <!-- 添加模型 -->
       <el-col
         :span="4"
@@ -178,19 +195,22 @@
 import {
   addModel,
   delModel,
-  // eslint-disable-next-line no-unused-vars
-  delModelByPID,
   updateModelByMId,
   findmodelByPID,
   findModelByMid
 } from '@/api/model'
 import { getProjectPID, getUser } from '@/utils/cookie'
+import bimfacelinkage from './bimfacelinkage'
 export default {
   name: 'Model',
+  components: {
+    bimfacelinkage
+  },
   data() {
     return {
       dialogFormVisible: false,
       editDialogVisible: false,
+      linkageBim: false,
       modelList: [],
       form: {
         MId: '',
@@ -201,7 +221,9 @@ export default {
         MPicture: '',
         MFile: ''
       },
-      editForm: {}
+      editForm: {},
+      fileName: '',
+      modelFileId: ''
     }
   },
   created() {
@@ -331,6 +353,12 @@ export default {
           })
         }
       })
+    },
+    // 查看模型详情L
+    lookDetail(modelList) {
+      this.modelFileId = modelList.MId
+      this.fileName = modelList.MName
+      this.linkageBim = true
     }
   }
 }

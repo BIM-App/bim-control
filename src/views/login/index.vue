@@ -84,14 +84,14 @@ export default {
             password: _this.form.password
           }
           loginApi(params).then((res) => {
-            // console.log(res) // for debug
+            console.log(res) // for debug
             if (res.data.id) {
               setUser(res.data)
               setRole(res.data.role)
               sessionStorage.setItem('uid', res.data.id)
               _this.$store.commit('user/SET_USER', res.data)
               _this.$store.commit('user/SET_ROLE', res.data.role)
-              _this.$router.push('/dashboard')
+              _this.$router.push({ path: this.redirect || '/' })
               _this.$notify({
                 title: '成功',
                 message: '登录成功',

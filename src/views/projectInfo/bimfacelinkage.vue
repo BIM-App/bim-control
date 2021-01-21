@@ -70,13 +70,13 @@ export default {
     // this.init();
   },
   methods: {
-    // // 切换图纸
-    // modelIndexChange(val) {
-    //   const _this = this
-    //   var l = _this.map.getFloorList() // 获取楼层的小地图列表
-    //   _this.modelList = l
-    //   _this.map.showFloorById(l[val].id) // 显示某一张小地图
-    // },
+    // 切换图纸
+    modelIndexChange(val) {
+      const _this = this
+      var l = _this.map.getFloorList() // 获取楼层的小地图列表
+      _this.modelList = l
+      _this.map.showFloorById(l[val].id) // 显示某一张小地图
+    },
     init() {
       const _this = this
       // eslint-disable-next-line no-unused-vars
@@ -180,9 +180,7 @@ export default {
       }
     },
     getToken() {
-      console.log(this.modelToken)
       this.init()
-      console.log(this.fileName, '模型展示')
       // this.loadModel = true
       // findModelByMid(this.modelFileId)
       //   .then((res) => {

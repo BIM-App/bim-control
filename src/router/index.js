@@ -126,9 +126,16 @@ export const adminRoutes = [
       },
       {
         path: 'staff',
-        name: 'staff',
+        name: 'Staff',
         component: () => import('@/views/system/staff/index'),
         meta: { title: '员工管理', icon: 'dashboard', roles: ['admin'] }
+      },
+      {
+        path: 'staffInfo',
+        name: 'StaffInfo',
+        hidden: true,
+        component: () => import('@/views/system/staffInfo/index'),
+        meta: { title: '员工详情', icon: 'dashboard', roles: ['admin'] }
       }
     ]
   }
