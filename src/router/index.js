@@ -72,18 +72,18 @@ export const constantRoutes = [
       meta: { title: 'Profile' }
     }]
   },
-  {
-    path: '/task',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Task',
-        component: () => import('@/views/task/index'),
-        meta: { title: '任务管理', icon: 'dashboard' }
-      }
-    ]
-  },
+  // {
+  //   path: '/task',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Task',
+  //       component: () => import('@/views/task/index'),
+  //       meta: { title: '任务管理', icon: 'dashboard' }
+  //     }
+  //   ]
+  // },
   {
     path: '/404',
     component: () => import('@/views/404'),
@@ -100,47 +100,15 @@ const createRouter = () => new Router({
 const router = createRouter()
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
+// export function resetRouter() {
+//   const newRouter = createRouter()
+//   router.matcher = newRouter.matcher // reset router
+// }
+export function initRouter() {
   const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  router.matcher = newRouter.matcher
+  console.log(router.options.routes)
+  router.options.routes = constantRoutes
 }
 
 export default router
-
-/**
- * asyncRoutes
- */
-export const adminRoutes = [
-
-  {
-    path: '/system',
-    name: 'System',
-    component: Layout,
-    meta: { title: '系统管理', icon: 'nested', roles: ['admin'] },
-    children: [
-      {
-        path: 'company',
-        name: 'Company',
-        component: () => import('@/views/system/company/index'),
-        meta: { title: '公司管理', icon: 'dashboard', roles: ['admin'] }
-      },
-      {
-        path: 'staff',
-        name: 'Staff',
-        component: () => import('@/views/system/staff/index'),
-        meta: { title: '员工管理', icon: 'dashboard', roles: ['admin'] }
-      },
-      {
-        path: 'staffInfo',
-        name: 'StaffInfo',
-        hidden: true,
-        component: () => import('@/views/system/staffInfo/index'),
-        meta: { title: '员工详情', icon: 'dashboard', roles: ['admin'] }
-      }
-    ]
-  }
-  // // 404 page must be placed at the end !!!
-  // { path: '*', redirect: '/404', hidden: true }
-]
-
-export const endRoutes = [{ path: '*', redirect: '/404', hidden: true }]
