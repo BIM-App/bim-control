@@ -30,26 +30,14 @@
           </section>
           <section style="float: right">
             项目时间进度条
-            <el-progress :percentage="50" />
+            <el-progress v-if="project.planstarttime" :percentage="getPresentInfo(project.planstarttime, project.planendtime)" />
+            <el-progress v-else percentage="0" />
           </section>
         </li>
-      </ul>
-      <!-- <ul class="project-info">
-        <li>项目名称：{{ project.pname }}</li>
-        <li>项目类别：{{ project.category }}</li>
-        <li>项目描述：{{ project.description }}</li>
-        <li>项目地址：{{ project.province+project.city+project.district+project.street }}</li>
-        <li>详细地址：{{ project.address }}</li>
-        <li>项目开始时间：{{ project.planstarttime }}</li>
-        <li>项目结束时间：{{ project.planendtime }}</li>
-        <li>项目建设单位：{{ project.unit }}</li>
-        <li>项目宣传视频：{{ project.video }}</li>
-        <li>项目投资额：{{ project.investamount }}</li>
-      </ul> -->
-      <!-- <ul class="project-tools">
-        <li><el-button type="primary" @click="editDialogVisible = true">修改项目</el-button></li>
-        <li><el-button type="primary" @click="getMember()">项目成员</el-button></li>
-        <li>
+        <li class="tools">
+          <el-button type="primary" @click="editDialogVisible = true">修改项目</el-button>
+          <el-button type="primary" @click="getMember()">项目成员</el-button>
+          <el-button type="primary">添加公司</el-button>
           <el-popconfirm
             confirm-button-text="确定"
             cancel-button-text="取消"
@@ -66,6 +54,18 @@
             </el-button>
           </el-popconfirm>
         </li>
+      </ul>
+      <!-- <ul class="project-info">
+        <li>项目名称：{{ project.pname }}</li>
+        <li>项目类别：{{ project.category }}</li>
+        <li>项目描述：{{ project.description }}</li>
+        <li>项目地址：{{ project.province+project.city+project.district+project.street }}</li>
+        <li>详细地址：{{ project.address }}</li>
+        <li>项目开始时间：{{ project.planstarttime }}</li>
+        <li>项目结束时间：{{ project.planendtime }}</li>
+        <li>项目建设单位：{{ project.unit }}</li>
+        <li>项目宣传视频：{{ project.video }}</li>
+        <li>项目投资额：{{ project.investamount }}</li>
       </ul> -->
     </div>
     <div class="box-bottom">
@@ -280,12 +280,14 @@ import { findProjectInfoApi, addProjectPictureApi, updateProjectApi, deleteProje
 import { addModelApi, delModelApi, updateModelByMIdApi, findmodelByPIDApi, findModelByMidApi } from '@/api/model'
 import { getUser, getProjectPID, setMember } from '@/utils/cookie'
 import bimfacelinkage from './bimfacelinkage'
+import { getPresent } from '@/utils/day'
 export default {
   components: {
     bimfacelinkage
   },
   data() {
     return {
+      present: 10,
       project: {},
       pictureFile: '',
       editDialogVisible: false,
@@ -309,7 +311,7 @@ export default {
     const _this = this
     // 调用根据项目id查询项目信息接口
     findProjectInfoApi(getProjectPID()).then((res) => {
-      console.log(res)
+      // console.log(res)
       if (res.data.pid) {
         _this.project = res.data
       }
@@ -335,6 +337,10 @@ export default {
     })
   },
   methods: {
+  // 获取进度条
+    getPresentInfo(start, end) {
+      return getPresent(start, end)
+    },
     getMember(pid) {
       pid = getProjectPID()
       this.$router.push(`/project/${pid}/member`)
@@ -489,7 +495,8 @@ export default {
   height: 300px;
   border: 5px solid red;
   img {
-    width: 100%;
+    width: 450px;
+    height: 300px;
     // height: 120px;
   //    width: 450px;
   // height: 260px;
@@ -511,7 +518,7 @@ export default {
   border: 5px solid red;
   background-color: #fff;
   .description {
-    margin-top: 10px;
+    // margin-top: 10px;
     height: 80px;
     border: 2px solid red;
   }
@@ -524,7 +531,7 @@ export default {
   .progress {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
     // width: 450px;
     // border: 2px solid red;
     background-color: fff;

@@ -62,7 +62,7 @@ export const findProjectsByCIDApi = cid => {
 // 更新审核字段为1(表示审核已通过)
 export const updateCheckStatusApi = data => {
   return request({
-    url: '/springbootBim/Company/update',
+    url: '/springbootBim/Company/updateCheckStatus',
     method: 'put',
     headers: {
       'Content-Type': 'application/json'

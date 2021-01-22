@@ -13,8 +13,22 @@
       <li>公司简介：{{ item.description }}</li>
       <li>审核状态：{{ item.checkstatus === 0 ? '审核中' : '已通过' }}</li>
       <li v-if="item.checkstatus == 1">公司邀请码：{{ item.invitationcode }}</li>
-      <el-button type="primary">修改公司信息</el-button>
-      <el-button type="danger" @click="deleteCompany(item.cid)">删除公司</el-button>
+      <el-button type="primary" disabled>修改公司信息</el-button>
+      <el-popconfirm
+        confirm-button-text="确定"
+        cancel-button-text="取消"
+        icon="el-icon-info"
+        icon-color="red"
+        title="确定要删除此项目吗？"
+        @onConfirm="deleteCompany(item.cid)"
+      >
+        <el-button
+          slot="reference"
+          type="danger"
+        >
+          删除公司
+        </el-button>
+      </el-popconfirm>
     </ul>
     <el-dialog
       title="注册公司"
