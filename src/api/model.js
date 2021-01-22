@@ -58,3 +58,11 @@ export function findModelByMidApi(mid) {
     method: 'GET'
   })
 }
+
+// 获取viewtoken
+export function getmodeltokenApi() {
+  return request({
+    url: 'https://api.bimface.com/view/token',
+    method: 'GET'
+  })
+}

@@ -48,10 +48,11 @@
 </template>
 
 <script>
+import getmodeltokenApi from '@/api/model'
 export default {
   name: 'Linka',
   // eslint-disable-next-line vue/require-prop-types
-  props: ['modelFileId', 'fileName', 'isIntegrate', 'modelToken'],
+  props: ['modelFileId', 'fileName', 'isIntegrate'],
   data() {
     return {
       viewer3D: '',
@@ -60,7 +61,8 @@ export default {
       modelIndex: 0,
       contentFlag: false,
       content: '', // 错误描述
-      loadModel: false
+      loadModel: false,
+      modelToken: ''
     }
   },
   computed: {},
@@ -180,38 +182,42 @@ export default {
       }
     },
     getToken() {
-      this.init()
-      // this.loadModel = true
-      // findModelByMid(this.modelFileId)
-      //   .then((res) => {
-      //     this.loadModel = false
-      //     const data = JSON.parse(res)
-      //     if (data.data) {
-      //       this.modelToken = data.data
-      //       this.init()
-      //     } else {
-      //       this.contentFlag = true
-      //     }
-      //     if (data.code === 'authentication.failed') {
-      //       this.content = 'BIMFACE系统异常,请联系管理员'
-      //     }
-      //     if (data.code === 'system.error') {
-      //       this.content = 'API访问合法性校验失败,请联系管理员'
-      //     }
-      //     if (data.code === 'file.has.not.translated') {
-      //       this.content = '文件未转换,请联系管理员'
-      //     }
-      //     if (data.code === 'file.translate.failed') {
-      //       this.content = '文件转换失败,请联系管理员'
-      //     }
-      //     if (data.code === 'file.is.translating') {
-      //       this.content = '文件转换中,请稍后'
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     this.loadModel = false
-      //     console.log(err)
-      //   })
+      this.loadModel = true
+      getmodeltokenApi({
+        data: {
+          id: this.modelFileId,
+          IsIntegrateId: this.isIntegrate
+        }
+      })
+        .then((res) => {
+          this.loadModel = false
+          const data = JSON.parse(res)
+          if (data.data) {
+            this.modelToken = data.data
+            this.init()
+          } else {
+            this.contentFlag = true
+          }
+          if (data.code === 'authentication.failed') {
+            this.content = 'BIMFACE系统异常,请联系管理员'
+          }
+          if (data.code === 'system.error') {
+            this.content = 'API访问合法性校验失败,请联系管理员'
+          }
+          if (data.code === 'file.has.not.translated') {
+            this.content = '文件未转换,请联系管理员'
+          }
+          if (data.code === 'file.translate.failed') {
+            this.content = '文件转换失败,请联系管理员'
+          }
+          if (data.code === 'file.is.translating') {
+            this.content = '文件转换中,请稍后'
+          }
+        })
+        .catch((err) => {
+          this.loadModel = false
+          console.log(err)
+        })
     }
   }
 }
