@@ -335,6 +335,7 @@ export default {
       this.addModelFrom.mFile = file.raw
       // console.log(this.pictureFile)
     },
+    // 添加模型
     allUpload() {
       const _this = this
       const data = new FormData()
@@ -441,7 +442,7 @@ export default {
           console.log(err)
         })
     },
-    // 查看模型详情L
+    // 查看模型
     lookDetail(model) {
       this.modelFileId = model.MId
       this.fileName = model.MName
