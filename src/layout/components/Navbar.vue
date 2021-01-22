@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { initRouter } from '../../router'
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -76,7 +77,7 @@ export default {
       removeRole()
       sessionStorage.removeItem('uid')
       await this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
-      location.reload()
+      initRouter()
     }
   }
 }

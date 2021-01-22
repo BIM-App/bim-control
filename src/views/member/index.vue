@@ -28,13 +28,13 @@
         </template>
         <template slot-scope="scope">
           <el-button
-            v-if="!scope.$index ==0"
+            v-if="!scope.$index === 0"
             size="medium"
             @click="handleEdit(scope.$index, scope.row);
                     open()"
           >编辑</el-button>
           <el-button
-            v-if="!scope.$index ==0"
+            v-if="!scope.$index === 0"
             size="medium"
             type="danger"
             @click="deleteMember(scope.$index, scope.row);
@@ -110,6 +110,7 @@ export default {
           roleinproject: value,
           updater: getUser().id
         }
+        // 更新成员信息
         updateMemberApi(data).then((res) => {
           console.log(res)
           if (res.data.status === 200) {

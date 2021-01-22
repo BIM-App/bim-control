@@ -1,5 +1,99 @@
 <template>
   <div class="container">
+    <div class="box-top">
+      <div class="project-image">
+        <el-upload
+          ref=""
+          class="uploadBtn"
+          action=""
+          :on-change="handleChange"
+          :http-request="uploadProjectPicture"
+          :auto-upload="true"
+          :show-file-list="false"
+        >
+          <img :src="project.picture" alt="">
+        </el-upload>
+        <div class="project-title">项目名称 {{ project.pname }}</div>
+      </div>
+      <ul class="project-info">
+        <li class="description">
+          项目简介 {{ project.description }}111111111
+        </li>
+        <li class="unit">
+          <span>项目负责人 {{}}张三</span>
+          <span>项目参建方 {{}}某某公司</span>
+        </li>
+        <li class="progress">
+          <section>
+            开始时间 {{ project.planstarttime }}<br>
+            结束时间 {{ project.planendtime }}
+          </section>
+          <section style="float: right">
+            项目时间进度条
+            <el-progress :percentage="50" />
+          </section>
+        </li>
+      </ul>
+      <!-- <ul class="project-info">
+        <li>项目名称：{{ project.pname }}</li>
+        <li>项目类别：{{ project.category }}</li>
+        <li>项目描述：{{ project.description }}</li>
+        <li>项目地址：{{ project.province+project.city+project.district+project.street }}</li>
+        <li>详细地址：{{ project.address }}</li>
+        <li>项目开始时间：{{ project.planstarttime }}</li>
+        <li>项目结束时间：{{ project.planendtime }}</li>
+        <li>项目建设单位：{{ project.unit }}</li>
+        <li>项目宣传视频：{{ project.video }}</li>
+        <li>项目投资额：{{ project.investamount }}</li>
+      </ul> -->
+      <!-- <ul class="project-tools">
+        <li><el-button type="primary" @click="editDialogVisible = true">修改项目</el-button></li>
+        <li><el-button type="primary" @click="getMember()">项目成员</el-button></li>
+        <li>
+          <el-popconfirm
+            confirm-button-text="确定"
+            cancel-button-text="取消"
+            icon="el-icon-info"
+            icon-color="red"
+            title="确定要删除此项目吗？"
+            @onConfirm="deleteProject()"
+          >
+            <el-button
+              slot="reference"
+              type="danger"
+            >
+              删除项目
+            </el-button>
+          </el-popconfirm>
+        </li>
+      </ul> -->
+    </div>
+    <div class="box-bottom">
+      <!-- 动态渲染卡片部分 -->
+      <el-col v-for="item in model" :key="item.MId" :span="4" :offset="1">
+        <div style="margin-top: 40px">
+          <el-card :body-style="{ padding: '0px' }" shadow="hover" class="card">
+            <img :src="item.MPicture" class="model-image" @click="lookDetail(item)">
+            <div class="text">
+              <div>{{ item.MName }}</div>
+              <div class="bottom clearfix" />
+            </div>
+          </el-card>
+        </div>
+      </el-col>
+      <!-- 添加模型 -->
+      <el-col
+        :span="4"
+        class="preCard"
+        @click.native="addDialogVisible = true"
+      >
+        <div style="margin-top: 40px">
+          <el-card>
+            <i class="el-icon-plus" />
+          </el-card>
+        </div>
+      </el-col>
+    </div>
     <!-- 编辑更新项目 -->
     <el-dialog
       title="修改项目"
@@ -97,58 +191,7 @@
         </el-button>
       </div>
     </el-dialog>
-    <div class="box-top">
-      <div class="project-image">
-        <img :src="project.picture" alt="">
-        <el-upload
-          ref=""
-          class="uploadBtn"
-          action=""
-          :on-change="handleChange"
-          :http-request="uploadProjectPicture"
-          :auto-upload="true"
-          :show-file-list="false"
-        >
-          <el-button
-            size="mini"
-            type="primary"
-          >上传预览图</el-button>
-        </el-upload>
-      </div>
-      <ul class="project-info">
-        <li>项目名称：{{ project.pname }}</li>
-        <li>项目类别：{{ project.category }}</li>
-        <li>项目描述：{{ project.description }}</li>
-        <li>项目地址：{{ project.province+project.city+project.district+project.street }}</li>
-        <li>详细地址：{{ project.address }}</li>
-        <li>项目开始时间：{{ project.planstarttime }}</li>
-        <li>项目结束时间：{{ project.planendtime }}</li>
-        <li>项目建设单位：{{ project.unit }}</li>
-        <li>项目宣传视频：{{ project.video }}</li>
-        <li>项目投资额：{{ project.investamount }}</li>
-      </ul>
-      <ul class="project-tools">
-        <li><el-button type="primary" @click="editDialogVisible = true">修改项目</el-button></li>
-        <li><el-button type="primary" @click="getMember()">项目成员</el-button></li>
-        <li>
-          <el-popconfirm
-            confirm-button-text="确定"
-            cancel-button-text="取消"
-            icon="el-icon-info"
-            icon-color="red"
-            title="确定要删除此项目吗？"
-            @onConfirm="deleteProject()"
-          >
-            <el-button
-              slot="reference"
-              type="danger"
-            >
-              删除项目
-            </el-button>
-          </el-popconfirm>
-        </li>
-      </ul>
-    </div>
+
     <!-- 上传中 -->
     <el-dialog
       title="正在上传"
@@ -229,32 +272,6 @@
         :model-token="modelToken"
       />
     </el-dialog>
-    <div class="box-bottom">
-      <!-- 动态渲染卡片部分 -->
-      <el-col v-for="item in model" :key="item.MId" :span="4" :offset="1">
-        <div style="margin-top: 40px">
-          <el-card :body-style="{ padding: '0px' }" shadow="hover" class="card">
-            <img :src="item.MPicture" class="model-image" @click="lookDetail(item)">
-            <div class="text">
-              <div>{{ item.MName }}</div>
-              <div class="bottom clearfix" />
-            </div>
-          </el-card>
-        </div>
-      </el-col>
-      <!-- 添加模型 -->
-      <el-col
-        :span="4"
-        class="preCard"
-        @click.native="addDialogVisible = true"
-      >
-        <div style="margin-top: 40px">
-          <el-card>
-            <i class="el-icon-plus" />
-          </el-card>
-        </div>
-      </el-col>
-    </div>
   </div>
 </template>
 
@@ -403,7 +420,7 @@ export default {
           console.log(err)
         })
     },
-    // 提交编辑更新项目表单
+    // 编辑更新项目
     updateProject() {
       const _this = this
       updateProjectApi(this.project).then((res) => {
@@ -455,27 +472,69 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.container {
+  // display: flex;
+  // justify-content: center;
+  // flex-direction: column;
+  background-color: #fff;
+}
 .box-top {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  height: 50vh;
+  height: 400px;
   background-color: skyblue;
 .project-image {
-  width: 200px;
-  // background-color: #fff;
+  margin-top: -30px;
+  // margin-left: 30px;
+  width: 450px;
+  height: 300px;
+  border: 5px solid red;
   img {
     width: 100%;
-    height: 120px;
+    // height: 120px;
+  //    width: 450px;
+  // height: 260px;
     border-radius: 10px;
+  }
+  .project-title {
+    margin-top: 15px;
+    font-size: 20px;
+    text-align: center;
   }
 }
 .project-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: -27px;
+  width: 720px;
+  height: 300px;
+  border: 5px solid red;
   background-color: #fff;
-  li {
+  .description {
     margin-top: 10px;
+    height: 80px;
+    border: 2px solid red;
+  }
+  .unit {
+    margin-top: 10px;
+    span {
+      margin-right: 150px;
+    }
+  }
+  .progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    // width: 450px;
+    // border: 2px solid red;
+    background-color: fff;
+    section {
+      width: 50%;
+    }
   }
 }
 .project-tools {
@@ -484,6 +543,7 @@ export default {
 }
 
 .box-bottom {
+  margin-top: 100px;
   width: 100%;
   height: 50vh;
   background-color: lightcoral;
@@ -505,7 +565,6 @@ export default {
 }
 .preCard {
   margin-left: 60px;
-  height: 100%;
   .el-card {
     text-align: center;
     border: 2px dashed #d9d9d9;

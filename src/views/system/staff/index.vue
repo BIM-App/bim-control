@@ -57,7 +57,7 @@ export default {
     height: 100px;
     background-color: skyblue;
     li {
-
+      background-color: #fff;
     }
   }
 }

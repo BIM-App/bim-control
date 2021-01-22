@@ -11,7 +11,7 @@
       <li>组织机构代码证号：{{ item.orgnizationno }}</li>
       <li>公司所在地址：{{ item.address }}</li>
       <li>公司简介：{{ item.description }}</li>
-      <li>审核状态：{{ item.checkstatus == 0 ? '审核中' : '已通过' }}</li>
+      <li>审核状态：{{ item.checkstatus === 0 ? '审核中' : '已通过' }}</li>
       <li v-if="item.checkstatus == 1">公司邀请码：{{ item.invitationcode }}</li>
       <el-button type="primary">修改公司信息</el-button>
       <el-button type="danger" @click="deleteCompany(item.cid)">删除公司</el-button>
@@ -151,7 +151,8 @@ export default {
     findCompanyApi().then((res) => {
       console.log(res.data)
       if (res.data instanceof Array) {
-        this.companyData = res.data.filter((item) => item.creator === getUser().id)
+        // 过滤不是当前用户创建的公司
+        this.companyData = res.data.filter(item => item.creator === getUser().id)
         // console.log(this.companyData)
       }
     }).catch((err) => {
