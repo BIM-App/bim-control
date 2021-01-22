@@ -63,3 +63,17 @@ export const getCompanyCID = () => {
 export const removeCompanyCID = () => {
   return Cookies.remove('cid')
 }
+
+// 存储Access Token
+export const setToken = (data) => {
+  return Cookies.set('token', data)
+}
+
+export const getToken = () => {
+  return JSON.parse(Cookies.get('token'))
+}
+
+export const removeToken = () => {
+  return Cookies.remove('token')
+}
+

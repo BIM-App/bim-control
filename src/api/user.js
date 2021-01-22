@@ -65,3 +65,14 @@ export const findProjectsApi = username => {
   })
 }
 
+// 请求 Access Token
+export const getAccessToken = () => {
+  const appKey = 'ktmv7CmriQsFVtgYTgjahbNS1Z9xl6P0'
+  const appSecret = 'VUZGNWtcC27QNxIV5AUwwcDwahKOhDAW'
+  return request({
+    url: '/oauth2/token',
+    method: 'post',
+    headers: { Authorization: 'Basic' + ' ' + window.btoa(appKey + ':' + appSecret) }
+    // headers: { 'Authorization': 'Basic a3RtdjdDbXJpUXNGVnRnWVRnamFoYk5TMVo5eGw2UDA6VlVaR05XdGNDMjdRTnhJVjVBVXd3Y0R3YWhLT2hEQVc=' }
+  })
+}

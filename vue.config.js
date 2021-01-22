@@ -35,6 +35,18 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    },
+    proxy: {
+      '/proxy': {
+        target: 'https://api.bimface.com',
+        secure: false,
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/proxy': ''
+        }
+
+      }
     }
     // before: require('./mock/mock-server.js')
   },
