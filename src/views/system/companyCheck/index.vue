@@ -27,6 +27,7 @@
       </template>
       <template slot-scope="scope">
         <el-button
+          v-if="checkPass"
           size="mini"
           type="primary"
           @click="updateCheckStatus(scope.$index, scope.row)"
@@ -49,7 +50,7 @@ export default {
     return {
       companyData: [],
       search: '',
-      checkPass: false
+      checkPass: ''
     }
   },
   created() {
@@ -57,9 +58,13 @@ export default {
       // console.log(res.data)
       if (res.data instanceof Array) {
         this.companyData = res.data
-        // this.companyData.forEach(
-        //   item => { item.checkstatus === 0 ? item.checkstatus = '审核中' : item.checkstatus = '已通过' }
-        // )
+        this.companyData.forEach(
+          item => {
+            item.checkstatus === 0
+              ? item.checkstatus = '待审核'
+              : item.checkstatus = '已通过'
+          }
+        )
       }
       // console.log(this.companyData)
     }).catch((err) => {
@@ -72,7 +77,6 @@ export default {
       // console.log(index, row)
       const data = {
         cid: row.cid,
-        checkstatus: 1,
         updater: getUser().id
       }
       updateCheckStatusApi(data).then((res) => {
@@ -82,9 +86,13 @@ export default {
             console.log(res.data)
             if (res.data instanceof Array) {
               this.companyData = res.data
-              // this.companyData.forEach(
-              //   item => { item.checkstatus === 0 ? item.checkstatus = '审核中' : item.checkstatus = '已通过' }
-              // )
+              this.companyData.forEach(
+                item => {
+                  item.checkstatus === 0
+                    ? item.checkstatus = '待审核' && (this.checkPass = true)
+                    : item.checkstatus = '已通过' && (this.checkPass = false)
+                }
+              )
             }
             console.log(this.companyData)
           }).catch((err) => {

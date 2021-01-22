@@ -1,7 +1,7 @@
 <template>
   <div class="table-box">
     <el-table
-      :data="tableData"
+      :data="UserData"
       style="width: 100%"
     >
       <el-table-column
@@ -45,12 +45,16 @@ import { getCompanyCID } from '@/utils/cookie'
 export default {
   data() {
     return {
-      tableData: []
+      UserData: []
     }
   },
   created() {
     findUsersByCompanyIDApi(getCompanyCID()).then((res) => {
       console.log(res)
+      if (res.data instanceof Array) {
+        this.UserData = res.data
+      }
+      // console.log(this.UserData)
     }).catch((err) => {
       console.log(err)
     })
