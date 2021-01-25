@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { loginApi } from '@/api/user'
-import { setUser, setRole } from '@/utils/cookie'
+import { loginApi, getAccessToken } from '@/api/user'
+import { setUser, setRole, setToken } from '@/utils/cookie'
 export default {
   name: 'Login',
   data() {
@@ -92,6 +92,15 @@ export default {
               _this.$store.commit('user/SET_USER', res.data)
               _this.$store.commit('user/SET_ROLE', res.data.role)
               _this.$router.push({ path: this.redirect || '/' })
+              // 请求BIM Access Token
+              getAccessToken().then((res) => {
+                console.log(res)
+                if (res.data.code === 'success') {
+                  setToken(res.data.data.token)
+                }
+              }).catch((err) => {
+                console.log(err)
+              })
               _this.$notify({
                 title: '成功',
                 message: '登录成功',
