@@ -19,9 +19,13 @@
         <li class="description">
           项目简介 {{ project.description }}111111111
         </li>
-        <li class="unit">
+        <li class="people">
           <span>项目负责人 {{}}张三</span>
-          <span>项目参建方 {{}}某某公司</span>
+        </li>
+        <li class="unit">
+          <span>施工单位 {{}}某某公司</span>
+          <span>监理单位 {{}}某某公司</span>
+          <span>业主单位 {{}}某某公司</span>
         </li>
         <li class="progress">
           <section>
@@ -31,13 +35,14 @@
           <section style="float: right">
             项目时间进度条
             <el-progress v-if="project.planstarttime" :percentage="getPresentInfo(project.planstarttime, project.planendtime)" />
-            <el-progress v-else percentage="0" />
+            <el-progress v-else :percentage="0" />
           </section>
         </li>
         <li class="tools">
           <el-button type="primary" @click="editDialogVisible = true">修改项目</el-button>
           <el-button type="primary" @click="getMember()">项目成员</el-button>
-          <el-button type="primary">添加公司</el-button>
+          <!-- <el-button type="primary" @click="participantDialogVisible = true;findCompany()">参建方单位</el-button> -->
+          <el-button type="primary" @click="getParticipant()">参建方单位</el-button>
           <el-popconfirm
             confirm-button-text="确定"
             cancel-button-text="取消"
@@ -55,18 +60,6 @@
           </el-popconfirm>
         </li>
       </ul>
-      <!-- <ul class="project-info">
-        <li>项目名称：{{ project.pname }}</li>
-        <li>项目类别：{{ project.category }}</li>
-        <li>项目描述：{{ project.description }}</li>
-        <li>项目地址：{{ project.province+project.city+project.district+project.street }}</li>
-        <li>详细地址：{{ project.address }}</li>
-        <li>项目开始时间：{{ project.planstarttime }}</li>
-        <li>项目结束时间：{{ project.planendtime }}</li>
-        <li>项目建设单位：{{ project.unit }}</li>
-        <li>项目宣传视频：{{ project.video }}</li>
-        <li>项目投资额：{{ project.investamount }}</li>
-      </ul> -->
     </div>
     <div class="box-bottom">
       <!-- 动态渲染卡片部分 -->
@@ -191,7 +184,64 @@
         </el-button>
       </div>
     </el-dialog>
-
+    <!-- 参建方管理 -->
+    <el-dialog
+      title="参建方单位管理"
+      :visible.sync="participantDialogVisible"
+      style="margin-top: -40px"
+    >
+      <el-row :gutter="15">
+        <el-form ref="participant " :model="participant " label-width="100px">
+          <el-col :span="15">
+            <el-form-item label="施工单位">
+              <!-- <el-input v-model="project.description" autocomplete="off" /> -->
+              <el-select v-model="value1" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in companyData"
+                  :key="item.cname"
+                  :label="item.cname"
+                  :value="item.cname"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="15">
+            <el-form-item label="监理单位">
+              <el-select v-model="value2" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in companyData"
+                  :key="item.cname"
+                  :label="item.cname"
+                  :value="item.cname"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="15">
+            <el-form-item label="业主单位">
+              <el-select v-model="value3" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in companyData"
+                  :key="item.cname"
+                  :label="item.cname"
+                  :value="item.cname"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click=" participantDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="
+            participantDialogVisible = false
+          "
+        >确 定
+        </el-button>
+      </div>
+    </el-dialog>
     <!-- 上传中 -->
     <el-dialog
       title="正在上传"
@@ -277,6 +327,7 @@
 
 <script>
 import { findProjectInfoApi, addProjectPictureApi, updateProjectApi, deleteProjectApi, findProjectMembersApi } from '@/api/project'
+import { findCompanyApi } from '@/api/company'
 // eslint-disable-next-line no-unused-vars
 import { addModelApi, delModelApi, updateModelByMIdApi, findmodelByPIDApi, findModelByMidApi } from '@/api/model'
 import { getUser, getProjectPID, setMember } from '@/utils/cookie'
@@ -290,9 +341,30 @@ export default {
     return {
       present: 10,
       project: {},
+      participant: {},
       pictureFile: '',
       editDialogVisible: false,
       addDialogVisible: false,
+      participantDialogVisible: false,
+      options: [{
+        value: '选项1'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }],
+      companyData: [],
+      value1: '', // 施工单位
+      value2: '', // 监理单位
+      value3: '', // 业主单位
       linkageBim: false,
       loading: false,
       loadModel: false,
@@ -339,13 +411,19 @@ export default {
     })
   },
   methods: {
-  // 获取进度条
+    // 获取进度条
     getPresentInfo(start, end) {
       return getPresent(start, end)
     },
+    // 获取项目成员，跳转到成员页
     getMember(pid) {
       pid = getProjectPID()
       this.$router.push(`/project/${pid}/member`)
+    },
+    // 跳转到参加方单位页面
+    getParticipant(pid) {
+      pid = getProjectPID()
+      this.$router.push(`/project/${pid}/participant`)
     },
     // 获取上传的图片
     handleChange(file, fileList) {
@@ -464,6 +542,17 @@ export default {
           console.log(err)
         })
     },
+    // 查询公司列表
+    findCompany() {
+      findCompanyApi().then((res) => {
+        console.log(res)
+        if (res.data instanceof Array) {
+          this.companyData = res.data
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     // 查看模型详情L
     lookDetail(model) {
       this.modelFileId = model.MId
@@ -525,11 +614,16 @@ export default {
     height: 80px;
     border: 2px solid red;
   }
-  .unit {
+  .people {
     margin-top: 10px;
     span {
       margin-right: 150px;
     }
+  }
+  .unit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .progress {
     display: flex;
@@ -543,8 +637,9 @@ export default {
     }
   }
 }
-.project-tools {
-  background-color: #fff;
+.tools {
+  display: flex;
+  justify-content: space-around;
 }
 }
 

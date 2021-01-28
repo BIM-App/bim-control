@@ -41,7 +41,7 @@ export const findUserApi = uid => {
 // 更新用户信息
 export const updateUserApi = data => {
   return request({
-    url: 'springbootBim/User/update',
+    url: '/springbootBim/User/update',
     method: 'put',
     data
   })

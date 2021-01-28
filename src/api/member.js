@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 新增项目成员
 export const addMembersApi = data => {
   return request({
-    url: 'springbootBim/ProjectMember/add',
+    url: '/springbootBim/ProjectMember/add',
     method: 'post',
     headers: {
       'Content-Type': 'application/json'
