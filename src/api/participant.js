@@ -40,7 +40,7 @@ export const deleteParticipantApi = id => {
   })
 }
 
-// 更新参建方信息
+// 更新参建方信息   单个公司更新
 export const updateParticipantApi = data => {
   return request({
     url: '/springbootBim/projectCompany/update',

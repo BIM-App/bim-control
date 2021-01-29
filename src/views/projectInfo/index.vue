@@ -41,7 +41,6 @@
         <li class="tools">
           <el-button type="primary" @click="editDialogVisible = true">修改项目</el-button>
           <el-button type="primary" @click="getMember()">项目成员</el-button>
-          <!-- <el-button type="primary" @click="participantDialogVisible = true;findCompany()">参建方单位</el-button> -->
           <el-button type="primary" @click="getParticipant()">参建方单位</el-button>
           <el-popconfirm
             confirm-button-text="确定"
@@ -184,64 +183,7 @@
         </el-button>
       </div>
     </el-dialog>
-    <!-- 参建方管理 -->
-    <el-dialog
-      title="参建方单位管理"
-      :visible.sync="participantDialogVisible"
-      style="margin-top: -40px"
-    >
-      <el-row :gutter="15">
-        <el-form ref="participant " :model="participant " label-width="100px">
-          <el-col :span="15">
-            <el-form-item label="施工单位">
-              <!-- <el-input v-model="project.description" autocomplete="off" /> -->
-              <el-select v-model="value1" filterable placeholder="请选择">
-                <el-option
-                  v-for="item in companyData"
-                  :key="item.cname"
-                  :label="item.cname"
-                  :value="item.cname"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="15">
-            <el-form-item label="监理单位">
-              <el-select v-model="value2" filterable placeholder="请选择">
-                <el-option
-                  v-for="item in companyData"
-                  :key="item.cname"
-                  :label="item.cname"
-                  :value="item.cname"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="15">
-            <el-form-item label="业主单位">
-              <el-select v-model="value3" filterable placeholder="请选择">
-                <el-option
-                  v-for="item in companyData"
-                  :key="item.cname"
-                  :label="item.cname"
-                  :value="item.cname"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-form>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click=" participantDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="
-            participantDialogVisible = false
-          "
-        >确 定
-        </el-button>
-      </div>
-    </el-dialog>
+
     <!-- 上传中 -->
     <el-dialog
       title="正在上传"
@@ -327,7 +269,6 @@
 
 <script>
 import { findProjectInfoApi, addProjectPictureApi, updateProjectApi, deleteProjectApi, findProjectMembersApi } from '@/api/project'
-import { findCompanyApi } from '@/api/company'
 // eslint-disable-next-line no-unused-vars
 import { addModelApi, delModelApi, updateModelByMIdApi, findmodelByPIDApi, findModelByMidApi } from '@/api/model'
 import { getUser, getProjectPID, setMember } from '@/utils/cookie'
@@ -345,26 +286,6 @@ export default {
       pictureFile: '',
       editDialogVisible: false,
       addDialogVisible: false,
-      participantDialogVisible: false,
-      options: [{
-        value: '选项1'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      companyData: [],
-      value1: '', // 施工单位
-      value2: '', // 监理单位
-      value3: '', // 业主单位
       linkageBim: false,
       loading: false,
       loadModel: false,
@@ -541,17 +462,6 @@ export default {
         .catch((err) => {
           console.log(err)
         })
-    },
-    // 查询公司列表
-    findCompany() {
-      findCompanyApi().then((res) => {
-        console.log(res)
-        if (res.data instanceof Array) {
-          this.companyData = res.data
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
     },
     // 查看模型详情L
     lookDetail(model) {
