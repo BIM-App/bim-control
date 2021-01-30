@@ -1,23 +1,37 @@
 <template>
-  <div class="container">
-    <div>
-      <el-button type="primary" @click="participantDialogVisible = true;findCompany()">添加参建方单位</el-button>
-    </div>
-    <section v-for="item in participantList" :key="item.cid">
-      {{ item.roleinproject }}
-      <br>
-      {{ item.companyid }}
-      {{ item.cname }}
-    </section>
-    <!-- <section>
-      施工单位
-    </section>
-    <section>
-      监理单位
-    </section>
-    <section>
-      业主单位
-    </section> -->
+  <div>
+    <el-table
+      :data="participantList"
+      style="width: 100%"
+    >
+      <el-table-column
+        label="参建方单位"
+        prop="roleinproject"
+      />
+      <el-table-column
+        label="公司名称"
+        prop="cname"
+      />
+      <el-table-column
+        align="right"
+      >
+        <template slot="header" slot-scope="">
+          <el-button type="primary" @click="participantDialogVisible = true;findCompany()">添加参建方单位</el-button>
+        </template>
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            @click="handleEdit(scope.$index, scope.row);
+                    membersDialogVisible = true"
+          >Edit</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+          >Delete</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
     <!-- 参建方管理 -->
     <el-dialog
       title="参建方单位管理"
@@ -77,26 +91,64 @@
         </el-button>
       </div>
     </el-dialog>
+    <!-- 参建方成员管理 -->
+    <el-dialog
+      title="参建方成员管理"
+      :visible.sync="membersDialogVisible"
+      style="margin-top: -40px"
+    >
+      <el-row :gutter="15">
+        <el-form ref="members " :model="members" label-width="100px">
+          <el-col :span="25">
+            <el-form-item label="">
+              <template>
+                <el-transfer v-model="memberValue" :titles="[company, project]" :data="participantMember" />
+              </template>
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click=" membersDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="
+            membersDialogVisible = false;
+            print()
+          "
+        >确 定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { findCompanyApi } from '@/api/company'
+import { findProjectInfoApi } from '@/api/project'
+import { findCompanyApi, findUsersByCompanyIDApi } from '@/api/company'
 import { findParticipantApi, addParticipantApi } from '@/api/participant'
 import { getProjectPID, getUser } from '@/utils/cookie'
 export default {
   data() {
     return {
+      company: '', // 穿梭框左侧标题  当前公司名称
+      project: '', // 穿梭框右侧标题 当前项目名称
+      memberValue: [], // 将要添加到项目中的成员
       participantDialogVisible: false,
+      membersDialogVisible: false,
       companyData: [],
       participant: {},
+      members: {},
+      participantMember: [], // 参建方员工数据源
       participantList: [],
       value1: '', // 施工单位
       value2: '', // 监理单位
-      value3: '' // 业主单位
+      value3: '', // 业主单位
+      search: ''
     }
   },
   created() {
+    // 根据项目pid获取参建方列表
     findParticipantApi(getProjectPID()).then((res) => {
       console.log(res)
       if (res.data instanceof Array) {
@@ -105,13 +157,48 @@ export default {
     }).catch((err) => {
       console.log(err)
     })
+    // 根据项目pid查询项目信息
+    findProjectInfoApi(getProjectPID()).then((res) => {
+      console.log(res)
+      if (res.data.pid) {
+        this.project = res.data.pname
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
   },
   methods: {
     print() {
-      console.log(this.value1)
-      // console.log(this.)
-      console.log(this.value2)
-      console.log(this.value3)
+      console.log(this.memberValue)
+    },
+    handleEdit(index, row) {
+      console.log(index, row)
+      this.company = row.cname
+      findUsersByCompanyIDApi(row.companyid).then((res) => {
+        console.log(res)
+        if (res.data instanceof Array) {
+          const arr = []
+          const member = res.data.map(item => item.username)
+          member.forEach((username, index) => {
+            // console.log(res.data)
+            arr.push({
+              label: username,
+              key: index
+            })
+          })
+          // console.log(arr)
+          this.participantMember = arr
+          // const member = res.data.map(item => item.username)
+          // console.log(member)
+          // this.participantMember = res.data
+          // console.log(this.participantMember)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    handleDelete(index, row) {
+      console.log(index, row)
     },
     // 查询公司列表
     findCompany() {
@@ -144,9 +231,11 @@ export default {
           roleInProject: '业主单位'
         }
       ]
+      // 添加参建方接口
       addParticipantApi(data).then((res) => {
         console.log(res)
         if (res.data.status === 201) {
+          // 根据项目pid查询参建方列表
           findParticipantApi(getProjectPID()).then((res) => {
             console.log(res)
             if (res.data instanceof Array) {
@@ -159,19 +248,16 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+    },
+    // 根据公司cid返回该公司员工(用户)集合
+    findUsersByCompanyID() {
+      findUsersByCompanyIDApi().then((res) => {
+        console.log(res)
+      }).catch((err) => {
+        console.log(err)
+      })
     }
+
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.container {
-  margin: 40px;
-  display: flex;
-  justify-content: space-around;
-  section {
-    margin: 40px;
-    background-color: lightgreen;
-  }
-}
-</style>

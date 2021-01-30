@@ -34,7 +34,10 @@
           </section>
           <section style="float: right">
             项目时间进度条
-            <el-progress v-if="project.planstarttime" :percentage="getPresentInfo(project.planstarttime, project.planendtime)" />
+            <el-progress
+              v-if="project.planstarttime"
+              :percentage="getPresentInfo(project.planstarttime, project.planendtime) >= 100 ? 100 : getPresentInfo(project.planstarttime, project.planendtime)"
+            />
             <el-progress v-else :percentage="0" />
           </section>
         </li>
