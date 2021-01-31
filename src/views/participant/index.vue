@@ -23,7 +23,7 @@
             size="mini"
             @click="handleEdit(scope.$index, scope.row);
                     membersDialogVisible = true"
-          >Edit</el-button>
+          >添加成员到项目</el-button>
           <el-button
             size="mini"
             type="danger"

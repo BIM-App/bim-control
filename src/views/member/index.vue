@@ -14,7 +14,7 @@
       />
       <el-table-column
         label="所属公司"
-        prop="companyid"
+        prop="cname"
       />
       <el-table-column
         align="right"

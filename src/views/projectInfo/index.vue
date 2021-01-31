@@ -452,7 +452,7 @@ export default {
       deleteProjectApi(getProjectPID()).then((res) => {
         console.log(res)
         if (res.data.status === 204) {
-          _this.$router.replace('/project/index')
+          _this.$router.push('/project/index')
           _this.$notify({
             title: '成功',
             message: '删除成功',
