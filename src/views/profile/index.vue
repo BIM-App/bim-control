@@ -19,7 +19,16 @@
         </div>
         <div class="change">
           <el-button type="primary" @click.native="dialogFormVisible = true">修改个人信息</el-button>
-          <el-button type="danger" @click="deleteUser()">注销用户</el-button>
+          <el-popconfirm
+            confirm-button-text="确定"
+            cancel-button-text="取消"
+            icon="el-icon-info"
+            icon-color="red"
+            title="确定要注销用户吗？一旦注销用户将无法恢复！"
+            @onConfirm="deleteUser()"
+          >
+            <el-button slot="reference" type="danger">注销用户</el-button>
+          </el-popconfirm>
         </div>
       </div>
       <div class="other-info">
@@ -97,9 +106,10 @@
 </template>
 
 <script>
-import { getUser, setUser, removeUser, removeMember, removeProjectPID } from '@/utils/cookie'
+import { getUser, setUser, removeUser, removeMember, removeProjectPID, removeRole, removeToken } from '@/utils/cookie'
 import { findUserApi, updateUserApi, addUserPictureApi, deleteUserApi } from '@/api/user'
 import eventVue from '@/utils/eventVue'
+import { initRouter } from '@/router/index'
 
 export default {
   name: 'Profile',
@@ -186,14 +196,19 @@ export default {
     // 注销用户
     deleteUser() {
       const _this = this
-      deleteUserApi(getUser().id, getUser().username).then((res) => {
+      deleteUserApi(getUser().id, getUser().username).then(async(res) => {
         // console.log(res)
         if (res.data.status === 204) {
           _this.$store.commit('user/SET_USER', '')
           removeUser()
           removeMember()
           removeProjectPID()
-          _this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
+          removeRole()
+          removeToken()
+          sessionStorage.removeItem('uid')
+          // _this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
+          await this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
+          initRouter()
           _this.$notify({
             title: '成功',
             message: '注销成功',

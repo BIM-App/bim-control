@@ -114,7 +114,8 @@
           type="primary"
           @click="
             membersDialogVisible = false;
-            print()
+            print();
+            addProjectMember()
           "
         >确 定
         </el-button>
@@ -125,6 +126,7 @@
 
 <script>
 import { findProjectInfoApi } from '@/api/project'
+import { addProjectMembersApi } from '@/api/member'
 import { findCompanyApi, findUsersByCompanyIDApi } from '@/api/company'
 import { findParticipantApi, addParticipantApi } from '@/api/participant'
 import { getProjectPID, getUser } from '@/utils/cookie'
@@ -178,12 +180,13 @@ export default {
         console.log(res)
         if (res.data instanceof Array) {
           const arr = []
+          // 只包含username的数组源
           const member = res.data.map(item => item.username)
           member.forEach((username, index) => {
             // console.log(res.data)
             arr.push({
               label: username,
-              key: index
+              key: member[index]
             })
           })
           // console.log(arr)
@@ -256,8 +259,39 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
-    }
+    },
+    // 批量添加参建方成员到项目中
+    addProjectMember() {
+      const data = [
+        {
+          creator: getUser().id,
+          projectId: getProjectPID()
+        }
+      ]
+      this.memberValue.forEach((username) => {
+        data.push({
+          // username: this.memberValue[index]
+          username: username,
+          roleInProject: '暂无'
+        })
+      })
 
+      // console.log(data)   // 准备添加到项目的成员数据
+      addProjectMembersApi(data).then((res) => {
+        console.log(res)
+        if (res.data.status === 201) {
+          this.$notify({
+            title: '成功',
+            message: '批量添加成功',
+            type: 'success',
+            duration: 1000,
+            offset: 80
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
   }
 }
 </script>

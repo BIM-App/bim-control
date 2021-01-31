@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
-// 新增项目成员
-export const addMembersApi = data => {
+// 批量新增项目成员
+export const addProjectMembersApi = data => {
   return request({
     url: '/springbootBim/ProjectMember/add',
     method: 'post',
