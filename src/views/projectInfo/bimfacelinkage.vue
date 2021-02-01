@@ -48,7 +48,8 @@
 </template>
 
 <script>
-import getmodeltokenApi from '@/api/model'
+import { getmodeltokenApi } from '@/api/model'
+import { getToken } from '@/utils/cookie'
 export default {
   name: 'Linka',
   // eslint-disable-next-line vue/require-prop-types
@@ -186,7 +187,8 @@ export default {
       getmodeltokenApi({
         data: {
           id: this.modelFileId,
-          IsIntegrateId: this.isIntegrate
+          IsIntegrateId: this.isIntegrate,
+          accessToken: getToken()
         }
       })
         .then((res) => {

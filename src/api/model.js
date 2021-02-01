@@ -60,9 +60,11 @@ export function findModelByMidApi(mid) {
 }
 
 // 获取viewtoken
-export function getmodeltokenApi() {
+export const getmodeltokenApi = data => {
   return request({
-    url: 'https://api.bimface.com/view/token',
-    method: 'GET'
+    url: '/view/token' + data.id,
+    headers: { Authorization: 'Bearer' + ' ' + data.accessToken },
+    method: 'GET',
+    params: data
   })
 }

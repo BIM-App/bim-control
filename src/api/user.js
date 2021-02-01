@@ -69,6 +69,8 @@ export const findProjectsApi = username => {
 export const getAccessToken = () => {
   const appKey = 'ktmv7CmriQsFVtgYTgjahbNS1Z9xl6P0'
   const appSecret = 'VUZGNWtcC27QNxIV5AUwwcDwahKOhDAW'
+  // const appKey = 'tA87ZM6f7InSm0NMK0TtwYqgQkthynqL'
+  // const appSecret = 'CBz0mgEar0LHMOZSETIsGRCLvyUgMHqt'
   return request({
     url: '/oauth2/token',
     method: 'post',
