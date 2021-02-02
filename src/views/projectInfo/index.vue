@@ -17,15 +17,16 @@
       </div>
       <ul class="project-info">
         <li class="description">
-          项目简介 {{ project.description }}111111111
+          项目简介 {{ project.description }}
         </li>
         <li class="people">
-          <span>项目负责人 {{}}张三</span>
+          <span>项目负责人 {{ creator }}</span>
         </li>
         <li class="unit">
-          <span>施工单位 {{}}某某公司</span>
+          <span v-for="item in participantList" :key="item.cid">{{ item.roleinproject }} {{ item.cname }}</span>
+          <!-- <span>施工单位 {{}}某某公司</span>
           <span>监理单位 {{}}某某公司</span>
-          <span>业主单位 {{}}某某公司</span>
+          <span>业主单位 {{}}某某公司</span> -->
         </li>
         <li class="progress">
           <section>
@@ -271,6 +272,7 @@
 </template>
 
 <script>
+import { findParticipantApi } from '@/api/participant'
 import { findProjectInfoApi, addProjectPictureApi, updateProjectApi, deleteProjectApi, findProjectMembersApi } from '@/api/project'
 // eslint-disable-next-line no-unused-vars
 import { addModelApi, delModelApi, updateModelByMIdApi, findmodelByPIDApi, findModelByMidApi } from '@/api/model'
@@ -283,7 +285,8 @@ export default {
   },
   data() {
     return {
-      present: 10,
+      creator: getUser().username,
+      participantList: [],
       project: {},
       participant: {},
       pictureFile: '',
@@ -321,6 +324,17 @@ export default {
       // console.log(res.data)
       if (res.data instanceof Array) {
         setMember(res.data)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+    // 查询参建方列表
+    findParticipantApi(getProjectPID()).then((res) => {
+      console.log(res)
+      if (res.data instanceof Array) {
+        this.participantList = res.data
+        this.participantList = res.data.filter(item => item.roleinproject !== '创建者公司')
+        console.log(this.participantList)
       }
     }).catch((err) => {
       console.log(err)
@@ -498,7 +512,7 @@ export default {
   // margin-left: 30px;
   width: 450px;
   height: 300px;
-  border: 5px solid red;
+  // border: 5px solid red;
   img {
     width: 450px;
     height: 300px;
@@ -514,21 +528,25 @@ export default {
   }
 }
 .project-info {
+  padding: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-top: -27px;
   width: 720px;
   height: 300px;
-  border: 5px solid red;
+  // border: 5px solid red;
   background-color: #fff;
+  border-radius: 10px;
   .description {
     // margin-top: 10px;
     height: 80px;
-    border: 2px solid red;
+    // border: 2px solid red;
+    border-bottom: 2px solid #8c939d ;
   }
   .people {
     margin-top: 10px;
+    border-bottom: 2px solid green ;
     span {
       margin-right: 150px;
     }
@@ -537,6 +555,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 2px solid #8c939d ;
   }
   .progress {
     display: flex;

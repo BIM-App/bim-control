@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { getUser, setUser, removeUser, removeMember, removeProjectPID, removeRole, removeToken } from '@/utils/cookie'
+import { getUser, setUser, removeUser, removeMember, removeProjectPID, removeRole, removeAccessToken } from '@/utils/cookie'
 import { findUserApi, updateUserApi, addUserPictureApi, deleteUserApi } from '@/api/user'
 import eventVue from '@/utils/eventVue'
 import { initRouter } from '@/router/index'
@@ -204,7 +204,7 @@ export default {
           removeMember()
           removeProjectPID()
           removeRole()
-          removeToken()
+          removeAccessToken()
           sessionStorage.removeItem('uid')
           // _this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
           await this.$router.replace(`/login?redirect=${this.$route.fullPath}`)

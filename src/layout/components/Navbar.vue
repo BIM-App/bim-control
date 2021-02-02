@@ -36,7 +36,7 @@ import { initRouter } from '@/router'
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import { getUser, removeMember, removeProjectPID, removeUser, removeRole, removeToken } from '@/utils/cookie'
+import { getUser, removeMember, removeProjectPID, removeUser, removeRole, removeAccessToken } from '@/utils/cookie'
 import eventVue from '@/utils/eventVue'
 export default {
   components: {
@@ -75,7 +75,7 @@ export default {
       removeMember()
       removeProjectPID()
       removeRole()
-      removeToken()
+      removeAccessToken()
       sessionStorage.removeItem('uid')
       await this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
       initRouter()

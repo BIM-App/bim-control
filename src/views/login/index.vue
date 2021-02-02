@@ -45,7 +45,7 @@
 
 <script>
 import { loginApi, getAccessToken } from '@/api/user'
-import { setUser, setRole, setToken } from '@/utils/cookie'
+import { setUser, setRole, setAccessToken } from '@/utils/cookie'
 export default {
   name: 'Login',
   data() {
@@ -96,7 +96,7 @@ export default {
               getAccessToken().then((res) => {
                 console.log(res)
                 if (res.data.code === 'success') {
-                  setToken(res.data.data.token)
+                  setAccessToken(res.data.data.token)
                 }
               }).catch((err) => {
                 console.log(err)
