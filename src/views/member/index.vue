@@ -13,6 +13,10 @@
         prop="roleinproject"
       />
       <el-table-column
+        label="所属公司"
+        prop="cname"
+      />
+      <el-table-column
         align="right"
       >
         <template slot="header" slot-scope="">
@@ -28,13 +32,13 @@
         </template>
         <template slot-scope="scope">
           <el-button
-            v-if="!scope.$index === 0"
+            v-if="scope.row.roleinproject !== '项目创建者'"
             size="medium"
             @click="handleEdit(scope.$index, scope.row);
                     open()"
           >编辑</el-button>
           <el-button
-            v-if="!scope.$index === 0"
+            v-if="scope.row.roleinproject !== '项目创建者'"
             size="medium"
             type="danger"
             @click="deleteMember(scope.$index, scope.row);
@@ -94,6 +98,15 @@ export default {
   created() {
     console.log(getMember()) // for debug
     this.tableData = getMember()
+    // 进入项目成员页时查询所有该项目下的成员
+    findProjectMembersApi(getProjectPID()).then((res) => {
+      console.log(res)
+      if (res.data instanceof Array) {
+        this.tableData = res.data
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
   },
   methods: {
     handleEdit(index, row) {

@@ -12,6 +12,10 @@
       prop="representative"
     />
     <el-table-column
+      label="邀请码"
+      prop="invitationcode"
+    />
+    <el-table-column
       label="审核状态"
       prop="checkstatus"
     />
@@ -26,8 +30,8 @@
         /> -->
       </template>
       <template slot-scope="scope">
+        <!-- FIXME: 通过按钮待处理 -->
         <el-button
-          v-if="checkPass"
           size="mini"
           type="primary"
           @click="updateCheckStatus(scope.$index, scope.row)"

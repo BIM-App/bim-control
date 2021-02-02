@@ -21,7 +21,7 @@
     </el-form-item>
     <el-form-item prop="password">
       <label for="password">密码</label>
-      <el-input id="password" v-model="form.password" type="password" />
+      <el-input id="password" v-model="form.password" type="password" @keyup.enter.native="login('form')" />
     </el-form-item>
     <el-form-item prop="forget">
       <ul class="forget">

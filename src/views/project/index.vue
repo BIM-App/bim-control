@@ -166,8 +166,10 @@ export default {
       // console.log(res.data)
       // FIXME:需要判断
       if (res.data instanceof Array) {
-        // console.log(res.data)
-        _this.projectList = res.data
+        console.log(res.data)
+        // _this.projectList = res.data
+        _this.projectList = res.data.filter(item => item !== null)
+        console.log(_this.projectList)
       }
     }).catch((err) => {
       console.log(err)

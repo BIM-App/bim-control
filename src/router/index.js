@@ -58,6 +58,13 @@ export const constantRoutes = [
         hidden: true,
         component: () => import('@/views/projectInfo/index'),
         meta: { title: '项目详情', icon: 'dashboard' }
+      },
+      {
+        path: ':pid/participant',
+        name: 'Participant',
+        hidden: true,
+        component: () => import('@/views/participant/index'),
+        meta: { title: '参建方单位', icon: 'dashboard' }
       }
     ]
   },
