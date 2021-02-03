@@ -17,11 +17,16 @@
       </div>
       <ul class="project-info">
         <li class="description">
-          项目简介 {{ project.description }}111111111
+          项目简介 {{ project.description }}
+        </li>
+        <li class="people">
+          <span>项目负责人 {{ creator }}</span>
         </li>
         <li class="unit">
-          <span>项目负责人 {{}}张三</span>
-          <span>项目参建方 {{}}某某公司</span>
+          <span v-for="item in participantList" :key="item.cid">{{ item.roleinproject }} {{ item.cname }}</span>
+          <!-- <span>施工单位 {{}}某某公司</span>
+          <span>监理单位 {{}}某某公司</span>
+          <span>业主单位 {{}}某某公司</span> -->
         </li>
         <li class="progress">
           <section>
@@ -30,14 +35,17 @@
           </section>
           <section style="float: right">
             项目时间进度条
-            <el-progress v-if="project.planstarttime" :percentage="getPresentInfo(project.planstarttime, project.planendtime)" />
-            <el-progress v-else percentage="0" />
+            <el-progress
+              v-if="project.planstarttime"
+              :percentage="getPresentInfo(project.planstarttime, project.planendtime) >= 100 ? 100 : getPresentInfo(project.planstarttime, project.planendtime)"
+            />
+            <el-progress v-else :percentage="0" />
           </section>
         </li>
         <li class="tools">
           <el-button type="primary" @click="editDialogVisible = true">修改项目</el-button>
           <el-button type="primary" @click="getMember()">项目成员</el-button>
-          <el-button type="primary">添加公司</el-button>
+          <el-button type="primary" @click="getParticipant()">参建方单位</el-button>
           <el-popconfirm
             confirm-button-text="确定"
             cancel-button-text="取消"
@@ -55,18 +63,6 @@
           </el-popconfirm>
         </li>
       </ul>
-      <!-- <ul class="project-info">
-        <li>项目名称：{{ project.pname }}</li>
-        <li>项目类别：{{ project.category }}</li>
-        <li>项目描述：{{ project.description }}</li>
-        <li>项目地址：{{ project.province+project.city+project.district+project.street }}</li>
-        <li>详细地址：{{ project.address }}</li>
-        <li>项目开始时间：{{ project.planstarttime }}</li>
-        <li>项目结束时间：{{ project.planendtime }}</li>
-        <li>项目建设单位：{{ project.unit }}</li>
-        <li>项目宣传视频：{{ project.video }}</li>
-        <li>项目投资额：{{ project.investamount }}</li>
-      </ul> -->
     </div>
     <div class="box-bottom">
       <!-- 动态渲染卡片部分 -->
@@ -275,6 +271,7 @@
 </template>
 
 <script>
+import { findParticipantApi } from '@/api/participant'
 import { findProjectInfoApi, addProjectPictureApi, updateProjectApi, deleteProjectApi, findProjectMembersApi } from '@/api/project'
 // eslint-disable-next-line no-unused-vars
 import { addModelApi, delModelApi, updateModelByMIdApi, findmodelByPIDApi, findModelByMidApi } from '@/api/model'
@@ -287,8 +284,10 @@ export default {
   },
   data() {
     return {
-      present: 10,
+      creator: getUser().username,
+      participantList: [],
       project: {},
+      participant: {},
       pictureFile: '',
       editDialogVisible: false,
       addDialogVisible: false,
@@ -327,6 +326,17 @@ export default {
     }).catch((err) => {
       console.log(err)
     })
+    // 查询参建方列表
+    findParticipantApi(getProjectPID()).then((res) => {
+      console.log(res)
+      if (res.data instanceof Array) {
+        this.participantList = res.data
+        this.participantList = res.data.filter(item => item.roleinproject !== '创建者公司')
+        console.log(this.participantList)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
     // 根据项目id查模型
     findmodelByPIDApi(getProjectPID()).then((res) => {
       console.log(res)
@@ -337,13 +347,19 @@ export default {
     })
   },
   methods: {
-  // 获取进度条
+    // 获取进度条
     getPresentInfo(start, end) {
       return getPresent(start, end)
     },
+    // 获取项目成员，跳转到成员页
     getMember(pid) {
       pid = getProjectPID()
       this.$router.push(`/project/${pid}/member`)
+    },
+    // 跳转到参加方单位页面
+    getParticipant(pid) {
+      pid = getProjectPID()
+      this.$router.push(`/project/${pid}/participant`)
     },
     // 获取上传的图片
     handleChange(file, fileList) {
@@ -356,7 +372,6 @@ export default {
       this.addModelFrom.mFile = file.raw
       // console.log(this.pictureFile)
     },
-    // 添加模型
     allUpload() {
       const _this = this
       const data = new FormData()
@@ -449,7 +464,7 @@ export default {
       deleteProjectApi(getProjectPID()).then((res) => {
         console.log(res)
         if (res.data.status === 204) {
-          _this.$router.replace('/project/index')
+          _this.$router.push('/project/index')
           _this.$notify({
             title: '成功',
             message: '删除成功',
@@ -463,7 +478,7 @@ export default {
           console.log(err)
         })
     },
-    // 查看模型
+    // 查看模型详情L
     lookDetail(model) {
       this.modelFileId = model.MFile
       this.fileName = model.MName
@@ -493,7 +508,7 @@ export default {
   // margin-left: 30px;
   width: 450px;
   height: 300px;
-  border: 5px solid red;
+  // border: 5px solid red;
   img {
     width: 450px;
     height: 300px;
@@ -509,24 +524,34 @@ export default {
   }
 }
 .project-info {
+  padding: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-top: -27px;
   width: 720px;
   height: 300px;
-  border: 5px solid red;
+  // border: 5px solid red;
   background-color: #fff;
+  border-radius: 10px;
   .description {
     // margin-top: 10px;
     height: 80px;
-    border: 2px solid red;
+    // border: 2px solid red;
+    border-bottom: 2px solid #8c939d ;
   }
-  .unit {
+  .people {
     margin-top: 10px;
+    border-bottom: 2px solid green ;
     span {
       margin-right: 150px;
     }
+  }
+  .unit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #8c939d ;
   }
   .progress {
     display: flex;
@@ -540,8 +565,9 @@ export default {
     }
   }
 }
-.project-tools {
-  background-color: #fff;
+.tools {
+  display: flex;
+  justify-content: space-around;
 }
 }
 

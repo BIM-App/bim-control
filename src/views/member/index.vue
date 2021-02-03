@@ -21,7 +21,7 @@
       >
         <template slot="header" slot-scope="">
           <div class="right-bar">
-            <el-button size="medium" class="addMember" type="primary" icon="el-icon-plus" @click="memberDialogVisible = true">添加成员</el-button>
+            <el-button disabled size="medium" class="addMember" type="primary" icon="el-icon-plus" @click="memberDialogVisible = true">添加成员</el-button>
             <!-- <el-input
               v-model="search"
               disabled
@@ -82,7 +82,7 @@
 <script>
 import { getMember, getProjectPID, getUser, setMember } from '@/utils/cookie'
 import { findProjectMembersApi } from '@/api/project'
-import { addMembersApi, deleteMemberApi, updateMemberApi } from '@/api/member'
+import { deleteMemberApi, updateMemberApi } from '@/api/member'
 export default {
   data() {
     return {
@@ -178,55 +178,55 @@ export default {
       })
     },
     // 添加项目成员
-    addMember() {
-      const _this = this
-      const data = {
-        projectid: getProjectPID(),
-        username: this.memberForm.username,
-        roleinproject: this.memberForm.roleinproject,
-        creator: getUser().id
-      }
-      // 调用添加项目成员接口
-      addMembersApi(data).then((res) => {
-        console.log(res)
-        if (res.data.status === 201) {
-        // 清空添加项目成员表单
-          _this.$refs.memberForm.resetFields()
-          // 调用根据PID查询项目下所有成员列表接口
-          findProjectMembersApi(getProjectPID()).then((res) => {
-            console.log(res)
-            setMember(res.data)
-            _this.tableData = res.data
-            _this.$notify({
-              title: '成功',
-              message: '添加成功',
-              type: 'success',
-              duration: 1000,
-              offset: 80
-            })
-          }).catch((err) => {
-            console.log(err)
-          })
-        } else if (res.data.status === 404) {
-          setTimeout(() => {
-            _this.$alert('添加的用户不存在', '提示', {
-              confirmButtonText: '确定',
-              closeOnClickModal: true,
-              callback: action => {
-              // this.$message({
-              //   type: 'info',
-              //   message: `action: ${action}`
-              // })
-              }
-            })
-          }, 500)
-        } else {
-          console.log('其他错误')
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
+    // addMember() {
+    //   const _this = this
+    //   const data = {
+    //     projectid: getProjectPID(),
+    //     username: this.memberForm.username,
+    //     roleinproject: this.memberForm.roleinproject,
+    //     creator: getUser().id
+    //   }
+    //   // 调用添加项目成员接口
+    //   addMembersApi(data).then((res) => {
+    //     console.log(res)
+    //     if (res.data.status === 201) {
+    //     // 清空添加项目成员表单
+    //       _this.$refs.memberForm.resetFields()
+    //       // 调用根据PID查询项目下所有成员列表接口
+    //       findProjectMembersApi(getProjectPID()).then((res) => {
+    //         console.log(res)
+    //         setMember(res.data)
+    //         _this.tableData = res.data
+    //         _this.$notify({
+    //           title: '成功',
+    //           message: '添加成功',
+    //           type: 'success',
+    //           duration: 1000,
+    //           offset: 80
+    //         })
+    //       }).catch((err) => {
+    //         console.log(err)
+    //       })
+    //     } else if (res.data.status === 404) {
+    //       setTimeout(() => {
+    //         _this.$alert('添加的用户不存在', '提示', {
+    //           confirmButtonText: '确定',
+    //           closeOnClickModal: true,
+    //           callback: action => {
+    //           // this.$message({
+    //           //   type: 'info',
+    //           //   message: `action: ${action}`
+    //           // })
+    //           }
+    //         })
+    //       }, 500)
+    //     } else {
+    //       console.log('其他错误')
+    //     }
+    //   }).catch((err) => {
+    //     console.log(err)
+    //   })
+    // },
     open() {
 
     }

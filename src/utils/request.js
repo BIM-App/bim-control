@@ -22,7 +22,7 @@ service.interceptors.request.use(
     //   text: 'Loading',
     //   background: 'rgba(0, 0, 0, 0.7)'
     // })
-
+    // console.log(config)
     return config
   },
   error => {
