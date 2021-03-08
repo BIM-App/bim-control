@@ -47,7 +47,7 @@
               trigger="hover"
               content="通过邀请码注册成为该邀请码所属的公司员工"
             >
-              <i slot="reference" class="el-icon-question" />
+              <i slot="reference" class="el-icon-info" />
             </el-popover>
           </el-checkbox>
         </li>
@@ -184,7 +184,7 @@ export default {
 <style lang="scss" scoped>
 .content {
   margin: 0 auto;
-  margin-top: 15vh;
+  padding-top: 160px;
   display: flex;
   width: 700px;
   justify-content: space-between;
@@ -192,7 +192,7 @@ export default {
   flex-direction: column;
   // background-color: purple;
   h2 {
-    margin-bottom: 50px;
+    margin-bottom: 55px;
     font-size: 36px;
     color: #464d5f;
   }

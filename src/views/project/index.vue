@@ -244,6 +244,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .bottom {
   margin-top: 13px;
   line-height: 12px;

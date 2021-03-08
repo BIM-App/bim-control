@@ -22,5 +22,12 @@
     "springboot",
     "starttime",
     "workunit"
-  ]
+  ],
+  "editor.formatOnSave": false,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "vue"
+  ],
+  "eslint.format.enable": true,
 }

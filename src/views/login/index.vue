@@ -21,7 +21,7 @@
     </el-form-item>
     <el-form-item prop="password">
       <label for="password">密码</label>
-      <el-input id="password" v-model="form.password" type="password" @keyup.enter.native="login('form')" />
+      <el-input id="password" v-model="form.password" show-password @keyup.enter.native="login('form')" />
     </el-form-item>
     <el-form-item prop="forget">
       <ul class="forget">
@@ -84,7 +84,7 @@ export default {
             password: _this.form.password
           }
           loginApi(params).then((res) => {
-            console.log(res) // for debug
+            // console.log(res) // for debug
             if (res.data.id) {
               setUser(res.data)
               setRole(res.data.role)
@@ -140,7 +140,7 @@ export default {
 <style lang="scss" scoped>
 .content {
   margin: 0 auto;
-  margin-top: 15vh;
+  padding-top: 160px;
   display: flex;
   width: 700px;
   justify-content: space-between;
