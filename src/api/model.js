@@ -44,7 +44,7 @@ export function updateModelByMIdApi(data) {
 }
 
 // 根据项目id查询模型信息
-export function findmodelByPIDApi(pid) {
+export function findModelByPIDApi(pid) {
   return request({
     url: '/Model/findModelByPID/' + pid,
     method: 'GET'

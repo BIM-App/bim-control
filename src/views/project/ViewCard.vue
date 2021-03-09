@@ -1,0 +1,69 @@
+<template>
+  <div>
+    <!-- 卡片视图 -->
+    <ul class="cardView">
+      <li v-for="item in allProjectList" :key="item.pid" @click="openDetails(item.pid)">
+        <div> {{ item.pname }}</div>
+        <div>{{ item.creator }}</div>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import { findProjectsApi } from '@/api/user'
+import { getUser } from '@/utils/cookie'
+export default {
+  name: 'ViewCard',
+  data() {
+    return {
+      allProjectList: []
+    }
+  },
+  created() {
+    this.findProjects()
+  },
+  methods: {
+    // 获取所有参与项目列表
+    findProjects() {
+      findProjectsApi(getUser().username).then((res) => {
+        if (res.data) {
+          console.log(res.data)
+          this.allProjectList = res.data
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    openDetails(pid) {
+      this.$router.push(`/project/${pid}/info`)
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+.cardView {
+    // height: 50vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    // align-items: center;
+    // background-color: skyblue;
+    li {
+      margin: 10px 10px;
+      padding: 20px;
+      width: 300px;
+      height: 150px;
+      border-radius: 5px;
+      background-color: rgb(227,244,255);
+    }
+    li:hover {
+        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, .2);
+        border-color: #eee;
+        transition: all .2s ease-in-out;
+        color: #409EFF;
+        cursor: pointer;
+    }
+  }
+</style>

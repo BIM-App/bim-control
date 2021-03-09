@@ -9,6 +9,7 @@
     "instanceof",
     "investamount",
     "invitationcode",
+    "lightcoral",
     "lightgreen",
     "maxlength",
     "orgnizationno",
@@ -19,6 +20,7 @@
     "popconfirm",
     "projectid",
     "roleinproject",
+    "skyblue",
     "springboot",
     "starttime",
     "workunit"

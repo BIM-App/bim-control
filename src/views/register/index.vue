@@ -184,7 +184,7 @@ export default {
 <style lang="scss" scoped>
 .content {
   margin: 0 auto;
-  padding-top: 160px;
+  padding-top: 80px;
   display: flex;
   width: 700px;
   justify-content: space-between;

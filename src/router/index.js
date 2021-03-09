@@ -79,18 +79,18 @@ export const constantRoutes = [
       meta: { title: 'Profile' }
     }]
   },
-  // {
-  //   path: '/task',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Task',
-  //       component: () => import('@/views/task/index'),
-  //       meta: { title: '任务管理', icon: 'dashboard' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/task',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Task',
+        component: () => import('@/views/task/index'),
+        meta: { title: '任务管理', icon: 'dashboard' }
+      }
+    ]
+  },
   {
     path: '/404',
     component: () => import('@/views/404'),

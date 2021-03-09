@@ -274,7 +274,7 @@
 import { findParticipantApi } from '@/api/participant'
 import { findProjectInfoApi, addProjectPictureApi, updateProjectApi, deleteProjectApi, findProjectMembersApi } from '@/api/project'
 // eslint-disable-next-line no-unused-vars
-import { addModelApi, delModelApi, updateModelByMIdApi, findmodelByPIDApi, findModelByMidApi } from '@/api/model'
+import { addModelApi, delModelApi, updateModelByMIdApi, findModelByPIDApi, findModelByMidApi } from '@/api/model'
 import { getUser, getProjectPID, setMember } from '@/utils/cookie'
 import bimfacelinkage from './bimfacelinkage'
 import { getPresent } from '@/utils/day'
@@ -338,7 +338,7 @@ export default {
       console.log(err)
     })
     // 根据项目id查模型
-    findmodelByPIDApi(getProjectPID()).then((res) => {
+    findModelByPIDApi(getProjectPID()).then((res) => {
       console.log(res)
       this.model = res.data.data
       // console.log(this.modelList);
@@ -388,7 +388,7 @@ export default {
           this.loading = false
           this.addDialogVisible = false
           if (res.data.code === 200) {
-            findmodelByPIDApi(getProjectPID())
+            findModelByPIDApi(getProjectPID())
               .then((res) => {
                 this.modelList = res.data.data
               })
