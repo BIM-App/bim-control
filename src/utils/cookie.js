@@ -78,3 +78,7 @@ export const removeAccessToken = () => {
   return Cookies.remove('accessToken')
 }
 
+export const setRecentModel = () => {
+  return Cookies.set('recentModel')
+}
+

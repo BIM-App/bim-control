@@ -10,13 +10,13 @@ router.beforeEach(async(to, from, next) => {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
-      if (router.options.routes.length === 9 && getRole() === 'super') {
+      if (router.options.routes.length === 10 && getRole() === 'super') {
         // super权限
         next()
-      } else if (router.options.routes.length === 9 && getRole() === 'admin') {
+      } else if (router.options.routes.length === 10 && getRole() === 'admin') {
         // admin权限
         next()
-      } else if (router.options.routes.length === 9 && getRole() === 'staff') {
+      } else if (router.options.routes.length === 10 && getRole() === 'staff') {
         // staff权限
         next()
       } else {

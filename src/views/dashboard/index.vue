@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard">
-    <div class="project">
+    <div class="project-model">
       <project-list />
       <model-list />
     </div>

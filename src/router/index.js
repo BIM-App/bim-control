@@ -80,6 +80,18 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/model',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Model',
+        component: () => import('@/views/model/index'),
+        meta: { title: '模型管理', icon: 'dashboard' }
+      }
+    ]
+  },
+  {
     path: '/task',
     component: Layout,
     children: [

@@ -1,19 +1,16 @@
 <template>
-  <div class="top">
+  <div class="box">
     <div class="top-info">
       <h2>最近项目列表</h2>
       <div class="fr">
-        <!-- <el-button type="mini">zhu</el-button> -->
-        <el-link :underline="false" style="fontSize:16px">全部项目（{{ projectList.length }}）</el-link>
+        <el-link :underline="false" style="fontSize:16px" @click="goAllProject">全部项目（{{ projectList.length }}）</el-link>
       </div>
     </div>
     <ul class="project-list">
       <li v-for="(item,index) in projectList" v-show="index<3" :key="item.pid" @click="goProjectInfo(item.pid)">
-        <div> {{ item.pname }}</div>
+        <div>项目名称：{{ item.pname }}</div>
         <div>
-          <span>{{ item.creator }}</span>
-          <span>item</span>
-          <span />
+          <span>项目创建者UID：{{ item.creator }}</span>
         </div>
       </li>
     </ul>
@@ -38,7 +35,7 @@ export default {
     // 获取参与项目列表
     findProjects() {
       findProjectsApi(getUser().username).then((res) => {
-        console.log(res)
+        console.log('项目列表查询', res)
         if (res.data.length >= 1) {
           this.projectList = res.data.reverse()
           // 把数据发射给兄弟组件
@@ -50,23 +47,27 @@ export default {
     },
     // 跳转对应pid的项目详情
     goProjectInfo(pid) {
-      console.log(pid)
+      // console.log(pid)
       this.$router.push(`/project/${pid}/info`)
+    },
+    // 获取所有项目列表
+    goAllProject() {
+      this.$router.push(`/project/index`)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.top{
+.box {
   width: 960px;
   .top-info {
     padding: 0 0px 0 12px;
-      height: 40px;
-      line-height: 40px;
-      display: flex;
-      justify-content: space-between;
-      background-color: lightcoral;
+    height: 40px;
+    line-height: 40px;
+    display: flex;
+    justify-content: space-between;
+    background-color: lightcoral;
   }
   .project-list {
     // height: 50vh;
