@@ -13,10 +13,11 @@
         label="项目负责人"
         prop="creator"
       />
-      <el-table-column
-        align="right"
-      >
-        <template slot="header" slot-scope="">
+      <el-table-column align="right">
+        <template
+          slot="header"
+          slot-scope=""
+        >
           <!-- <el-input
             v-model="search"
             size="mini"
@@ -58,7 +59,7 @@ export default {
     findProjects() {
       findProjectsApi(getUser().username).then((res) => {
         if (res.data) {
-          console.log(res.data)
+          // console.log(res.data)
           this.allProjectList = res.data
         }
       }).catch((err) => {
@@ -68,7 +69,7 @@ export default {
     // 打开对应pid项目详情
     openDetails(row, column, event) {
       console.log(row)
-      this.$router.push(`/project/${row.pid}/info`)
+      this.$router.push(`/project/${row.pid}`)
     },
     handleEdit(index, row) {
       console.log(index, row)

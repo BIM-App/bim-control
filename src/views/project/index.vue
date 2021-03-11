@@ -4,8 +4,20 @@
       <h2>项目</h2>
       <div class="fr">
         <!-- <el-link :underline="false" style="fontSize:16px">全部项目</el-link> -->
-        <el-button size="mini" type="info" @click="changeView">{{ viewList=== true?'卡片视图':'列表视图' }}</el-button>
-        <el-button size="mini" type="primary" @click="getNewProject()">新建项目</el-button>
+        <el-button
+          size="mini"
+          type="info"
+          @click="changeView"
+        >
+          {{ viewList === true ? "卡片视图" : "列表视图" }}
+        </el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          @click="getNewProject()"
+        >
+          新建项目
+        </el-button>
       </div>
     </div>
     <view-card v-show="!viewList" />
@@ -28,7 +40,7 @@ export default {
   data() {
     return {
       viewList: false,
-      drawer: ''
+      dialog: ''
     }
   },
   methods: {
@@ -39,10 +51,10 @@ export default {
     },
     // 新建项目
     getNewProject() {
-      this.drawer = true
+      this.dialog = true
       // 把数据发射给兄弟组件
-      eventVue.$emit('drawer', this.drawer)
-      console.log(this.drawer)
+      eventVue.$emit('dialog', this.dialog)
+      console.log(this.dialog)
     }
   }
 }
@@ -50,11 +62,11 @@ export default {
 
 <style lang="scss" scoped>
 .top-info {
-    padding: 0 22px 0 12px;
-      height: 40px;
-      line-height: 40px;
-      display: flex;
-      justify-content: space-between;
-      background-color: #eee;
-  }
+  padding: 0 22px 0 12px;
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  justify-content: space-between;
+  background-color: #eee;
+}
 </style>

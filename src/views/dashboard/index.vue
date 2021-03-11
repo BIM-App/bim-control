@@ -29,13 +29,14 @@ export default {
 <style lang="scss" scoped>
 .dashboard {
   display: flex;
-  // .project{
-  //   // flex:auto
-  // }
+  justify-content: space-between;
+  .project-model{
+
+  }
   .task{
-    margin-left: 10px;
+    // margin-left: 10px;
     // height: 260px;
-    flex:auto;
+    // flex:auto;
   }
 }
 </style>

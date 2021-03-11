@@ -22,9 +22,9 @@ module.exports = {
       }
     }],
     "vue/singleline-html-element-content-newline": "off",
-    "vue/multiline-html-element-content-newline":"off",
-    "vue/name-property-casing": ["error", "PascalCase"],
-    "vue/no-v-html": "off",
+    "vue/multiline-html-element-content-newline": "off",  // 在多行元素的内容之前和之后需要换行
+    "vue/component-definition-name-casing": ["error", "PascalCase"], // 对组件定义名称强制使用特定的大小写
+    "vue/no-v-html": "off", // 禁止使用v-html防止XSS攻击
     'accessor-pairs': 2,
     'arrow-spacing': [2, {
       'before': true,
@@ -47,7 +47,7 @@ module.exports = {
     'curly': [2, 'multi-line'],
     'dot-location': [2, 'property'],
     'eol-last': 2,
-    'eqeqeq': ["error", "always", {"null": "ignore"}],
+    'eqeqeq': ["error", "always", { "null": "ignore" }],
     'generator-star-spacing': [2, {
       'before': true,
       'after': true

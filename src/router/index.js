@@ -53,7 +53,7 @@ export const constantRoutes = [
         meta: { title: '项目成员', icon: 'dashboard' }
       },
       {
-        path: ':pid/info',
+        path: ':pid',
         name: 'ProjectInfo',
         hidden: true,
         component: () => import('@/views/projectInfo/index'),

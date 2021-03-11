@@ -5,7 +5,9 @@
     "clearfix",
     "cname",
     "companyid",
+    "daterange",
     "endtime",
+    "gainsboro",
     "instanceof",
     "investamount",
     "invitationcode",
@@ -15,6 +17,7 @@
     "orgnizationno",
     "planendtime",
     "planstarttime",
+    "plantime",
     "pmid",
     "pname",
     "popconfirm",
@@ -26,11 +29,22 @@
     "starttime",
     "workunit"
   ],
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
   "eslint.validate": [
     "javascript",
     "javascriptreact",
     "vue"
   ],
-  "eslint.format.enable": true,
+  "vetur.format.defaultFormatter.js": "none",
+  "vetur.format.defaultFormatter.html": "js-beautify-html",
+  // "vetur.format.defaultFormatterOptions": {
+  //   "js-beautify-html": {
+  //     "wrap_line_length": 80,
+  //     "wrap_attributes": "auto",
+  //     "end_with_newline": false
+  //   }
+  // }
 }

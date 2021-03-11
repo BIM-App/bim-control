@@ -3,7 +3,12 @@
     <div class="top-info">
       <h2>模型列表</h2>
       <span>当前项目：
-        <el-select v-model="value" size="small" placeholder="请选择" @change="selectDetail(value)">
+        <el-select
+          v-model="value"
+          size="small"
+          placeholder="请选择"
+          @change="selectDetail(value)"
+        >
           <el-option
             v-for="item in projectList"
             :key="item.value"
@@ -13,15 +18,25 @@
         </el-select>
       </span>
       <div class="fr">
-        <el-link :underline="false" style="fontSize:16px" @click="goAllModel">全部模型</el-link>
+        <el-link
+          :underline="false"
+          style="fontSize:16px"
+          @click="goAllModel"
+        >全部模型</el-link>
       </div>
     </div>
     <ul class="model-list">
-      <li v-for="item in modelList" :key="item.Mid">
+      <li
+        v-for="item in modelList"
+        :key="item.Mid"
+      >
         <img :src="item.MPicture">
         <!-- <div>{{ item.MPicture }}</div> -->
       </li>
-      <div v-if="!modelList" class="model-tip">
+      <div
+        v-if="!modelList"
+        class="model-tip"
+      >
         <div>当前项目暂无模型</div>
       </div>
     </ul>
@@ -81,26 +96,30 @@ export default {
 .model {
   margin-top: 20px;
   height: 357.6px;
-  .top-info{
+  border-radius: 10px;
+  border: 3px solid gainsboro;
+  .top-info {
     padding: 0 22px 0 12px;
     height: 40px;
     line-height: 40px;
     display: flex;
+    border-radius: 10px;
+    border: 1px solid gainsboro;
     justify-content: space-between;
-    background-color: lightcoral;
+    background-color: #eee;
   }
   .model-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: left;
-    background-color: skyblue;
+    // background-color: skyblue;
     li {
       margin: 10px 10px;
       padding: 20px;
       // width: 256px;
       // height: 256px;
       border-radius: 5px;
-      background: rgb(227,244,255);
+      background: rgb(227, 244, 255);
       cursor: pointer;
       img {
         width: 256px;
@@ -108,9 +127,9 @@ export default {
       }
     }
     li:hover {
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, .2);
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
       border-color: #eee;
-      transition: all .2s ease-in-out;
+      transition: all 0.2s ease-in-out;
     }
     .model-tip {
       margin: 10px 10px;
@@ -118,8 +137,8 @@ export default {
       // width: 256px;
       // height: 256px;
       border-radius: 5px;
-      background: rgb(227,244,255);
-      div{
+      background: rgb(227, 244, 255);
+      div {
         width: 256px;
         height: 256px;
         text-align: center;
