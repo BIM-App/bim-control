@@ -3,7 +3,6 @@
     <el-drawer
       ref="drawer"
       title="新建项目"
-      :before-close="handleClose"
       :visible.sync="dialog"
       direction="rtl"
       custom-class="demo-drawer"
@@ -126,9 +125,8 @@
           <el-button @click="cancelForm">取 消</el-button>
           <el-button
             type="primary"
-            :loading="loading"
             @click="$refs.drawer.closeDrawer();addProject()"
-          >{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+          >提交</el-button>
         </div>
       </div>
     </el-drawer>
@@ -143,9 +141,7 @@ export default {
   name: 'ProjectNew',
   data() {
     return {
-      table: false,
       dialog: false,
-      loading: false,
       plantime: '',
       form: {
         // pid: '', // 项目编号
@@ -168,8 +164,7 @@ export default {
         creator: '', // 创建者用户编号
         username: ''
       },
-      formLabelWidth: '80px',
-      timer: null
+      formLabelWidth: '80px'
     }
   },
   created() {
@@ -185,7 +180,7 @@ export default {
     },
     // 获取新建项目的地址部分信息
     regionChange(data) {
-      console.log(data)
+      // console.log(data)
       this.form.province = data.province ? data.province.value : ''
       this.form.city = data.city ? data.city.value : ''
       this.form.district = data.area ? data.area.value : ''
@@ -201,31 +196,22 @@ export default {
       // console.log(this.plantime)
       addProjectApi(data).then((res) => {
         console.log('1111', res)
+        // 添加成功
+        if (res.data.status === 201) {
+          this.$message({
+            message: '项目添加成功',
+            type: 'success'
+          })
+          eventVue.$emit('addFlag', true)
+          this.$refs['form'].resetFields()
+          this.plantime = ''
+        }
       }).catch((err) => {
         console.log(err)
       })
     },
-    handleClose(done) {
-      if (this.loading) {
-        return
-      }
-      this.$confirm('确定要提交表单吗？')
-        .then(_ => {
-          this.loading = true
-          this.timer = setTimeout(() => {
-            done()
-            // 动画关闭需要一定的时间
-            setTimeout(() => {
-              this.loading = false
-            }, 400)
-          }, 2000)
-        })
-        .catch(_ => {})
-    },
     cancelForm() {
-      this.loading = false
       this.dialog = false
-      clearTimeout(this.timer)
     }
   }
 }
@@ -236,6 +222,9 @@ export default {
   outline: 0;
 }
 .demo-drawer__footer {
-  // margin-left: 250px;
+  margin: 45px 220px;
+  .el-button {
+    margin: 0 40px;
+  }
 }
 </style>

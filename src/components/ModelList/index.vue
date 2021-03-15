@@ -1,7 +1,7 @@
 <template>
   <div class="model">
     <div class="top-info">
-      <h2>模型列表</h2>
+      <!-- <h2>模型列表</h2> -->
       <span>当前项目：
         <el-select
           v-model="value"
@@ -28,10 +28,11 @@
     <ul class="model-list">
       <li
         v-for="item in modelList"
-        :key="item.Mid"
+        :key="item.MId"
+        @click="test(item.MId)"
       >
         <img :src="item.MPicture">
-        <!-- <div>{{ item.MPicture }}</div> -->
+        <div style="text-align:center">{{ item.MName }}</div>
       </li>
       <div
         v-if="!modelList"
@@ -60,6 +61,9 @@ export default {
     this.receiveData()
   },
   methods: {
+    test(MId) {
+      console.log(MId)
+    },
     // 接收兄弟组件传来的值
     receiveData() {
       eventVue.$on('projectList', (data) => {
@@ -72,7 +76,7 @@ export default {
     // 切换当前项目以查看模型
     selectDetail(value) {
       findModelByPIDApi(value).then((res) => {
-        console.log('模型列表查询', res)
+        // console.log('模型列表查询', res)
         if (res.data.code === 200) {
           this.modelList = res.data.data
           // console.log(this.modelList)

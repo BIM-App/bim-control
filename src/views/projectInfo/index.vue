@@ -7,7 +7,14 @@
           size="mini"
           type="primary"
         >
-          123
+          测试
+        </el-button>
+        <el-button
+          size="mini"
+          type="danger"
+          @click="deleteProject"
+        >
+          删除项目
         </el-button>
       </div>
     </div>
@@ -24,12 +31,18 @@
           </el-carousel>
         </div>
       </section>
+      <section>
+        {{ projectInfo.description }}
+      </section>
+      <section>
+        {{ projectInfo }}
+      </section>
     </div>
   </div>
 </template>
 
 <script>
-import { findProjectInfoApi } from '@/api/project'
+import { findProjectInfoApi, deleteProjectApi } from '@/api/project'
 export default {
   data() {
     return {
@@ -50,6 +63,31 @@ export default {
         }
       }).catch((err) => {
         console.log(err)
+      })
+    },
+    deleteProject() {
+      this.$confirm('此操作将永久删除该项目, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteProjectApi(this.$route.params.pid).then((res) => {
+          // console.log(res)
+          if (res.data.status === 204) {
+            this.$message({
+              message: '项目删除成功',
+              type: 'success'
+            })
+            this.$router.push({ path: '/project/index' })
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }

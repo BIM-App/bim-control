@@ -3,13 +3,12 @@
     <div class="top-info">
       <h2>项目</h2>
       <div class="fr">
-        <!-- <el-link :underline="false" style="fontSize:16px">全部项目</el-link> -->
         <el-button
           size="mini"
           type="info"
           @click="changeView"
         >
-          {{ viewList === true ? "卡片视图" : "列表视图" }}
+          {{ viewList === true ? "列表视图" : "卡片视图" }}
         </el-button>
         <el-button
           size="mini"

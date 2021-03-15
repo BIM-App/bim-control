@@ -28,13 +28,12 @@
           <el-button
             disabled
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)"
+            @click.stop="handleEdit(scope.$index, scope.row)"
           >Edit</el-button>
           <el-button
-            disabled
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
+            @click.stop="handleDelete(scope.$index, scope.row)"
           >Delete</el-button>
         </template>
       </el-table-column>
@@ -44,7 +43,9 @@
 
 <script>
 import { findProjectsApi } from '@/api/user'
+import { deleteProjectApi } from '@/api/project'
 import { getUser } from '@/utils/cookie'
+import eventVue from '@/utils/eventVue'
 export default {
   data() {
     return {
@@ -53,8 +54,16 @@ export default {
   },
   created() {
     this.findProjects()
+    this.receiveData()
   },
   methods: {
+    // 接收共享数据
+    receiveData() {
+      eventVue.$on('addFlag', (data) => {
+        console.log(data)
+        this.findProjects()
+      })
+    },
     // 获取所有参与项目列表
     findProjects() {
       findProjectsApi(getUser().username).then((res) => {
@@ -74,8 +83,20 @@ export default {
     handleEdit(index, row) {
       console.log(index, row)
     },
+    // 删除项目
     handleDelete(index, row) {
       console.log(index, row)
+      deleteProjectApi(row.pid).then((res) => {
+        console.log(res)
+        if (res.data.status === 204) {
+          this.$message({
+            message: '项目删除成功',
+            type: 'success'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   }
 }

@@ -6,7 +6,10 @@
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >
-    <div v-if="modelList.length > 1" style="padding: 0 0 5px 0; display: flex">
+    <div
+      v-if="modelList.length > 1"
+      style="padding: 0 0 5px 0; display: flex"
+    >
       <el-select
         v-model="modelIndex"
         size="small"
@@ -28,15 +31,26 @@
       {{ content }}
     </div>
     <div class="buttons">
-      <button type="button" class="button" @click="add3DMarker()">
+      <button
+        type="button"
+        class="button"
+        @click="add3DMarker()"
+      >
         点击构件添加标签
       </button>
-      <button id="btnClearItems" class="button" @click="clearItems()">
+      <button
+        id="btnClearItems"
+        class="button"
+        @click="clearItems()"
+      >
         清除标签
       </button>
     </div>
     <!-- 定义DOM元素，用于在该DOM元素中显示模型或图纸 -->
-    <div id="domId" class="domId" />
+    <div
+      id="domId"
+      class="domId"
+    />
     <div
       v-show="modelList.length != 0"
       class="mapDiv"

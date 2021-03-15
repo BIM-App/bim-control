@@ -17,6 +17,7 @@
 <script>
 import { findProjectsApi } from '@/api/user'
 import { getUser } from '@/utils/cookie'
+import eventVue from '@/utils/eventVue'
 export default {
   name: 'ViewCard',
   data() {
@@ -26,8 +27,16 @@ export default {
   },
   created() {
     this.findProjects()
+    this.receiveData()
   },
   methods: {
+    // 接收共享数据
+    receiveData() {
+      eventVue.$on('addFlag', (data) => {
+        console.log(data)
+        this.findProjects()
+      })
+    },
     // 获取所有参与项目列表
     findProjects() {
       findProjectsApi(getUser().username).then((res) => {

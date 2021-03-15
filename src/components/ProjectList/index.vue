@@ -44,7 +44,7 @@ export default {
     // 获取参与项目列表
     findProjects() {
       findProjectsApi(getUser().username).then((res) => {
-        console.log('项目列表查询', res)
+        // console.log('项目列表查询', res)
         if (res.data.length >= 1) {
           this.projectList = res.data.reverse()
           // 把数据发射给兄弟组件
