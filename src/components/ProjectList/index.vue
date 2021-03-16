@@ -93,9 +93,9 @@ export default {
     // align-items: center;
     // background-color: skyblue;
     li {
-      margin: 10px 10px;
+      margin: 10px 15px;
       padding: 20px;
-      width: 300px;
+      min-width: 272px;
       height: 150px;
       border-radius: 5px;
       background-color: rgb(227, 244, 255);

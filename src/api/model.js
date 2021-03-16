@@ -59,8 +59,8 @@ export function findModelByMidApi(mid) {
   })
 }
 
-// 获取viewtoken
-export const getmodeltokenApi = (params, accessToken) => {
+// 获取viewToken
+export const getModelTokenApi = (params, accessToken) => {
   return request({
     url: '/view/token',
     headers: { Authorization: 'Bearer' + ' ' + accessToken },

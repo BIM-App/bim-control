@@ -46,14 +46,20 @@
       <el-dialog
         title="提示"
         :visible.sync="dialogVisible"
-        width="30%"
-        :before-close="handleClose"
+        width="90%"
+        top="20px"
       >
+        <!-- :before-close="handleClose" -->
+
         <!-- <span>{{ currentModel }}</span> -->
-        <div>MId: {{ currentModel.MId }}</div>
-        <div>MFile: {{ currentModel.MFile }}</div>
-        <bimface-linkage />
-        <span
+        <!-- <div>MId: {{ currentModel.MId }}</div>
+        <div>MFile: {{ currentModel.MFile }}</div> -->
+        <bimface-linkage
+          v-if="dialogVisible"
+          :model-file-id="modelFileId"
+          :file-name="fileName"
+        />
+        <!-- <span
           slot="footer"
           class="dialog-footer"
         >
@@ -62,7 +68,7 @@
             type="primary"
             @click="dialogVisible = false"
           >确 定</el-button>
-        </span>
+        </span> -->
       </el-dialog>
     </div>
   </div>
@@ -85,7 +91,9 @@ export default {
       options: [],
       value: '',
       dialogVisible: false,
-      currentModel: {}
+      currentModel: {},
+      modelFileId: '',
+      fileName: ''
     }
   },
   created() {
@@ -96,6 +104,8 @@ export default {
     getModelInfo(item) {
       console.log(item)
       this.currentModel = item
+      this.modelFileId = item.MFile
+      this.fileName = item.MName
     },
     // 获取参与项目列表
     findProjects() {

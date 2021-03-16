@@ -123,15 +123,15 @@ export default {
     // background-color: skyblue;
     li {
       margin: 10px 10px;
-      padding: 20px;
+      padding: 24px;
       // width: 256px;
       // height: 256px;
       border-radius: 5px;
       background: rgb(227, 244, 255);
       cursor: pointer;
       img {
-        width: 256px;
-        height: 256px;
+        min-width: 233px;
+        height: 233px;
       }
     }
     li:hover {
