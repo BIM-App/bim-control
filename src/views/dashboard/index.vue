@@ -28,15 +28,19 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard {
+  height: 100%;
   display: flex;
   justify-content: space-between;
-  .project-model{
-
+  margin: 8px;
+  width: 99%;
+  height: 99%;
+  position: absolute;
+  .project-model {
+    width: 70%;
+    margin-right: 8px;
   }
-  .task{
-    // margin-left: 10px;
-    // height: 260px;
-    // flex:auto;
+  .task {
+    width: 30%;
   }
 }
 </style>

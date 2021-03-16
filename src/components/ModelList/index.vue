@@ -20,7 +20,7 @@
       <div class="fr">
         <el-link
           :underline="false"
-          style="fontSize:16px"
+          style="fontSize:14px"
           @click="goAllModel"
         >全部模型</el-link>
       </div>
@@ -98,19 +98,23 @@ export default {
 
 <style lang="scss" scoped>
 .model {
-  margin-top: 20px;
-  height: 357.6px;
-  border-radius: 10px;
-  border: 3px solid gainsboro;
+  width: 100%;
+  height: 67%;
+  margin-top: 8px;
+  background-color: #fff;
+  // height: 357.6px;
+  // border-radius: 10px;
+  // border: 3px solid gainsboro;
   .top-info {
     padding: 0 22px 0 12px;
     height: 40px;
     line-height: 40px;
     display: flex;
-    border-radius: 10px;
-    border: 1px solid gainsboro;
     justify-content: space-between;
-    background-color: #eee;
+    font-size: 16px;
+    font-weight: 700;
+    border-bottom: 1px solid #f3f4f5;
+    // background-color: #eee;
   }
   .model-list {
     display: flex;

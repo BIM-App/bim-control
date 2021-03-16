@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="projectinfo-container">
     <div class="top-info">
       <h2>{{ projectInfo.pname }}</h2>
       <div class="fr">
@@ -95,13 +95,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.projectinfo-container {
+  margin: 8px;
+  background-color: #fff;
+  width: 99%;
+  height: 99%;
+  position: absolute;
+}
 .top-info {
-  padding: 0 20px 0 12px;
+  padding: 0 22px 0 12px;
   height: 40px;
   line-height: 40px;
   display: flex;
   justify-content: space-between;
-  background-color: #eee;
+  font-size: 16px;
+  font-weight: 700;
+  border-bottom: 1px solid #f3f4f5;
+  // background-color: #eee;
+}
+.project-info {
+  padding: 12px;
 }
 .block {
   width: 500px;

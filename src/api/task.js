@@ -6,7 +6,7 @@ export function addTask(data) {
     url: '/Task/addTask',
     method: 'post',
     headers: {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'application/json'
     },
     data
   })
@@ -14,19 +14,27 @@ export function addTask(data) {
 // 根据任务编号tid来修改任务信息
 export function updateTask(tid, data) {
   return request({
-    url: '/Task/updateTaskByTID' + tid,
+    url: '/Task/updateTaskByTID/' + tid,
     method: 'put',
     headers: {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'application/json'
     },
     data
   })
 }
 
 // 根据pid返回任务列表
-export function findTaskByPid(pid) {
+export function findTaskByPID(pid) {
   return request({
     url: '/Task/findTaskByPID/' + pid,
+    method: 'Get'
+  })
+}
+
+// 根据tid返回任务详情
+export function findTaskByTID(tid) {
+  return request({
+    url: '/Task/findTaskDetailByTId/' + tid,
     method: 'Get'
   })
 }
@@ -41,7 +49,7 @@ export function delTasksByPid(pid) {
 // 根据任务编号来删除任务
 export function delTasksByTid(tid) {
   return request({
-    url: '/Task/deleteTaskByTID' + tid,
+    url: '/Task/deleteTaskByTID/' + tid,
     method: 'delete'
   })
 }

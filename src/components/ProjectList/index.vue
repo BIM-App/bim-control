@@ -5,7 +5,7 @@
       <div class="fr">
         <el-link
           :underline="false"
-          style="fontSize:16px"
+          style="fontSize:14px"
           @click="goAllProject"
         >全部项目（{{ projectList.length }}）</el-link>
       </div>
@@ -69,24 +69,27 @@ export default {
 
 <style lang="scss" scoped>
 .box {
-  width: 966px;
-  border-radius: 10px;
-  border: 3px solid gainsboro;
+  width: 100%;
+  height: 33%;
+  background-color: #fff;
+  // border-radius: 10px;
+  // border: 3px solid gainsboro;
   .top-info {
-    padding: 0 0px 0 12px;
+    padding: 0 22px 0 12px;
     height: 40px;
     line-height: 40px;
     display: flex;
-    border-radius: 10px;
-    border: 1px solid gainsboro;
     justify-content: space-between;
-    background-color: #eee;
+    font-size: 16px;
+    font-weight: 700;
+    border-bottom: 1px solid #f3f4f5;
+    // background-color: #eee;
   }
   .project-list {
     // height: 50vh;
     display: flex;
     flex-wrap: wrap;
-    justify-content: left;
+    justify-content: space-between;
     // align-items: center;
     // background-color: skyblue;
     li {
@@ -109,5 +112,7 @@ export default {
 
 .fr {
   float: right;
+  font-size: 12px;
+  font-weight: 400px;
 }
 </style>

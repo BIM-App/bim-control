@@ -5,7 +5,7 @@
       <div class="fr">
         <el-link
           :underline="false"
-          style="fontSize:16px"
+          style="fontSize:14px"
           @click="goAllTask"
         >全部任务</el-link>
       </div>
@@ -26,7 +26,7 @@ export default {
   name: 'TaskList',
   data() {
     return {
-      taskList: [{ tname: 'dadadadaddddddddddddddddadA测试' }, { tname: 1 }, { tname: 1 }, { tname: 1 }, { tname: 1 }, { tname: 1 }, { tname: 1 }, { tname: 1 }]
+      taskList: []
     }
   },
   methods: {
@@ -40,21 +40,24 @@ export default {
 
 <style lang="scss" scoped>
 .taskAside {
-  width: 340px;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
   // margin-top: 10px;
   // height: auto;
   // background-color: lightgreen;
-  border-radius: 10px;
-  border: 3px solid gainsboro;
+  // border-radius: 10px;
+  // border: 3px solid gainsboro;
   .top-info {
     padding: 0 22px 0 12px;
     height: 40px;
     line-height: 40px;
     display: flex;
-    border-radius: 10px;
-    border: 1px solid gainsboro;
     justify-content: space-between;
-    background-color: #eee;
+    font-size: 16px;
+    font-weight: 700;
+    border-bottom: 1px solid #f3f4f5;
+    // background-color: #eee;
   }
   .task-list {
     // padding-right: 50px;
