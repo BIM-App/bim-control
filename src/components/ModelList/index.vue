@@ -119,13 +119,13 @@ export default {
   .model-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: left;
+    justify-content: space-between;
     // background-color: skyblue;
     li {
       margin: 10px 10px;
       padding: 20px;
-      // width: 256px;
-      // height: 256px;
+      width: 30%;
+      min-width: 150px;
       border-radius: 5px;
       background: rgb(227, 244, 255);
       cursor: pointer;

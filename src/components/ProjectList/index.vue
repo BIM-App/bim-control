@@ -95,7 +95,8 @@ export default {
     li {
       margin: 10px 10px;
       padding: 20px;
-      width: 300px;
+      width: 30%;
+      min-width: 150px;
       height: 150px;
       border-radius: 5px;
       background-color: rgb(227, 244, 255);

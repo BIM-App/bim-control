@@ -1,7 +1,10 @@
 <template>
   <div class="taskAside">
     <div class="top-info">
-      <h2>任务列表（{{ taskList.length }}）</h2>
+      <div>
+        任务列表（{{ taskList.length }}）
+        <span class="datanav">！当前项目：{{ 11111 }}</span>
+      </div>
       <div class="fr">
         <el-link
           :underline="false"
@@ -10,6 +13,7 @@
         >全部任务</el-link>
       </div>
     </div>
+
     <ul class="task-list">
       <li
         v-for="item in taskList"
@@ -58,6 +62,12 @@ export default {
     font-weight: 700;
     border-bottom: 1px solid #f3f4f5;
     // background-color: #eee;
+    .datanav {
+      font-size: 12px;
+      font-weight: 400;
+      color: #f04844;
+      padding: 0 30px 0 -10px;
+    }
   }
   .task-list {
     // padding-right: 50px;

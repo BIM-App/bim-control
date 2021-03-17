@@ -1,7 +1,16 @@
 <template>
   <div>
-    <el-button size="medium" type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">注册公司</el-button>
-    <ul v-for="item in companyData" :key="item.cid" class="company-info">
+    <el-button
+      size="medium"
+      type="primary"
+      icon="el-icon-plus"
+      @click="dialogFormVisible = true"
+    >注册公司</el-button>
+    <ul
+      v-for="item in companyData"
+      :key="item.cid"
+      class="company-info"
+    >
       <li>公司名称：{{ item.cname }}</li>
       <li>法定代表人：{{ item.representative }}</li>
       <li>注册资金：{{ item.investamount }}</li>
@@ -13,13 +22,16 @@
       <li>公司简介：{{ item.description }}</li>
       <li>审核状态：{{ item.checkstatus === 0 ? '审核中' : '已通过' }}</li>
       <li v-if="item.checkstatus == 1">公司邀请码：{{ item.invitationcode }}</li>
-      <el-button type="primary" disabled>修改公司信息</el-button>
+      <el-button
+        type="primary"
+        disabled
+      >修改公司信息</el-button>
       <el-popconfirm
         confirm-button-text="确定"
         cancel-button-text="取消"
         icon="el-icon-info"
         icon-color="red"
-        title="确定要删除此项目吗？"
+        title="确定要删除此公司吗？"
         @onConfirm="deleteCompany(item.cid)"
       >
         <el-button
@@ -36,25 +48,57 @@
       style="margin-top: -40px"
     >
       <el-row :gutter="15">
-        <el-form ref="form" :model="form" label-width="100px">
+        <el-form
+          ref="form"
+          :model="form"
+          label-width="100px"
+        >
           <el-col :span="21">
-            <el-form-item label="公司名称" prop="cname" required="">
-              <el-input v-model="form.cname" autocomplete="off" />
+            <el-form-item
+              label="公司名称"
+              prop="cname"
+              required=""
+            >
+              <el-input
+                v-model="form.cname"
+                autocomplete="off"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="21">
-            <el-form-item label="法定代表人" prop="representative" required>
-              <el-input v-model="form.representative" autocomplete="off" />
+            <el-form-item
+              label="法定代表人"
+              prop="representative"
+              required
+            >
+              <el-input
+                v-model="form.representative"
+                autocomplete="off"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="21">
-            <el-form-item label="注册资金" prop="investamount" required>
-              <el-input v-model="form.investamount" autocomplete="off" />
+            <el-form-item
+              label="注册资金"
+              prop="investamount"
+              required
+            >
+              <el-input
+                v-model="form.investamount"
+                autocomplete="off"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="21">
-            <el-form-item label="公司类型" prop="type" required>
-              <el-select v-model="form.type" placeholder="请选择">
+            <el-form-item
+              label="公司类型"
+              prop="type"
+              required
+            >
+              <el-select
+                v-model="form.type"
+                placeholder="请选择"
+              >
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -65,12 +109,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="21">
-            <el-form-item label="公司级别" prop="grade" required>
-              <el-input v-model="form.grade" autocomplete="off" />
+            <el-form-item
+              label="公司级别"
+              prop="grade"
+              required
+            >
+              <el-input
+                v-model="form.grade"
+                autocomplete="off"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="21">
-            <el-form-item label="成立日期" prop="starttime" required>
+            <el-form-item
+              label="成立日期"
+              prop="starttime"
+              required
+            >
               <el-date-picker
                 v-model="form.starttime"
                 type="date"
@@ -81,23 +136,46 @@
             </el-form-item>
           </el-col>
           <el-col :span="21">
-            <el-form-item label="组织机构代码证号" prop="orgnizationno" required>
-              <el-input v-model="form.orgnizationno" autocomplete="off" />
+            <el-form-item
+              label="组织机构代码证号"
+              prop="orgnizationno"
+              required
+            >
+              <el-input
+                v-model="form.orgnizationno"
+                autocomplete="off"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="21">
-            <el-form-item label="公司所在地址" prop="address" required>
-              <el-input v-model="form.address" autocomplete="off" />
+            <el-form-item
+              label="公司所在地址"
+              prop="address"
+              required
+            >
+              <el-input
+                v-model="form.address"
+                autocomplete="off"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="21">
-            <el-form-item label="公司简介" prop="description">
-              <el-input v-model="form.description" autocomplete="off" />
+            <el-form-item
+              label="公司简介"
+              prop="description"
+            >
+              <el-input
+                v-model="form.description"
+                autocomplete="off"
+              />
             </el-form-item>
           </el-col>
         </el-form>
       </el-row>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button
           type="primary"

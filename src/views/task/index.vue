@@ -16,7 +16,6 @@
         <el-table
           class="table"
           :data="tasklist"
-          border
         >
           <el-table-column
             v-for="(item, index) in taskOptions"
