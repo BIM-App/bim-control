@@ -1,5 +1,6 @@
 import request from '../utils/request'
 import qs from 'qs'
+import Axios from 'axios'
 
 // 用户登录
 export const loginApi = params => {
@@ -9,7 +10,6 @@ export const loginApi = params => {
     params
   })
 }
-
 // 用户注册
 export const registerApi = data => {
   return request({

@@ -5,17 +5,7 @@
     width="30%"
     :before-close="handleClose"
   >
-    <span>这是一段信息</span>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button
-        type="primary"
-        @click="dialogVisible = false"
-      >确 定</el-button>
-    </span>
+    123
   </el-dialog>
 </template>
 
@@ -24,11 +14,15 @@
 export default {
   data() {
     return {
-      dialogVisible: false
+      dialogVisible: false,
+      viewer3D: '',
+      marker: '',
+      modelToken: ''
     }
   },
-  created() {
-    this.receiveData()
+  created() {},
+  mounted() {
+
   },
   methods: {
     handleClose(done) {

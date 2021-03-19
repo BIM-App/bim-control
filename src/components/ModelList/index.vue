@@ -130,8 +130,8 @@ export default {
       background: rgb(227, 244, 255);
       cursor: pointer;
       img {
-        width: 256px;
-        height: 256px;
+        min-width: 233px;
+        height: 233px;
       }
     }
     li:hover {

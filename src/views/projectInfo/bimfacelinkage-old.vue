@@ -152,7 +152,7 @@ export default {
     },
     init() {
       const _this = this
-      // eslint-disable-next-line no-unused-vars
+
       var viewAdded = false
       // 初始化显示组件
       // eslint-disable-next-line no-undefw
