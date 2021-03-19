@@ -19,7 +19,7 @@ export const setMember = data => {
 }
 
 export const getMember = () => {
-  return JSON.parse(Cookies.get('member'))
+  return (Cookies.get('member'))
 }
 
 export const removeMember = () => {

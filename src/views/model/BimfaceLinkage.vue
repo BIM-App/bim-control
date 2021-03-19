@@ -1,5 +1,12 @@
 <template>
   <div class="bimBox">
+    <div class="buttons">
+      <button
+        id="addMarker"
+        class="button"
+        @click="add3DMarker()"
+      >添加标签</button>
+    </div>
     <div
       id="domId"
       class="domId"
@@ -27,7 +34,9 @@ export default {
     return {
       viewer3D: '',
       marker: '',
-      modelToken: ''
+      modelToken: '',
+      isAddItemActivated: false,
+      viewAdded: false
     }
   },
   created() {
@@ -98,18 +107,94 @@ export default {
       app.addView(viewMetaData.viewToken)
       _this.viewer3D = app.getViewer()
       _this.viewer3D.addEventListener(window.Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function() {
-        // viewAdded = true
+        _this.viewAdded = true
         // 三维标签的配置类
         var markerConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainerConfig()
         markerConfig.viewer = _this.viewer3D
         _this.marker = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainer(markerConfig)
         _this.viewer3D.resize(document.documentElement.clientWidth, document.documentElement.clientHeight - 40)
         _this.viewer3D.render()
+
+        var position = {
+          'x': -5193.213563484793,
+          'y': -2835.930128298731,
+          'z': 12248.339452835695
+        }
+        // 标签配置
+        var marker3dConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DConfig()
+        marker3dConfig.src = 'http://static.bimface.com/resources/3DMarker/warner/warner_red.png'
+        marker3dConfig.worldPosition = position
+        // 三维标签的提示
+        marker3dConfig.tooltip = 'This is 3DMarker.'
+        var marker3d = new window.Glodon.Bimface.Plugins.Marker3D.Marker3D(marker3dConfig)
+        // var marker3d2 = new window.Glodon.Bimface.Plugins.Marker3D.Marker3D(marker3dConfig)
+        console.log(_this.marker)
+        _this.marker.addItem(marker3d)
       })
     },
     // 加载失败回调函数
     failureCallback(error) {
       console.log(error)
+    },
+    add3DMarker(type) {
+      if (!this.viewAdded) {
+        return
+      }
+      if (this.isAddItemActivated) {
+        // 清空所有三维标签
+        this.viewer3D.removeEventListener(window.Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, this.addItems)
+        this.setButtonText('addMarker', '创建标签')
+      } else {
+        // 添加点击监听事件，创建三维标签
+        this.viewer3D.addEventListener(window.Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, this.addItems)
+        this.setButtonText('addMarker', '结束添加')
+      }
+      this.isAddItemActivated = !this.isAddItemActivated
+      this.viewer3D.render()
+    },
+    addItems(objectData) {
+      var position = objectData.worldPosition
+      // position = {
+      //   "x": -5193.213563484793,
+      //   "y": -2835.930128298731,
+      //   "z": 12248.339452835695
+      // }
+      //       {
+      //     "x": 4155.687160304049,
+      //     "y": -3675.6933260200867,
+      //     "z": 11763.574756892845
+      // }
+      console.log(position)
+      var markerConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainerConfig()
+      markerConfig.viewer = this.viewer3D
+      var marker = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainer(markerConfig)
+      this.viewer3D.resize(document.documentElement.clientWidth, document.documentElement.clientHeight - 40)
+      this.viewer3D.render()
+      var marker3dConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DConfig()
+      marker3dConfig.src = 'http://static.bimface.com/resources/3DMarker/warner/warner_red.png'
+      // if (markerType == 'image') {
+      //   marker3dConfig.src = "http://static.bimface.com/resources/3DMarker/warner/warner_red.png";
+      // } else if (markerType == 'canvas') {
+      //   if (!canvas) {
+      //     canvas = createCanvas();
+      //   }
+      //   marker3dConfig.canvas = canvas;
+      //   marker3dConfig.size = 100;
+      // }
+      marker3dConfig.worldPosition = position
+      // 三维标签的提示
+      marker3dConfig.tooltip = 'This is 3DMarker.'
+      var marker3d = new window.Glodon.Bimface.Plugins.Marker3D.Marker3D(marker3dConfig)
+      marker.addItem(marker3d)
+      this.viewer3D.clearSelectedComponents()
+      this.viewer3D.render()
+    },
+    setButtonText(btnId, text) {
+      var dom = document.getElementById(btnId)
+      // eslint-disable-next-line eqeqeq
+      if (dom != null && dom.nodeName == 'BUTTON') {
+        dom.innerText = text
+      }
     }
 
   }
@@ -135,5 +220,17 @@ export default {
 }
 .bimBox > .mapDiv {
   position: absolute;
+}
+
+.button {
+  margin: 5px 0 5px 5px;
+  width: 120px;
+  height: 30px;
+  background: #32d3a6;
+  color: #ffffff;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  outline: none;
 }
 </style>

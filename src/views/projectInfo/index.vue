@@ -1,13 +1,24 @@
 <template>
-  <div class="projectinfo-container">
-    <div class="top-info">
+  <div class="container">
+    <div
+      v-show="this.$route.name === 'ProjectInfo'"
+      class="top-info"
+    >
       <h2>{{ projectInfo.pname }}</h2>
       <div class="fr">
         <el-button
           size="mini"
           type="primary"
+          @click="goMember"
         >
-          测试
+          项目成员管理
+        </el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          @click="goParticipant"
+        >
+          参建方单位
         </el-button>
         <el-button
           size="mini"
@@ -18,7 +29,10 @@
         </el-button>
       </div>
     </div>
-    <div class="project-info">
+    <div
+      v-show="this.$route.name === 'ProjectInfo'"
+      class="project-info"
+    >
       <section class="project-image">
         <div class="block">
           <el-carousel height="250px">
@@ -38,6 +52,7 @@
         {{ projectInfo }}
       </section>
     </div>
+    <router-view :project-info="projectInfo" />
   </div>
 </template>
 
@@ -53,9 +68,16 @@ export default {
     this.findProjectInfo()
   },
   methods: {
+    goMember() {
+      this.$router.push({ path: `${this.$route.params.pid}/member` })
+    },
+    // 跳转对应项目的参建方
+    goParticipant() {
+      this.$router.push({ path: `${this.$route.params.pid}/participant` })
+    },
     findProjectInfo() {
       // 路由params传参 this.$route.params
-      findProjectInfoApi(this.$route.params.pid).then((res) => {
+      findProjectInfoApi(Number(this.$route.params.pid)).then((res) => {
         console.log('项目详情', res)
         if (res.data) {
           this.projectInfo = res.data
@@ -71,7 +93,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteProjectApi(this.$route.params.pid).then((res) => {
+        deleteProjectApi(Number(this.$route.params.pid)).then((res) => {
           // console.log(res)
           if (res.data.status === 204) {
             this.$message({
@@ -95,7 +117,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.projectinfo-container {
+.container {
   margin: 8px;
   background-color: #fff;
   width: 99%;

@@ -12,11 +12,15 @@
         label="公司名称"
         prop="cname"
       />
-      <el-table-column
-        align="right"
-      >
-        <template slot="header" slot-scope="">
-          <el-button type="primary" @click="participantDialogVisible = true;findCompany()">添加参建方单位</el-button>
+      <el-table-column align="right">
+        <template
+          slot="header"
+          slot-scope=""
+        >
+          <el-button
+            type="primary"
+            @click="participantDialogVisible = true;findCompany()"
+          >添加参建方单位</el-button>
         </template>
         <template slot-scope="scope">
           <el-button
@@ -39,11 +43,19 @@
       style="margin-top: -40px"
     >
       <el-row :gutter="15">
-        <el-form ref="participant " :model="participant " label-width="100px">
+        <el-form
+          ref="participant "
+          :model="participant "
+          label-width="100px"
+        >
           <el-col :span="15">
             <el-form-item label="施工单位">
               <!-- <el-input v-model="project.description" autocomplete="off" /> -->
-              <el-select v-model="value1" filterable placeholder="请选择">
+              <el-select
+                v-model="value1"
+                filterable
+                placeholder="请选择"
+              >
                 <el-option
                   v-for="item in companyData"
                   :key="item.cid"
@@ -55,7 +67,11 @@
           </el-col>
           <el-col :span="15">
             <el-form-item label="监理单位">
-              <el-select v-model="value2" filterable placeholder="请选择">
+              <el-select
+                v-model="value2"
+                filterable
+                placeholder="请选择"
+              >
                 <el-option
                   v-for="item in companyData"
                   :key="item.cid"
@@ -67,7 +83,11 @@
           </el-col>
           <el-col :span="15">
             <el-form-item label="业主单位">
-              <el-select v-model="value3" filterable placeholder="请选择">
+              <el-select
+                v-model="value3"
+                filterable
+                placeholder="请选择"
+              >
                 <el-option
                   v-for="item in companyData"
                   :key="item.cid"
@@ -79,7 +99,10 @@
           </el-col>
         </el-form>
       </el-row>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click=" participantDialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
@@ -98,17 +121,28 @@
       style="margin-top: -40px"
     >
       <el-row :gutter="15">
-        <el-form ref="members " :model="members" label-width="100px">
+        <el-form
+          ref="members "
+          :model="members"
+          label-width="100px"
+        >
           <el-col :span="25">
             <el-form-item label="">
               <template>
-                <el-transfer v-model="memberValue" :titles="[company, project]" :data="participantMember" />
+                <el-transfer
+                  v-model="memberValue"
+                  :titles="[company, project]"
+                  :data="participantMember"
+                />
               </template>
             </el-form-item>
           </el-col>
         </el-form>
       </el-row>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click=" membersDialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
@@ -150,6 +184,7 @@ export default {
     }
   },
   created() {
+    // console.log('参建方', this.$route)
     // 根据项目pid获取参建方列表
     findParticipantApi(getProjectPID()).then((res) => {
       console.log(res)
