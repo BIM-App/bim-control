@@ -3,3 +3,4 @@ src/assets
 public
 dist
 src/utils/BimfaceSDKLoader@latest-release.js
+src/utils/jquery.js

@@ -28,7 +28,7 @@
 <script>
 import ViewCard from './ViewCard.vue'
 import ViewList from './ViewList.vue'
-import ProjectNew from '@/components/ProjectNew'
+import ProjectNew from '@/views/project/ProjectNew'
 import eventVue from '@/utils/eventVue'
 export default {
   components: {

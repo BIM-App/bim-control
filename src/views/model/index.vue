@@ -20,8 +20,10 @@
         </span>
         <div class="fr">
           <el-button
+            v-if="value"
             size="mini"
             type="primary"
+            @click="addModelDialogVisible= true"
           >上传模型</el-button>
         </div>
       </div>
@@ -70,13 +72,99 @@
           >确 定</el-button>
         </span> -->
       </el-dialog>
+      <!-- 上传中 -->
+      <el-dialog
+        title="正在上传"
+        :visible.sync="loading"
+        style="margin-top: -40px"
+      >
+        <div
+          v-loading="loadModel"
+          element-loading-text="拼命上传中"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(0, 0, 0, 0.8)"
+        >
+          1
+        </div>
+      </el-dialog>
+      <el-dialog
+        title="上传模型"
+        :visible.sync="addModelDialogVisible"
+        style="margin-top: -40px"
+      >
+        <el-row>
+          <el-form
+            ref="form"
+            :model="addModelFrom"
+            label-width="100px"
+          >
+            <!-- 模型名称 -->
+            <el-col :span="15">
+              <el-form-item
+                label="模型名称"
+                prop="mName"
+              >
+                <el-input
+                  v-model="addModelFrom.mName"
+                  autocomplete="off"
+                />
+              </el-form-item>
+            </el-col>
+            <!-- 模型描述 -->
+            <el-col :span="15">
+              <el-form-item
+                label="模型描述"
+                prop="mDescription"
+              >
+                <el-input
+                  v-model="addModelFrom.mDescription"
+                  autocomplete="off"
+                />
+              </el-form-item>
+            </el-col>
+            <!-- 添加模型 -->
+            <el-col :span="24">
+              <el-form-item
+                label="上传模型"
+                prop="mFile"
+              >
+                <el-upload
+                  ref=""
+                  action=""
+                  :on-change="handleChangeMod"
+                  :auto-upload="false"
+                  list-type="text"
+                >
+                  <el-button
+                    size="small"
+                    type="primary"
+                  >点击上传</el-button>
+                </el-upload>
+              </el-form-item>
+            </el-col>
+          </el-form>
+        </el-row>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click=" addModelDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="
+              allUpload();
+            "
+          >确 定
+          </el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
 import { findProjectsApi } from '@/api/user'
-import { findModelByPIDApi } from '@/api/model'
+import { findModelByPIDApi, addModelApi } from '@/api/model'
 import { getUser } from '@/utils/cookie'
 // import eventVue from '@/utils/eventVue'
 import BimfaceLinkage from './BimfaceLinkage'
@@ -93,7 +181,17 @@ export default {
       dialogVisible: false,
       currentModel: {},
       modelFileId: '',
-      fileName: ''
+      fileName: '',
+      addModelDialogVisible: false,
+      loading: false,
+      loadModel: false,
+      addModelFrom: {
+        mName: '',
+        creator: '',
+        mFile: '',
+        mDescription: '',
+        PID: ''
+      }
     }
   },
   created() {
@@ -120,6 +218,7 @@ export default {
     },
     // 切换当前项目以查看模型
     selectDetail(value) {
+      console.log(value)
       findModelByPIDApi(value).then((res) => {
         console.log('模型列表查询', res)
         if (res.data.code === 200) {
@@ -133,6 +232,52 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+    },
+    // 上传添加模型
+    addModel() {
+      const _this = this
+      const data = new FormData()
+      data.append('PID', this.value)
+      data.append('creator', getUser().id)
+      data.append('mName', this.addModelFrom.mName)
+      data.append('mDescription', this.addModelFrom.mDescription)
+      data.append('mFile', this.addModelFrom.mFile)
+      this.loading = true
+      this.loadModel = true
+      addModelApi(data).then((res) => {
+        this.loading = false
+        this.addDialogVisible = false
+        // console.log(res)
+        if (res.data.code === 200) {
+          findModelByPIDApi(_this.value)
+            .then((res) => {
+              this.modelList = res.data.data
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+          _this.$notify({
+            title: '成功',
+            message: '新建成功',
+            type: 'success',
+            duration: 1000,
+            offset: 80
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 获取上传的图片
+    handleChange(file, fileList) {
+      this.pictureFile = file.raw
+      // console.log(this.form.Picture);
+    },
+    // 获取文件
+    handleChangeMod(file, fileList) {
+      // console.log(file)
+      this.addModelFrom.mFile = file.raw
+      // console.log(this.pictureFile)
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
