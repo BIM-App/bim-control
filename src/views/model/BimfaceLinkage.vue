@@ -115,6 +115,7 @@ export default {
         }
       )
 
+      // 点击时获取位置
       this.viewer3D.addEventListener(
         window.Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked,
         function(objectData) {
@@ -126,6 +127,11 @@ export default {
 
       // 获取标签
       // this.get3DMarker();
+
+      // 禁用鼠标原生右键事件
+      window.oncontextmenu = function(e) {
+        e.preventDefault()
+      }
     },
 
     // 加载失败回调函数
@@ -222,13 +228,15 @@ export default {
       const marker = new window.Glodon.Bimface.Plugins.Marker3D.Marker3D(
         markerConfig
       )
+      // 往容器里添加标签
       markerContainer.addItem(marker)
 
       // console.log(marker);
       // return console.log(marker);
 
+      // 标签左键点击
       marker.onClick(function(item) {
-        console.log(item)
+        // console.log(item)
         // 获取点击图片的position
         var m = item.position
         // 自己设置一个bounding box的对象
@@ -239,28 +247,47 @@ export default {
         var mix = m.x / num
         var miy = m.y / num
         var miz = m.z / num
-        var maxp = new Object()
-        maxp = {
+        var maxp = {
           x: max,
           y: may,
           z: maz
         }
-        var minp = new Object()
-        minp = {
+        var minp = {
           x: mix,
           y: miy,
           z: miz
         }
-        var boundingBox = new Object()
-        boundingBox = {
+        var boundingBox = {
           max: maxp,
           min: minp
         }
         // 缩放到该bounding box
         _this.viewer3D.zoomToBoundingBox(boundingBox)
+
+        // 获取所有标签
+
+        console.log(markerContainer.getAllItems())
       })
-      marker.onRightClick(function(item, event) {
-        console.log(item)
+
+      // 标签右键点击
+      marker.onRightClick(function(item) {
+        // console.log(item)
+        _this.$confirm('此操作将永久删除该标签, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          markerContainer.removeItemById(item.id)
+          _this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }).catch(() => {
+          _this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
       })
 
       _this.viewer3D.clearSelectedComponents()
