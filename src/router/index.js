@@ -23,6 +23,17 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/profile',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: '',
+      name: 'Profile',
+      component: () => import('@/views/profile/index'),
+      meta: { title: 'Profile' }
+    }]
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
@@ -45,13 +56,6 @@ export const constantRoutes = [
         component: () => import('@/views/project/index'),
         hidden: true
       },
-      // {
-      //   path: ':pid/member',
-      //   name: 'Member',
-      //   hidden: true,
-      //   component: () => import('@/views/member/index'),
-      //   meta: { title: '项目成员', icon: 'dashboard' }
-      // },
       {
         path: ':pid',
         name: 'ProjectInfo',
@@ -75,25 +79,7 @@ export const constantRoutes = [
           }
         ]
       }
-      // {
-      //   path: ':pid/participant',
-      //   name: 'Participant',
-      //   hidden: true,
-      //   component: () => import('@/views/participant/index'),
-      //   meta: { title: '参建方单位', icon: 'dashboard' }
-      // }
     ]
-  },
-  {
-    path: '/profile',
-    component: Layout,
-    hidden: true,
-    children: [{
-      path: '',
-      name: 'Profile',
-      component: () => import('@/views/profile/index'),
-      meta: { title: 'Profile' }
-    }]
   },
   {
     path: '/model',

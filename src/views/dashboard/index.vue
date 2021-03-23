@@ -11,16 +11,16 @@
 </template>
 
 <script>
-import ProjectList from '@/components/ProjectList'
-import TaskList from '@/components/TaskList'
-import ModelList from '@/components/ModelList'
+import ProjectList from './ProjectList'
+import ModelList from './ModelList'
+import TaskList from './TaskList'
 
 export default {
   name: 'Dashboard',
   components: {
     ProjectList,
-    TaskList,
-    ModelList
+    ModelList,
+    TaskList
   }
 }
 

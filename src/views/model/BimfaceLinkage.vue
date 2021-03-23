@@ -1,12 +1,5 @@
 <template>
   <div class="bimBox">
-    <div class="buttons">
-      <button
-        id="addMarker"
-        class="button"
-        @click="add3DMarker()"
-      >添加标签</button>
-    </div>
     <div
       id="domId"
       class="domId"
@@ -16,6 +9,7 @@
 
 <script>
 import '@/utils/BimfaceSDKLoader@latest-release'
+import $ from '@/utils/jquery'
 import { getModelTokenApi } from '@/api/model'
 import { getAccessToken } from '@/utils/cookie'
 export default {
@@ -34,9 +28,7 @@ export default {
     return {
       viewer3D: '',
       marker: '',
-      modelToken: '',
-      isAddItemActivated: false,
-      viewAdded: false
+      modelToken: ''
     }
   },
   created() {
@@ -79,122 +71,227 @@ export default {
     }).catch((err) => {
       console.log(err)
     })
-    // window.onload = function() {
-    //   var loaderConfig = new BimfaceSDKLoaderConfig()
-    //   loaderConfig.viewToken = _this.modelToken
-    //   BimfaceSDKLoader.load(loaderConfig, _this.successCallback, _this.failureCallback)
-    // }
   },
   methods: {
     init() {
-      const _this = this
+      // 设置BIMFACE JSSDK加载器的配置信息
+      const loaderConfig = new window.BimfaceSDKLoaderConfig()
 
-      // var viewAdded = false
-      var options = new window.BimfaceSDKLoaderConfig()
-      options.viewToken = this.modelToken
-      window.BimfaceSDKLoader.load(options, _this.successCallback, _this.failureCallback)
+      // 指定加载器的viewToken
+      loaderConfig.viewToken = this.modelToken
+      // console.log(loaderConfig);
+
+      // 加载BIMFACE JSSDK加载器
+      window.BimfaceSDKLoader.load(loaderConfig, this.successCallback, this.failureCallback
+      )
     },
 
-    // 加载成功回调函数
+    // 加载配置成功回调函数
     successCallback(viewMetaData) {
       const _this = this
-      var dom4Show = document.getElementById('domId')
-      // 设置WebApplication3D的配置项
-      var webAppConfig = new window.Glodon.Bimface.Application.WebApplication3DConfig()
-      webAppConfig.domElement = dom4Show
-      // 创建WebApplication3D，用以显示模型
-      var app = new window.Glodon.Bimface.Application.WebApplication3D(webAppConfig)
+      console.log(viewMetaData)
+      // 获取DOM元素
+      const domShow = document.querySelector('#domId')
+      // 创建WebApplication3DConfig
+      const webAppConfig = new window.Glodon.Bimface.Application.WebApplication3DConfig()
+      // 设置创建WebApplication3DConfig的dom元素值
+      webAppConfig.domElement = domShow
+      // 创建WebApplication3D
+      const app = new window.Glodon.Bimface.Application.WebApplication3D(
+        webAppConfig
+      )
+      // 添加待显示的模型
       app.addView(viewMetaData.viewToken)
-      _this.viewer3D = app.getViewer()
-      _this.viewer3D.addEventListener(window.Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function() {
-        _this.viewAdded = true
-        // 三维标签的配置类
-        var markerConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainerConfig()
-        markerConfig.viewer = _this.viewer3D
-        _this.marker = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainer(markerConfig)
-        _this.viewer3D.resize(document.documentElement.clientWidth, document.documentElement.clientHeight - 40)
-        _this.viewer3D.render()
+      // 获取viewer3D对象
+      this.viewer3D = app.getViewer()
 
-        var position = {
-          'x': -5193.213563484793,
-          'y': -2835.930128298731,
-          'z': 12248.339452835695
+      // 增加viewer3D鼠标右键监听事件
+      this.viewer3D.addEventListener(
+        window.Glodon.Bimface.Viewer.Viewer3DEvent.ContextMenu, // bimface鼠标右键点击事件
+        function(objectData) {
+          setTimeout(function() {
+            _this.addContextMenu(app)
+          }, 0)
         }
-        // 标签配置
-        var marker3dConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DConfig()
-        marker3dConfig.src = 'http://static.bimface.com/resources/3DMarker/warner/warner_red.png'
-        marker3dConfig.worldPosition = position
-        // 三维标签的提示
-        marker3dConfig.tooltip = 'This is 3DMarker.'
-        var marker3d = new window.Glodon.Bimface.Plugins.Marker3D.Marker3D(marker3dConfig)
-        // var marker3d2 = new window.Glodon.Bimface.Plugins.Marker3D.Marker3D(marker3dConfig)
-        console.log(_this.marker)
-        _this.marker.addItem(marker3d)
-      })
+      )
+
+      // 点击时获取位置
+      this.viewer3D.addEventListener(
+        window.Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked,
+        function(objectData) {
+          // console.log(objectData);
+          _this.position = objectData.worldPosition
+        }
+      )
+      // console.log(this.viewer3D);
+
+      // 获取标签
+      // this.get3DMarker();
+
+      // 禁用鼠标原生右键事件
+      window.oncontextmenu = function(e) {
+        e.preventDefault()
+      }
     },
+
     // 加载失败回调函数
     failureCallback(error) {
       console.log(error)
     },
-    add3DMarker(type) {
-      if (!this.viewAdded) {
-        return
-      }
-      if (this.isAddItemActivated) {
-        // 清空所有三维标签
-        this.viewer3D.removeEventListener(window.Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, this.addItems)
-        this.setButtonText('addMarker', '创建标签')
+    // 在右键菜单中添加新选项菜单
+    addContextMenu(app) {
+      const _this = this
+      const menu = `
+      <div class="bf-sub-menu" id="doms">
+        <div class="bf-menu">
+          <div class="bf-menu-item user-item" id="finish">
+            图片标记
+          </div>
+          <div class="bf-menu-item user-item" id="starting">
+            警告
+          </div>
+          <div class="bf-menu-item user-item" id="delay">
+            危险
+          </div>
+        </div>
+        <div class="bf-menu-item user-item">新建3D标记</div>
+      </div>
+      `
+      if ($('.bf-menu.bf-menu-right')[0]) {
+        $('.bf-menu.bf-menu-right').append(menu)
       } else {
-        // 添加点击监听事件，创建三维标签
-        this.viewer3D.addEventListener(window.Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, this.addItems)
-        this.setButtonText('addMarker', '结束添加')
+        $('.bf-menu.bf-menu-left').append(menu)
       }
-      this.isAddItemActivated = !this.isAddItemActivated
-      this.viewer3D.render()
+      var viewer3D = app.getViewer()
+      var arr = viewer3D.getSelectedComponents()
+      $('#finish').on('click', function() {
+        // var colorRed = new window.Glodon.Web.Graphics.Color(0, 128, 0, 1);
+        app.getViewer().removeSelectedId(arr)
+
+        // 添加3D标签
+        // _this.addMarker3D();
+        // app.getViewer().overrideComponentsColorById(arr, colorRed);
+        _this
+          .$prompt('请输入此处标签tip内容', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+          })
+          .then(({ value }) => {
+            _this.addMarker3D(value)
+            _this.$message({
+              type: 'success',
+              message: '添加3D标签成功'
+            })
+          })
+          .catch(() => {
+            _this.$message({
+              type: 'info',
+              message: '取消输入'
+            })
+          })
+        app.getViewer().render()
+        $('.bf-menu.bf-menu-right').hide()
+      })
+
+      $('#starting').on('click', function() {
+        var colorRed = new window.Glodon.Web.Graphics.Color(255, 255, 0, 1)
+        app.getViewer().removeSelectedId(arr)
+        app.getViewer().overrideComponentsColorById(arr, colorRed)
+        app.render()
+        $('.bf-menu.bf-menu-right').hide()
+      })
+
+      $('#delay').on('click', function() {
+        var colorRed = new window.Glodon.Web.Graphics.Color(255, 0, 0, 1)
+        app.getViewer().removeSelectedId(arr)
+        app.getViewer().overrideComponentsColorById(arr, colorRed)
+        app.render()
+        $('.bf-menu.bf-menu-right').hide()
+      })
     },
-    addItems(objectData) {
-      var position = objectData.worldPosition
-      // position = {
-      //   "x": -5193.213563484793,
-      //   "y": -2835.930128298731,
-      //   "z": 12248.339452835695
-      // }
-      //       {
-      //     "x": 4155.687160304049,
-      //     "y": -3675.6933260200867,
-      //     "z": 11763.574756892845
-      // }
-      console.log(position)
-      var markerConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainerConfig()
-      markerConfig.viewer = this.viewer3D
-      var marker = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainer(markerConfig)
-      this.viewer3D.resize(document.documentElement.clientWidth, document.documentElement.clientHeight - 40)
-      this.viewer3D.render()
-      var marker3dConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DConfig()
-      marker3dConfig.src = 'http://static.bimface.com/resources/3DMarker/warner/warner_red.png'
-      // if (markerType == 'image') {
-      //   marker3dConfig.src = "http://static.bimface.com/resources/3DMarker/warner/warner_red.png";
-      // } else if (markerType == 'canvas') {
-      //   if (!canvas) {
-      //     canvas = createCanvas();
-      //   }
-      //   marker3dConfig.canvas = canvas;
-      //   marker3dConfig.size = 100;
-      // }
-      marker3dConfig.worldPosition = position
+
+    // 添加3D标签
+    addMarker3D(tip) {
+      const _this = this
+      const markerContainerConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainerConfig()
+      markerContainerConfig.viewer = this.viewer3D
+      const markerContainer = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainer(
+        markerContainerConfig
+      )
+      const markerConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DConfig()
+      markerConfig.src =
+        'http://static.bimface.com/resources/3DMarker/warner/warner_red.png'
+      markerConfig.worldPosition = _this.position
+      markerConfig.size = 40
       // 三维标签的提示
-      marker3dConfig.tooltip = 'This is 3DMarker.'
-      var marker3d = new window.Glodon.Bimface.Plugins.Marker3D.Marker3D(marker3dConfig)
-      marker.addItem(marker3d)
-      this.viewer3D.clearSelectedComponents()
-      this.viewer3D.render()
-    },
-    setButtonText(btnId, text) {
-      var dom = document.getElementById(btnId)
-      // eslint-disable-next-line eqeqeq
-      if (dom != null && dom.nodeName == 'BUTTON') {
-        dom.innerText = text
-      }
+      markerConfig.tooltip = tip
+      const marker = new window.Glodon.Bimface.Plugins.Marker3D.Marker3D(
+        markerConfig
+      )
+      // 往容器里添加标签
+      markerContainer.addItem(marker)
+
+      // console.log(marker);
+      // return console.log(marker);
+
+      // 标签左键点击
+      marker.onClick(function(item) {
+        // console.log(item)
+        // 获取点击图片的position
+        var m = item.position
+        // 自己设置一个bounding box的对象
+        var num = 1.1
+        var max = m.x * num
+        var may = m.y * num
+        var maz = m.z * num
+        var mix = m.x / num
+        var miy = m.y / num
+        var miz = m.z / num
+        var maxp = {
+          x: max,
+          y: may,
+          z: maz
+        }
+        var minp = {
+          x: mix,
+          y: miy,
+          z: miz
+        }
+        var boundingBox = {
+          max: maxp,
+          min: minp
+        }
+        // 缩放到该bounding box
+        _this.viewer3D.zoomToBoundingBox(boundingBox)
+
+        // 获取所有标签
+
+        console.log(markerContainer.getAllItems())
+      })
+
+      // 标签右键点击
+      marker.onRightClick(function(item) {
+        // console.log(item)
+        _this.$confirm('此操作将永久删除该标签, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          markerContainer.removeItemById(item.id)
+          _this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }).catch(() => {
+          _this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      })
+
+      _this.viewer3D.clearSelectedComponents()
+      _this.viewer3D.render()
     }
 
   }
@@ -215,22 +312,8 @@ export default {
   z-index: -1;
   opacity: 0;
 }
-.bimBox .domId ::v-deep .bf-person .bf-walk-button:first-child {
-  display: none !important;
-}
+
 .bimBox > .mapDiv {
   position: absolute;
-}
-
-.button {
-  margin: 5px 0 5px 5px;
-  width: 120px;
-  height: 30px;
-  background: #32d3a6;
-  color: #ffffff;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  outline: none;
 }
 </style>
