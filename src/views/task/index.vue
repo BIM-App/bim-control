@@ -38,6 +38,9 @@
               >删除</el-button>
             </template>
           </el-table-column>
+          <template #TaskStatus="{ column }">
+            <span class="color-green">{{ column.TaskStatus }}</span>
+          </template>
         </el-table>
       </div>
     </div>
@@ -87,7 +90,8 @@ export default {
       this.$router.push(`/task/index`)
     },
     gettask() {
-      findTaskByPID(getProjectPID())
+      // console.log(this.$store.state.project.projectid)
+      findTaskByPID(this.$store.state.project.projectid)
         .then((res) => {
           if (res.status === 200) {
             this.tasklist = res.data
@@ -169,5 +173,14 @@ export default {
   font-weight: 700;
   border-bottom: 1px solid #f3f4f5;
   // background-color: #eee;
+}
+.color-primary {
+  color: #17b6fc;
+}
+.color-danger {
+  color: #fb6365;
+}
+.color-green {
+  color: #73deb3;
 }
 </style>

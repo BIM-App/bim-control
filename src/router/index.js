@@ -45,27 +45,43 @@ export const constantRoutes = [
         component: () => import('@/views/project/index'),
         hidden: true
       },
-      {
-        path: ':pid/member',
-        name: 'Member',
-        hidden: true,
-        component: () => import('@/views/member/index'),
-        meta: { title: '项目成员', icon: 'dashboard' }
-      },
+      // {
+      //   path: ':pid/member',
+      //   name: 'Member',
+      //   hidden: true,
+      //   component: () => import('@/views/member/index'),
+      //   meta: { title: '项目成员', icon: 'dashboard' }
+      // },
       {
         path: ':pid',
         name: 'ProjectInfo',
         hidden: true,
         component: () => import('@/views/projectInfo/index'),
-        meta: { title: '项目详情', icon: 'dashboard' }
-      },
-      {
-        path: ':pid/participant',
-        name: 'Participant',
-        hidden: true,
-        component: () => import('@/views/participant/index'),
-        meta: { title: '参建方单位', icon: 'dashboard' }
+        meta: { title: '项目详情', icon: 'dashboard' },
+        children: [
+          {
+            path: 'member',
+            name: 'Member',
+            hidden: true,
+            component: () => import('@/views/projectInfo/Member'),
+            meta: { title: '项目成员', icon: 'dashboard' }
+          },
+          {
+            path: 'participant',
+            name: 'Participant',
+            hidden: true,
+            component: () => import('@/views/projectInfo/Participant'),
+            meta: { title: '参建方单位', icon: 'dashboard' }
+          }
+        ]
       }
+      // {
+      //   path: ':pid/participant',
+      //   name: 'Participant',
+      //   hidden: true,
+      //   component: () => import('@/views/participant/index'),
+      //   meta: { title: '参建方单位', icon: 'dashboard' }
+      // }
     ]
   },
   {

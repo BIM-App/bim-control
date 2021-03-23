@@ -1,6 +1,5 @@
 import request from '../utils/request'
 import qs from 'qs'
-import Axios from 'axios'
 
 // 用户登录
 export const loginApi = params => {

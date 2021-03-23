@@ -70,6 +70,7 @@ export default {
         if (res.data) {
           // console.log(res.data)
           this.allProjectList = res.data
+          this.$store.commit('project/SET_projectid', res.data[0].pid)
         }
       }).catch((err) => {
         console.log(err)
