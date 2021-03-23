@@ -8,6 +8,7 @@
         <el-button
           size="mini"
           type="primary"
+          @click="createtask = true"
         >新建任务</el-button>
       </div>
     </div>
@@ -44,6 +45,48 @@
         </el-table>
       </div>
     </div>
+    <!-- 创建任务 -->
+    <el-dialog
+      class="createtask"
+      title="创建任务"
+      :visible.sync="createtask"
+    >
+      <el-form
+        ref="taskform"
+        :data="taskform"
+        :rules="rules"
+      >
+        <el-form-item
+          label="任务名称"
+          :data="taskform"
+          prop="TName"
+        >
+          <el-input
+            v-model="taskform.TName"
+            style="width: 242px"
+          />
+        </el-form-item>
+        <el-form-item
+          label="任务描述"
+          prop="Description"
+        >
+          <el-input
+            v-model="taskform.Description"
+            style="width: 242px"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="createtask = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="taskadd(taskform)"
+        >提 交</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -54,11 +97,12 @@ import {
   addTask,
   delTasksByTid
 } from '@/api/task'
-import { getUser, getProjectPID } from '@/utils/cookie'
+import { getUser } from '@/utils/cookie'
 export default {
   data() {
     return {
       tasklist: [],
+      createtask: false,
       taskOptions: [
         { label: '任务名称', prop: 'TName' },
         { label: '任务描述', prop: 'description' },
@@ -83,6 +127,7 @@ export default {
   },
   created() {
     this.gettask()
+    console.log(this.$store.state.project.projectId)
   },
   methods: {
     // 获取所有任务列表
@@ -90,10 +135,10 @@ export default {
       this.$router.push(`/task/index`)
     },
     gettask() {
-      // console.log(this.$store.state.project.projectid)
-      findTaskByPID(this.$store.state.project.projectid)
+      findTaskByPID(this.$store.state.project.projectId)
         .then((res) => {
-          if (res.status === 200) {
+          if (res.data.code === 200) {
+            console.log(res)
             this.tasklist = res.data
           }
         })
@@ -114,33 +159,24 @@ export default {
         })
     },
     taskadd(taskform) {
-      this.$refs[taskform].validate((valid) => {
-        if (valid) {
-          const _this = this
-          const data = {
-            Pid: String(getProjectPID()),
-            TName: _this.taskform.TName,
-            Description: _this.taskform.Description,
-            Creator: String(getUser().id)
+      const data = {
+        Pid: String(this.$store.state.project.projectId),
+        TName: taskform.TName,
+        Description: taskform.Description,
+        Creator: String(getUser().id)
+      }
+      addTask(data)
+        .then((res) => {
+          if (res.status === 200) {
+            this.gettask()
+            this.createtask = false
           }
-          addTask(data)
-            .then((res) => {
-              if (res.status === 200) {
-                _this.gettask()
-                _this.createtask = false
-              }
-            })
-            .catch((err) => {
-              console.log(err)
-            })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     deltask(tid) {
-      console.log(tid)
       delTasksByTid(tid)
         .then((res) => {
           if (res.status === 200) {

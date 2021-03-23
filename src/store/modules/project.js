@@ -1,21 +1,15 @@
 const state = {
-  projectid: null
+  projectId: ''
 }
 
 const mutations = {
-  SET_projectid(state, projectid) {
-    state.projectid = projectid
-    console.log(projectid)
+  SET_PID(state, projectId) {
+    state.projectId = projectId
   }
-}
-
-const actions = {
-
 }
 
 export default {
   namespaced: true,
   state,
-  actions,
   mutations
 }

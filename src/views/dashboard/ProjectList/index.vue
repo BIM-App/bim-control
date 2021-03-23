@@ -47,6 +47,8 @@ export default {
         // console.log('项目列表查询', res)
         if (res.data.length >= 1) {
           this.projectList = res.data.reverse()
+          console.log(res.data)
+          this.$store.commit('project/SET_PID', res.data[0].pid)
           // 把数据发射给兄弟组件
           eventVue.$emit('projectList', this.projectList)
         }
