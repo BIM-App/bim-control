@@ -81,6 +81,7 @@ export default {
   },
   created() {
     this.gettask()
+    console.log(this.$store.state.project.projectPid)
   },
   methods: {
     // 获取所有任务列表
