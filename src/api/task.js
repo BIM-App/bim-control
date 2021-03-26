@@ -1,7 +1,15 @@
 import request from '@/utils/request'
 
+// 项目编号查询任务信息
+export const findTaskByPIDApi = pid => {
+  return request({
+    url: '/Task/findTaskByPID/' + pid,
+    method: 'get'
+  })
+}
+
 // 添加任务信息
-export function addTask(data) {
+export const addTaskApi = data => {
   return request({
     url: '/Task/addTask',
     method: 'post',
@@ -11,6 +19,7 @@ export function addTask(data) {
     data
   })
 }
+
 // 根据任务编号tid来修改任务信息
 export function updateTask(tid, data) {
   return request({

@@ -37,6 +37,7 @@ module.exports = {
       warnings: false,
       errors: true
     },
+    // 接口代理
     proxy: {
       '/proxy': {
         target: 'https://api.bimface.com',

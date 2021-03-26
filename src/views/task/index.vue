@@ -1,175 +1,261 @@
 <template>
-  <div class="task-container">
+  <div class="task">
     <div class="top-info">
-      <h2>任务</h2>
+      <h2>任务
+        <span v-if="taskList.length">{{ taskList.length }}条</span>
+      </h2>
+      <span>当前项目：
+        <el-select
+          v-model="value"
+          size="small"
+          placeholder="请选择"
+          @change="selectDetail(value)"
+        >
+          <el-option
+            v-for="item in projectList"
+            :key="item.value"
+            :label="item.pname"
+            :value="item.pid"
+          />
+        </el-select>
+      </span>
       <div class="fr">
-        <!-- <el-link :underline="false" style="fontSize:16px">全部项目</el-link> -->
-        <!-- <el-button size="mini" type="info" @click="changeView">{{ viewList=== true?'卡片视图':'列表视图' }}</el-button> -->
         <el-button
+          v-if="value"
           size="mini"
           type="primary"
-        >新建任务</el-button>
+          @click="dialogFormVisible = true"
+        >新建任务
+        </el-button>
       </div>
     </div>
-    <div class="">
-      <div class="table-container">
+    <div class="task-list">
+      <div>
         <el-table
-          class="table"
-          :data="tasklist"
-          border
+          :data="taskList"
+          style="width: 100%"
         >
           <el-table-column
-            v-for="(item, index) in taskOptions"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :width="item.width || null"
-            :show-overflow-tooltip="true"
+            label="任务名称"
+            prop="TName"
           />
+          <el-table-column
+            label="任务描述"
+            prop="description"
+          />
+          <el-table-column
+            label="创建人"
+            prop="Creator"
+          />
+          <el-table-column
+            label="更新时间"
+            prop="UpdatedTime"
+          />
+          <el-table-column
+            label="任务状态"
+            prop="TaskStatus"
+          >
+            <template slot-scope="scope">
+              <el-tag
+                v-if="scope.row.TaskStatus == '已完成'"
+                type="success"
+                effect="dark"
+              >
+                {{ scope.row.TaskStatus }}
+              </el-tag>
+              <el-tag
+                v-else-if="scope.row.TaskStatus =='进行中'"
+                type="warning"
+                effect="dark"
+              >
+                {{ scope.row.TaskStatus }}
+              </el-tag>
+              <el-tag
+                v-else
+                effect="dark"
+              >
+                {{ scope.row.TaskStatus }}
+              </el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button
-                type="text"
-                @click="opentask(scope.row)"
-              >查看</el-button>
-              <span class="Verticalline">|</span>
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+              >编辑</el-button>
               <el-button
-                type="text"
-                @click="deltask(scope.row.TID)"
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
               >删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
+    <el-dialog
+      title="新建任务"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-row :gutter="15">
+        <el-form
+          :model="taskForm"
+          label-position="right"
+          label-width="80px"
+        >
+          <el-col :span="15">
+            <el-form-item
+              label="任务名称"
+              prop="TName"
+              required
+            >
+              <el-input
+                v-model="taskForm.TName"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="15">
+            <el-form-item
+              label="任务描述"
+              prop="Description"
+              required
+            >
+              <el-input
+                v-model="taskForm.Description"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="15">
+            <el-form-item
+              label="指派人"
+              prop="Receiver"
+            >
+              <el-input
+                v-model="taskForm.Receiver"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogFormVisible = false;
+                  addTask()"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {
-  findTaskByPID,
-  findTaskByTID,
-  addTask,
-  delTasksByTid
-} from '@/api/task'
-import { getUser, getProjectPID } from '@/utils/cookie'
+import { findProjectsApi } from '@/api/user'
+import { addTaskApi, findTaskByPIDApi } from '@/api/task'
+import { getUser } from '@/utils/cookie'
 export default {
   data() {
     return {
-      tasklist: [],
-      taskOptions: [
-        { label: '任务名称', prop: 'TName' },
-        { label: '任务描述', prop: 'description' },
-        { label: '创建人', prop: 'Creator' },
-        { label: '创建时间', prop: 'CreatedTime' },
-        { label: '任务状态', prop: 'TaskStatus' }
-      ],
-      taskdetail: {},
-      taskform: {
-        Pid: '',
+      projectList: [''],
+      options: [],
+      value: '',
+      taskList: [],
+      dialogFormVisible: false,
+      taskForm: {
+        pid: '',
         TName: '',
         Description: '',
-        Creator: ''
-      },
-      rules: {
-        TName: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
-        Description: [
-          { required: true, message: '请输入任务描述', trigger: 'blur' }
-        ]
+        Receiver: null,
+        Creator: getUser().id
       }
     }
   },
   created() {
-    this.gettask()
-    console.log(this.$store.state.project.projectPid)
+    this.findProjects()
   },
   methods: {
-    // 获取所有任务列表
-    goAllTask() {
-      this.$router.push(`/task/index`)
-    },
-    gettask() {
-      findTaskByPID(getProjectPID())
-        .then((res) => {
-          if (res.status === 200) {
-            this.tasklist = res.data
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    opentask(row) {
-      this.drawer = true
-      findTaskByTID(row.TID)
-        .then((res) => {
-          if (res.status === 200) {
-            this.taskdetail = res.data
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    taskadd(taskform) {
-      this.$refs[taskform].validate((valid) => {
-        if (valid) {
-          const _this = this
-          const data = {
-            Pid: String(getProjectPID()),
-            TName: _this.taskform.TName,
-            Description: _this.taskform.Description,
-            Creator: String(getUser().id)
-          }
-          addTask(data)
-            .then((res) => {
-              if (res.status === 200) {
-                _this.gettask()
-                _this.createtask = false
-              }
-            })
-            .catch((err) => {
-              console.log(err)
-            })
-        } else {
-          console.log('error submit!!')
-          return false
+    // 获取参与项目列表
+    findProjects() {
+      findProjectsApi(getUser().username).then((res) => {
+        // console.log('项目列表查询', res)
+        if (res.data.length >= 1) {
+          this.projectList = res.data
         }
+      }).catch((err) => {
+        console.log(err)
       })
     },
-    deltask(tid) {
-      console.log(tid)
-      delTasksByTid(tid)
-        .then((res) => {
-          if (res.status === 200) {
-            this.gettask()
-          }
-        })
-        .catch((err) => {
+    // 切换当前项目以查看任务
+    selectDetail(value) {
+      console.log(value)
+      // 根据项目pid查询任务信息
+      findTaskByPIDApi(value).then((res) => {
+        console.log(res)
+        this.taskList = res.data.data
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 新建任务
+    addTask() {
+      const _this = this
+      const data = {
+        Pid: String(this.value),
+        TName: this.taskForm.TName,
+        Description: this.taskForm.Description,
+        Receiver: this.taskForm.Receiver,
+        Creator: String(this.taskForm.Creator)
+      }
+      console.log(data)
+      // console.log(JSON.stringify(data))
+      addTaskApi((data)).then((res) => {
+        console.log(res)
+        // 根据项目编号查询任务信息
+        findTaskByPIDApi(_this.value).then((res) => {
+          console.log(res)
+          _this.taskList = res.data.data
+        }).catch((err) => {
           console.log(err)
         })
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    handleEdit(index, row) {
+      console.log(index, row)
+    },
+    handleDelete(index, row) {
+      console.log(index, row)
     }
   }
 }
 </script>
 
-<style lang="scss">
-.task-container {
+<style lang="scss" scoped>
+.task {
   margin: 8px;
   background-color: #fff;
   width: 99%;
   height: 99%;
   position: absolute;
-}
-.top-info {
-  padding: 0 22px 0 12px;
-  height: 40px;
-  line-height: 40px;
-  display: flex;
-  justify-content: space-between;
-  font-size: 16px;
-  font-weight: 700;
-  border-bottom: 1px solid #f3f4f5;
-  // background-color: #eee;
+
+  .top-info {
+    padding: 0 22px 0 12px;
+    height: 40px;
+    line-height: 40px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 700;
+    border-bottom: 1px solid #f3f4f5;
+    // background-color: #eee;
+  }
 }
 </style>

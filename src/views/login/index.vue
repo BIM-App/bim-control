@@ -84,7 +84,7 @@ export default {
             password: _this.form.password
           }
           loginApi(params).then((res) => {
-            // console.log(res) // for debug
+            console.log(res) // for debug
             if (res.data.id) {
               setUser(res.data)
               setRole(res.data.role)
