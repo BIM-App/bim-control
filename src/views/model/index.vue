@@ -35,7 +35,7 @@
                   dialogVisible = true"
         >
           <img :src="item.MPicture">
-          <!-- <div>{{ item.MPicture }}</div> -->
+          <div>{{ item.MName }}</div>
         </li>
         <div
           v-if="!modelList "
