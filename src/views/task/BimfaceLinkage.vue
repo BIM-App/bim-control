@@ -4,6 +4,34 @@
       id="domId"
       class="domId"
     />
+    <el-dialog
+      title="标签Tip"
+      :visible.sync="tipVisible"
+      append-to-body
+    >
+      <el-form :model="form">
+        <el-form-item
+          label="标签Tip"
+          label-width="80px"
+        >
+          <el-input
+            v-model="form.tip"
+            autocomplete="off"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="tipVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="tipVisible = false;
+                  taskBindPosition()"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -12,6 +40,7 @@ import '@/utils/BimfaceSDKLoader@latest-release'
 import $ from '@/utils/jquery'
 import { getModelTokenApi } from '@/api/model'
 import { getAccessToken } from '@/utils/cookie'
+import { findTaskByTIDApi, taskBindPositionApi } from '@/api/task'
 export default {
   name: 'BimfaceLinkage',
   props: {
@@ -19,7 +48,7 @@ export default {
       type: String,
       default: ''
     },
-    fileName: {
+    currentTid: {
       type: String,
       default: ''
     }
@@ -28,11 +57,15 @@ export default {
     return {
       viewer3D: '',
       marker: '',
-      modelToken: ''
+      modelToken: '',
+      tipVisible: false,
+      form: {
+        tip: ''
+      }
     }
   },
   created() {
-
+    console.log(this.currentTid)
   },
   mounted() {
     // const _this = this
@@ -106,14 +139,14 @@ export default {
       this.viewer3D = app.getViewer()
 
       // 增加viewer3D鼠标右键监听事件
-      // this.viewer3D.addEventListener(
-      //   window.Glodon.Bimface.Viewer.Viewer3DEvent.ContextMenu, // bimface鼠标右键点击事件
-      //   function(objectData) {
-      //     setTimeout(function() {
-      //       _this.addContextMenu(app)
-      //     }, 0)
-      //   }
-      // )
+      this.viewer3D.addEventListener(
+        window.Glodon.Bimface.Viewer.Viewer3DEvent.ContextMenu, // bimface鼠标右键点击事件
+        function(objectData) {
+          setTimeout(function() {
+            _this.addContextMenu(app)
+          }, 0)
+        }
+      )
 
       // 点击时获取位置
       this.viewer3D.addEventListener(
@@ -128,10 +161,26 @@ export default {
       // 获取标签
       // this.get3DMarker();
 
-      // 禁用鼠标原生右键事件
+      // // 禁用鼠标原生右键事件
       // window.oncontextmenu = function(e) {
       //   e.preventDefault()
       // }
+
+      // const markerContainerConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainerConfig()
+      // markerContainerConfig.viewer = this.viewer3D
+      // const markerContainer = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainer(
+      //   markerContainerConfig
+      // )
+      // 加载接口传来标签
+      // console.log(this.currentTid)
+      findTaskByTIDApi(this.currentTid).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          _this.addMarker3D(res.data.data.Information, res.data.data.Position)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
 
     // 加载失败回调函数
@@ -167,28 +216,7 @@ export default {
       $('#finish').on('click', function() {
         // var colorRed = new window.Glodon.Web.Graphics.Color(0, 128, 0, 1);
         app.getViewer().removeSelectedId(arr)
-
-        // 添加3D标签
-        // _this.addMarker3D();
-        // app.getViewer().overrideComponentsColorById(arr, colorRed);
-        _this
-          .$prompt('请输入此处标签tip内容', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消'
-          })
-          .then(({ value }) => {
-            _this.addMarker3D(value)
-            _this.$message({
-              type: 'success',
-              message: '添加3D标签成功'
-            })
-          })
-          .catch(() => {
-            _this.$message({
-              type: 'info',
-              message: '取消输入'
-            })
-          })
+        _this.tipVisible = true
         app.getViewer().render()
         $('.bf-menu.bf-menu-right').hide()
       })
@@ -211,7 +239,7 @@ export default {
     },
 
     // 添加3D标签
-    addMarker3D(tip) {
+    addMarker3D(tip, position) {
       const _this = this
       const markerContainerConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DContainerConfig()
       markerContainerConfig.viewer = this.viewer3D
@@ -221,7 +249,7 @@ export default {
       const markerConfig = new window.Glodon.Bimface.Plugins.Marker3D.Marker3DConfig()
       markerConfig.src =
         'http://static.bimface.com/resources/3DMarker/warner/warner_red.png'
-      markerConfig.worldPosition = _this.position
+      markerConfig.worldPosition = position
       markerConfig.size = 40
       // 三维标签的提示
       markerConfig.tooltip = tip
@@ -230,10 +258,8 @@ export default {
       )
       // 往容器里添加标签
       markerContainer.addItem(marker)
-
       // console.log(marker);
       // return console.log(marker);
-
       // 标签左键点击
       marker.onClick(function(item) {
         // console.log(item)
@@ -290,10 +316,31 @@ export default {
         })
       })
 
-      _this.viewer3D.clearSelectedComponents()
-      _this.viewer3D.render()
+      // _this.viewer3D.clearSelectedComponents()
+      // _this.viewer3D.render()
+    },
+    // 绑定任务的三维标签
+    taskBindPosition() {
+      const data = {
+        Position: this.position,
+        Information: this.form.tip
+      }
+      this.addMarker3D(data.Information, this.position)
+      console.log(JSON.stringify(data))
+      taskBindPositionApi(this.currentTid, JSON.stringify(data)).then((res) => {
+        if (res.data.code === 200) {
+          this.$message({
+            showClose: true,
+            message: '任务绑定坐标成功',
+            type: 'success',
+            duration: 1500
+          })
+        }
+        console.log(res)
+      }).catch((err) => {
+        console.log(err)
+      })
     }
-
   }
 }
 </script>

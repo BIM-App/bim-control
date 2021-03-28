@@ -82,6 +82,11 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
+                type="info"
+                @click="handleLook(scope.$index, scope.row)"
+              >查看</el-button>
+              <el-button
+                size="mini"
                 @click="handleEdit(scope.$index, scope.row);
                         taskBindVisible = true"
               >编辑</el-button>
@@ -156,6 +161,7 @@
         >确 定</el-button>
       </div>
     </el-dialog>
+
     <!-- 任务绑定模型dialog -->
     <el-dialog
       title="选择此任务要绑定的模型"
@@ -180,61 +186,8 @@
           <!-- <div>请先选择一个项目以查看模型</div> -->
         </div>
       </ul>
-      <!-- <el-row :gutter="15">
-        <el-form
-          ref="taskForm"
-          :model="taskForm"
-          label-position="right"
-          label-width="80px"
-        >
-          <el-col :span="15">
-            <el-form-item
-              label="任务名称"
-              prop="TName"
-              required
-            >
-              <el-input
-                v-model="taskForm.TName"
-                autocomplete="off"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="15">
-            <el-form-item
-              label="任务描述"
-              prop="Description"
-              required
-            >
-              <el-input
-                v-model="taskForm.Description"
-                autocomplete="off"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="15">
-            <el-form-item
-              label="指派人"
-              prop="Receiver"
-            >
-              <el-input
-                v-model="taskForm.Receiver"
-                autocomplete="off"
-              />
-            </el-form-item>
-          </el-col>
-        </el-form>
-      </el-row>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="taskBindVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="taskBindVisible = false"
-        >确 定</el-button>
-      </div> -->
     </el-dialog>
+
     <!-- 模型详细视图 -->
     <el-dialog
       title="标记位置"
@@ -250,7 +203,7 @@
       <bimface-linkage
         v-if="bimVisible"
         :model-file-id="modelFileId"
-        :file-name="fileName"
+        :current-tid="currentTid"
       />
       <!-- <span
           slot="footer"
@@ -268,10 +221,10 @@
 
 <script>
 import { findProjectsApi } from '@/api/user'
-import { addTaskApi, deleteTaskApi, findTaskByPIDApi } from '@/api/task'
+import { addTaskApi, deleteTaskApi, findTaskByPIDApi, taskBindModelApi } from '@/api/task'
 import { getUser } from '@/utils/cookie'
-import { findModelByPIDApi } from '@/api/model'
-import BimfaceLinkage from '../model/BimfaceLinkage'
+import { findModelByMidApi, findModelByPIDApi } from '@/api/model'
+import BimfaceLinkage from './BimfaceLinkage'
 export default {
   components: {
     BimfaceLinkage
@@ -295,7 +248,8 @@ export default {
       currentModel: {},
       modelFileId: '',
       fileName: '',
-      bimVisible: false
+      bimVisible: false,
+      currentTid: ''
     }
   },
   created() {
@@ -313,7 +267,7 @@ export default {
         console.log(err)
       })
     },
-    findTask(pid) {
+    findTaskByPID(pid) {
       // 根据项目pid查询任务信息
       findTaskByPIDApi(pid).then((res) => {
         console.log(res)
@@ -326,7 +280,7 @@ export default {
     selectDetail(value) {
       // console.log(value)
       // 根据项目pid查询任务信息
-      this.findTask(value)
+      this.findTaskByPID(value)
       // findTaskByPIDApi(value).then((res) => {
       //   console.log(res)
       //   this.taskList = res.data.data
@@ -357,18 +311,64 @@ export default {
             duration: 1500
           })
         }
-        findTaskByPIDApi(_this.value).then((res) => {
-          console.log(res)
-          _this.taskList = res.data.data
-        }).catch((err) => {
-          console.log(err)
-        })
+        _this.findTaskByPID(_this.value)
       }).catch((err) => {
         console.log(err)
       })
     },
+    // 任务绑定模型
+    getModelInfo(item) {
+      console.log(item)
+      this.currentModel = item
+      this.modelFileId = item.MFile
+      this.fileName = item.MName
+      // Mid
+      const data = {
+        Mid: item.MId
+      }
+      // console.log(this.currentTid, data)
+      taskBindModelApi(this.currentTid, data).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.findTaskByPID(item.PID)
+          this.$message({
+            showClose: true,
+            message: '任务绑定模型成功',
+            type: 'success',
+            duration: 1500
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    handleLook(index, row) {
+      console.log(index, row)
+      this.currentTid = row.TID
+      if (row.MID < 0) {
+        this.$alert('请先给此任务绑定模型，并添加标记', '提示', {
+          confirmButtonText: '确定',
+          callback: (action) => {
+            this.$message({
+              type: 'info',
+              message: `tip: 请先绑定模型`,
+              duration: 1500
+            })
+          }
+        })
+      } else {
+        findModelByMidApi(row.MID).then((res) => {
+          console.log(res)
+          this.modelFileId = res.data.data.MFile
+          this.bimVisible = true
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
+    },
     handleEdit(index, row) {
-      console.log(row)
+      // console.log(row)
+      this.currentTid = row.TID
       // 查询项目模型
       findModelByPIDApi(this.value).then((res) => {
         console.log(res)
@@ -382,13 +382,6 @@ export default {
         console.log(err)
       })
     },
-
-    getModelInfo(item) {
-      console.log(item)
-      this.currentModel = item
-      this.modelFileId = item.MFile
-      this.fileName = item.MName
-    },
     handleDelete(index, row) {
       const _this = this
       console.log(row.TID)
@@ -400,7 +393,7 @@ export default {
         deleteTaskApi(row.TID).then((res) => {
           console.log(res)
           if (res.data.code === 201) {
-            _this.findTask(_this.value)
+            _this.findTaskByPID(_this.value)
             _this.$message({
               showClose: true,
               message: '删除任务成功',
