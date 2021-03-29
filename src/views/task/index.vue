@@ -86,10 +86,11 @@
                 @click="handleLook(scope.$index, scope.row)"
               >查看</el-button>
               <el-button
+                :disabled="scope.row.TaskStatus == '已完成'"
                 size="mini"
                 @click="handleEdit(scope.$index, scope.row);
                         taskBindVisible = true"
-              >编辑</el-button>
+              >标记</el-button>
               <el-button
                 size="mini"
                 type="danger"
@@ -195,26 +196,11 @@
       width="90%"
       top="20px"
     >
-      <!-- :before-close="handleClose" -->
-
-      <!-- <span>{{ currentModel }}</span> -->
-      <!-- <div>MId: {{ currentModel.MId }}</div>
-        <div>MFile: {{ currentModel.MFile }}</div> -->
       <bimface-linkage
         v-if="bimVisible"
         :model-file-id="modelFileId"
         :current-tid="currentTid"
       />
-      <!-- <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button @click="bimVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="bimVisible = false"
-          >确 定</el-button>
-        </span> -->
     </el-dialog>
   </div>
 </template>
@@ -367,7 +353,7 @@ export default {
       }
     },
     handleEdit(index, row) {
-      // console.log(row)
+      console.log(row)
       this.currentTid = row.TID
       // 查询项目模型
       findModelByPIDApi(this.value).then((res) => {
