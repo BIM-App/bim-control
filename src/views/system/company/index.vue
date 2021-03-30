@@ -68,10 +68,10 @@
         label="公司级别"
         prop="grade"
       />
-      <el-table-column
+      <!-- <el-table-column
         label="成立日期"
         prop="starttime"
-      />
+      /> -->
       <el-table-column
         label="组织机构代码证号"
         prop="orgnizationno"
