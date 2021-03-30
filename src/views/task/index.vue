@@ -39,9 +39,6 @@
               >删除</el-button>
             </template>
           </el-table-column>
-          <template #TaskStatus="{ column }">
-            <span class="color-green">{{ column.TaskStatus }}</span>
-          </template>
         </el-table>
       </div>
     </div>
@@ -53,7 +50,7 @@
     >
       <el-form
         ref="taskform"
-        :data="taskform"
+        :model="taskform"
         :rules="rules"
       >
         <el-form-item
@@ -93,7 +90,7 @@
 <script>
 import {
   findTaskByPID,
-  findTaskByTID,
+  // findTaskByTID,
   addTask,
   delTasksByTid
 } from '@/api/task'
@@ -137,26 +134,24 @@ export default {
     gettask() {
       findTaskByPID(this.$store.state.project.projectId)
         .then((res) => {
-          if (res.data.code === 200) {
-            console.log(res)
-            this.tasklist = res.data
-          }
+          this.tasklist = res.data
         })
         .catch((err) => {
           console.log(err)
         })
     },
     opentask(row) {
-      this.drawer = true
-      findTaskByTID(row.TID)
-        .then((res) => {
-          if (res.status === 200) {
-            this.taskdetail = res.data
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      console.log(row)
+      // this.drawer = true
+      // findTaskByTID(row.TID)
+      //   .then((res) => {
+      //     if (res.status === 200) {
+      //       this.taskdetail = res.data
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err)
+      //   })
     },
     taskadd(taskform) {
       const data = {
@@ -165,16 +160,20 @@ export default {
         Description: taskform.Description,
         Creator: String(getUser().id)
       }
-      addTask(data)
-        .then((res) => {
-          if (res.status === 200) {
-            this.gettask()
-            this.createtask = false
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      this.$refs.taskform.validate((valid) => {
+        if (valid) {
+          addTask(data)
+            .then((res) => {
+              if (res.status === 200) {
+                this.gettask()
+                this.createtask = false
+              }
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        }
+      })
     },
     deltask(tid) {
       delTasksByTid(tid)

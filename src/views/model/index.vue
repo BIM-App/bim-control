@@ -220,15 +220,8 @@ export default {
     selectDetail(value) {
       console.log(value)
       findModelByPIDApi(value).then((res) => {
-        console.log('模型列表查询', res)
-        if (res.data.code === 200) {
-          this.modelList = res.data.data
-          // console.log(this.modelList)
-        }
-        if (res.data.code === 404) {
-          this.modelList = ''
-          // console.log(this.modelList)
-        }
+        this.modelList = res.data.data
+        // console.log(this.modelList)
       }).catch((err) => {
         console.log(err)
       })

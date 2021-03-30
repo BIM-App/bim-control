@@ -35,7 +35,7 @@
         <div style="text-align:center">{{ item.MName }}</div>
       </li>
       <div
-        v-if="!modelList"
+        v-if="modelList == {}"
         class="model-tip"
       >
         <div>当前项目暂无模型</div>
@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       modelList: [],
-      projectList: [''],
+      projectList: [],
       options: [],
       value: ''
     }
@@ -77,14 +77,7 @@ export default {
     selectDetail(value) {
       findModelByPIDApi(value).then((res) => {
         // console.log('模型列表查询', res)
-        if (res.data.code === 200) {
-          this.modelList = res.data.data
-          // console.log(this.modelList)
-        }
-        if (res.data.code === 404) {
-          this.modelList = ''
-          // console.log(this.modelList)
-        }
+        this.modelList = res.data.data
       }).catch((err) => {
         console.log(err)
       })
