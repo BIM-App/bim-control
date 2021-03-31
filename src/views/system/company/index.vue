@@ -1,16 +1,109 @@
 <template>
   <div>
-    <el-button
-      size="medium"
-      type="primary"
-      icon="el-icon-plus"
-      @click="dialogFormVisible = true"
-    >注册公司</el-button>
-    <ul
-      v-for="item in companyData"
-      :key="item.cid"
-      class="company-info"
+    <!-- <el-table
+      :data="tableData"
+      style="width: 100%"
     >
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="商品名称">
+              <span>{{ props.row.name }}</span>
+            </el-form-item>
+            <el-form-item label="所属店铺">
+              <span>{{ props.row.shop }}</span>
+            </el-form-item>
+            <el-form-item label="商品 ID">
+              <span>{{ props.row.id }}</span>
+            </el-form-item>
+            <el-form-item label="店铺 ID">
+              <span>{{ props.row.shopId }}</span>
+            </el-form-item>
+            <el-form-item label="商品分类">
+              <span>{{ props.row.category }}</span>
+            </el-form-item>
+            <el-form-item label="店铺地址">
+              <span>{{ props.row.address }}</span>
+            </el-form-item>
+            <el-form-item label="商品描述">
+              <span>{{ props.row.desc }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="商品 ID"
+        prop="id"
+      />
+      <el-table-column
+        label="商品名称"
+        prop="name"
+      />
+      <el-table-column
+        label="描述"
+        prop="desc"
+      />
+    </el-table> -->
+    <el-table
+      :data="companyData"
+      style="width: 100%"
+    >
+      <el-table-column
+        label="公司名称"
+        prop="cname"
+      />
+      <el-table-column
+        label="法定代表人"
+        prop="representative"
+      />
+      <el-table-column
+        label="注册资金"
+        prop="investamount"
+      />
+      <el-table-column
+        label="公司类型"
+        prop="type"
+      />
+      <el-table-column
+        label="公司级别"
+        prop="grade"
+      />
+      <el-table-column
+        label="成立日期"
+        prop="starttime"
+      />
+      <el-table-column
+        label="组织机构代码证号"
+        prop="orgnizationno"
+      />
+      <el-table-column
+        label="公司所在地址"
+        prop="address"
+      />
+      <el-table-column
+        label="公司简介"
+        prop="description"
+      />
+      <el-table-column
+        label="审核状态"
+        prop="checkstatus"
+      />
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            @click="handleEdit(scope.$index, scope.row)"
+          >编辑</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+          >删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- <el-button size="medium" type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">注册公司</el-button>
+    <ul v-for="item in companyData" :key="item.cid" class="company-info">
       <li>公司名称：{{ item.cname }}</li>
       <li>法定代表人：{{ item.representative }}</li>
       <li>注册资金：{{ item.investamount }}</li>
@@ -41,7 +134,7 @@
           删除公司
         </el-button>
       </el-popconfirm>
-    </ul>
+    </ul> -->
     <el-dialog
       title="注册公司"
       :visible.sync="dialogFormVisible"

@@ -17,14 +17,8 @@
         <template
           slot="header"
           slot-scope=""
-        >
-          <!-- <el-input
-            v-model="search"
-            size="mini"
-            placeholder="输入关键字搜索"
-          /> -->
-        </template>
-        <template slot-scope="scope">
+        />
+        <!-- <template slot-scope="scope">
           <el-button
             disabled
             size="mini"
@@ -35,7 +29,7 @@
             type="danger"
             @click.stop="handleDelete(scope.$index, scope.row)"
           >Delete</el-button>
-        </template>
+        </template> -->
       </el-table-column>
     </el-table>
   </div>

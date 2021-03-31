@@ -35,13 +35,14 @@
                   dialogVisible = true"
         >
           <img :src="item.MPicture">
-          <!-- <div>{{ item.MPicture }}</div> -->
+          <div>{{ item.MName }}</div>
         </li>
         <div
-          v-if="!modelList"
+          v-if="!modelList "
           class="model-tip"
         >
           <div>当前项目暂无模型</div>
+          <!-- <div>请先选择一个项目以查看模型</div> -->
         </div>
       </ul>
       <!-- 模型详细视图 -->
@@ -220,8 +221,12 @@ export default {
     selectDetail(value) {
       console.log(value)
       findModelByPIDApi(value).then((res) => {
-        this.modelList = res.data.data
-        // console.log(this.modelList)
+        console.log('模型列表查询', res)
+        if (Object.keys(res.data.data).length === 0) {
+          this.modelList = ''
+        } else {
+          this.modelList = res.data.data
+        }
       }).catch((err) => {
         console.log(err)
       })

@@ -76,8 +76,13 @@ export default {
     // 切换当前项目以查看模型
     selectDetail(value) {
       findModelByPIDApi(value).then((res) => {
-        // console.log('模型列表查询', res)
-        this.modelList = res.data.data
+        console.log('模型列表查询', res)
+        // this.modelList = res.data.data
+        if (Object.keys(res.data.data).length === 0) {
+          this.modelList = ''
+        } else {
+          this.modelList = res.data.data
+        }
       }).catch((err) => {
         console.log(err)
       })

@@ -3,12 +3,12 @@
     <div class="top-info">
       <h2>{{ projectInfo.pname }}</h2>
       <div class="fr">
-        <el-button
+        <!-- <el-button
           size="mini"
           type="primary"
         >
           项目成员
-        </el-button>
+        </el-button> -->
       </div>
     </div>
     <div class="member-list">
@@ -149,11 +149,11 @@ export default {
     }
   },
   created() {
-    console.log(getMember()) // for debug
+    // console.log(getMember()) // for debug
     this.tableData = getMember()
     // 进入项目成员页时查询所有该项目下的成员
     findProjectMembersApi(Number(this.$route.params.pid)).then((res) => {
-      console.log(res)
+      console.log(11, res)
       if (res.data instanceof Array) {
         this.tableData = res.data
       }
