@@ -153,7 +153,7 @@
           <el-button
             type="primary"
             @click="
-              allUpload();
+              addModel();
             "
           >确 定
           </el-button>

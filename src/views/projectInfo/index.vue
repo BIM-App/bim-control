@@ -101,8 +101,8 @@
             <li
               v-for="item in modelList"
               :key="item.MId"
-              @click="getModelInfo(item);
-                      dialogVisible = true"
+              @click="
+                dialogVisible = true"
             >
               <img :src="item.MPicture">
               <div>{{ item.MName }}</div>
@@ -298,7 +298,7 @@ export default {
       padding: 20px;
       border-radius: 5px;
       background: rgb(227, 244, 255);
-      cursor: pointer;
+      // cursor: pointer;
       img {
         width: 160px;
         height: 160px;

@@ -194,8 +194,9 @@ export default {
       data.creator = getUser().id
       data.username = getUser().username
       // console.log(this.plantime)
+      console.log(data)
       addProjectApi(data).then((res) => {
-        console.log('1111', res)
+        console.log(res)
         // 添加成功
         if (res.data.status === 201) {
           this.$message({

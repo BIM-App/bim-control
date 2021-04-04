@@ -8,7 +8,7 @@
         @click="openDetails(item.pid)"
       >
         <div>{{ item.pname }}</div>
-        <div>{{ item.creator }}</div>
+        <!-- <div>{{ item.creator }}</div> -->
       </li>
     </ul>
   </div>
@@ -40,8 +40,10 @@ export default {
     // 获取所有参与项目列表
     findProjects() {
       findProjectsApi(getUser().username).then((res) => {
-        if (res.data) {
-          console.log('所有项目列表', res.data)
+        console.log(res)
+        if (res.data.status === 404) {
+          this.allProjectList = ''
+        } else {
           this.allProjectList = res.data
         }
       }).catch((err) => {

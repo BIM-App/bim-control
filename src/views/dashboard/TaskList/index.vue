@@ -15,13 +15,15 @@
         v-for="item in taskList"
         :key="item.tid"
       >
-        <div>{{ item.tname }}</div>
+        <div>任务名称：{{ item.TName }}</div>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import eventVue from '@/utils/eventVue'
+import { findTaskByPIDApi } from '@/api/task'
 export default {
   name: 'TaskList',
   data() {
@@ -29,7 +31,28 @@ export default {
       taskList: []
     }
   },
+  created() {
+    this.receiveData()
+  },
   methods: {
+    // 接收兄弟组件传来的值
+    receiveData() {
+      eventVue.$on('currentProjectId', (data) => {
+        console.log(data)
+        this.findTaskByPID(data)
+      })
+    },
+    findTaskByPID(pid) {
+      findTaskByPIDApi(pid).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.taskList = res.data.data
+        }
+        console.log(this.taskList)
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     // 获取所有任务列表
     goAllTask() {
       this.$router.push(`/task/index`)
@@ -65,7 +88,7 @@ export default {
       margin: 16px;
       height: 40px;
       font-size: 20px;
-      // line-height: 24px;
+      line-height: 40px;
       background: rgb(227, 244, 255);
       overflow: hidden;
       border-radius: 5px;

@@ -75,6 +75,7 @@ export default {
     },
     // 切换当前项目以查看模型
     selectDetail(value) {
+      eventVue.$emit('currentProjectId', value)
       findModelByPIDApi(value).then((res) => {
         console.log('模型列表查询', res)
         // this.modelList = res.data.data

@@ -3,13 +3,13 @@
     <div class="top-info">
       <h2>项目</h2>
       <div class="fr">
-        <el-button
+        <!-- <el-button
           size="mini"
           type="info"
           @click="changeView"
         >
           {{ viewList === true ? "列表视图" : "卡片视图" }}
-        </el-button>
+        </el-button> -->
         <el-button
           size="mini"
           type="primary"
@@ -20,20 +20,20 @@
       </div>
     </div>
     <view-card v-show="!viewList" />
-    <view-list v-show="viewList" />
+    <!-- <view-list v-show="viewList" /> -->
     <project-new />
   </div>
 </template>
 
 <script>
 import ViewCard from './ViewCard.vue'
-import ViewList from './ViewList.vue'
+// import ViewList from './ViewList.vue'
 import ProjectNew from '@/views/project/ProjectNew'
 import eventVue from '@/utils/eventVue'
 export default {
   components: {
     ViewCard,
-    ViewList,
+    // ViewList,
     ProjectNew
   },
   data() {
@@ -53,7 +53,7 @@ export default {
       this.dialog = true
       // 把数据发射给兄弟组件
       eventVue.$emit('dialog', this.dialog)
-      console.log(this.dialog)
+      // console.log(this.dialog)
     }
   }
 }

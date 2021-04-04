@@ -21,7 +21,12 @@
     </el-form-item>
     <el-form-item prop="password">
       <label for="password">密码</label>
-      <el-input id="password" v-model="form.password" show-password @keyup.enter.native="login('form')" />
+      <el-input
+        id="password"
+        v-model="form.password"
+        show-password
+        @keyup.enter.native="login('form')"
+      />
     </el-form-item>
     <el-form-item prop="forget">
       <ul class="forget">
@@ -61,7 +66,7 @@ export default {
     }
     return {
       form: {
-        username: 'zakke',
+        username: '张小工',
         password: '123456'
       },
       rules: {

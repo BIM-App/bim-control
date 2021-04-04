@@ -38,6 +38,7 @@ export const adminRoutes = [
   {
     path: '/system',
     name: 'System',
+    hidden: true,
     component: Layout,
     meta: { title: '系统管理', icon: 'nested', roles: ['admin'] },
     children: [
