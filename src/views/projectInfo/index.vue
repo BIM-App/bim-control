@@ -1,122 +1,121 @@
 <template>
   <div class="container">
-    <div
-      v-show="this.$route.name === 'ProjectInfo'"
-      class="top-info"
-    >
-      <h2>{{ projectInfo.pname }}</h2>
-      <div class="fr">
-        <el-button
-          size="mini"
-          type="primary"
-          @click="goMember"
-        >
-          项目成员管理
-        </el-button>
-        <el-button
-          size="mini"
-          type="primary"
-          @click="goParticipant"
-        >
-          参建方单位
-        </el-button>
-        <el-button
-          size="mini"
-          type="danger"
-          @click="deleteProject"
-        >
-          删除项目
-        </el-button>
-      </div>
-    </div>
-    <div
-      v-show="this.$route.name === 'ProjectInfo'"
-      class="project-info"
-    >
-      <section class="project-image">
-        <!-- <h2>项目图片</h2> -->
-        <div class="block">
-
-          <el-carousel height="250px">
-            <el-carousel-item>
-              <img
-                :src="projectInfo.picture"
-                alt=""
-              >
-            </el-carousel-item>
-          </el-carousel>
-        </div>
-      </section>
-      <section class="des_plan">
-        <div class="description">
-          <h2>项目描述</h2>
-          {{ projectInfo.description }}
-        </div>
-        <div class="plan-time">
-          <h2>项目计划</h2>
-          <div class="plan-date">
-            <section>
-              开始时间
-              <i class="el-icon-folder" />
-              {{ projectInfo.planstarttime }}
-            </section>
-
-            <section>
-              结束时间
-              <i class="el-icon-folder-checked" />
-              {{ projectInfo.planendtime }}
-            </section>
-            <section class="process">
-              项目进度
-              <span>
-                <el-progress
-                  v-if="projectInfo.planstarttime"
-                  :percentage="getPresentInfo(projectInfo.planstarttime, projectInfo.planendtime)"
-                />
-                <el-progress
-                  v-else
-                  :percentage="0"
-                />
-              </span>
-            </section>
-          </div>
-        </div>
-      </section>
-    </div>
-    <div class="other_model">
-      <div class="project-other">
-        <h2>项目其他信息</h2>
-        <!-- <li>{{ projectInfo }}</li> -->
-        <li>项目类型：{{ projectInfo.category }}</li>
-        <li>项目地址：{{ projectInfo.province }}
-          {{ projectInfo.city }}
-          {{ projectInfo.district }}
-          {{ projectInfo.street }}
-          {{ projectInfo.town }}
-        </li>
-        <li>详细地址：{{ projectInfo.address }}</li>
-        <li>项目单位：{{ projectInfo.unit }}</li>
-        <li>项目投资额：{{ projectInfo.investamount }}</li>
-      </div>
-      <div class="model">
-        <ul class="model-list">
-          <li
-            v-for="item in modelList"
-            :key="item.MId"
-            @click="getModelInfo(item);
-                    dialogVisible = true"
+    <div v-show="this.$route.name === 'ProjectInfo'">
+      <div class="top-info">
+        <h2>{{ projectInfo.pname }}</h2>
+        <div class="fr">
+          <el-button
+            size="mini"
+            type="primary"
+            @click="goMember"
           >
-            <img :src="item.MPicture">
-            <div>{{ item.MName }}</div>
+            项目成员管理
+          </el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            @click="goParticipant"
+          >
+            参建方单位
+          </el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="deleteProject"
+          >
+            删除项目
+          </el-button>
+        </div>
+      </div>
+      <div
+        v-show="this.$route.name === 'ProjectInfo'"
+        class="project-info"
+      >
+        <section class="project-image">
+          <!-- <h2>项目图片</h2> -->
+          <div class="block">
+
+            <el-carousel height="250px">
+              <el-carousel-item>
+                <img
+                  :src="projectInfo.picture"
+                  alt=""
+                >
+              </el-carousel-item>
+            </el-carousel>
+          </div>
+        </section>
+        <section class="des_plan">
+          <div class="description">
+            <h2>项目描述</h2>
+            {{ projectInfo.description }}
+          </div>
+          <div class="plan-time">
+            <h2>项目计划</h2>
+            <div class="plan-date">
+              <section>
+                开始时间
+                <i class="el-icon-folder" />
+                {{ projectInfo.planstarttime }}
+              </section>
+
+              <section>
+                结束时间
+                <i class="el-icon-folder-checked" />
+                {{ projectInfo.planendtime }}
+              </section>
+              <section class="process">
+                项目进度
+                <span>
+                  <el-progress
+                    v-if="projectInfo.planstarttime"
+                    :percentage="getPresentInfo(projectInfo.planstarttime, projectInfo.planendtime)"
+                  />
+                  <el-progress
+                    v-else
+                    :percentage="0"
+                  />
+                </span>
+              </section>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="other_model">
+        <div class="project-other">
+          <h2>项目其他信息</h2>
+          <!-- <li>{{ projectInfo }}</li> -->
+          <li>项目类型：{{ projectInfo.category }}</li>
+          <li>项目地址：{{ projectInfo.province }}
+            {{ projectInfo.city }}
+            {{ projectInfo.district }}
+            {{ projectInfo.street }}
+            {{ projectInfo.town }}
           </li>
-          <div
-            v-if="!modelList "
-            class="model-tip"
-          >
-            <div>当前项目暂无模型</div>
-            <!-- <div>请先选择一个项目以查看模型</div> -->
-          </div>
-        </ul>
+          <li>详细地址：{{ projectInfo.address }}</li>
+          <li>项目单位：{{ projectInfo.unit }}</li>
+          <li>项目投资额：{{ projectInfo.investamount }}</li>
+        </div>
+        <div class="model">
+          <ul class="model-list">
+            <li
+              v-for="item in modelList"
+              :key="item.MId"
+              @click="getModelInfo(item);
+                      dialogVisible = true"
+            >
+              <img :src="item.MPicture">
+              <div>{{ item.MName }}</div>
+            </li>
+            <div
+              v-if="!modelList "
+              class="model-tip"
+            >
+              <div>当前项目暂无模型</div>
+              <!-- <div>请先选择一个项目以查看模型</div> -->
+            </div>
+          </ul>
+        </div>
       </div>
     </div>
     <router-view :project-info="projectInfo" />
@@ -285,6 +284,7 @@ export default {
   height: 200px;
   border-radius: 5px;
   background-color: rgb(227, 244, 255);
+  list-style: none;
 }
 .model {
   // background-color: rgb(227, 244, 255);
@@ -294,16 +294,14 @@ export default {
     justify-content: left;
     // background-color: skyblue;
     li {
-      margin: 10px 10px;
+      margin: 10px 30px 10px 10px;
       padding: 20px;
-      // width: 256px;
-      // height: 256px;
       border-radius: 5px;
       background: rgb(227, 244, 255);
       cursor: pointer;
       img {
-        width: 256px;
-        height: 256px;
+        width: 160px;
+        height: 160px;
       }
     }
     li:hover {
@@ -314,15 +312,13 @@ export default {
     .model-tip {
       margin: 10px 10px;
       padding: 20px;
-      // width: 256px;
-      // height: 256px;
       border-radius: 5px;
       background: rgb(227, 244, 255);
       div {
-        width: 256px;
-        height: 256px;
+        width: 160px;
+        height: 160px;
         text-align: center;
-        line-height: 256px;
+        line-height: 160px;
       }
     }
   }

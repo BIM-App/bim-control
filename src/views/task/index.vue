@@ -48,6 +48,10 @@
             prop="Creator"
           />
           <el-table-column
+            label="指派人"
+            prop="Receiver"
+          />
+          <el-table-column
             label="更新时间"
             prop="UpdatedTime"
           />
@@ -65,13 +69,14 @@
               </el-tag>
               <el-tag
                 v-else-if="scope.row.TaskStatus =='进行中'"
-                type="warning"
+                type="danger"
                 effect="dark"
               >
                 {{ scope.row.TaskStatus }}
               </el-tag>
               <el-tag
                 v-else
+                type="warning"
                 effect="dark"
               >
                 {{ scope.row.TaskStatus }}
@@ -83,19 +88,53 @@
               <el-button
                 size="mini"
                 type="info"
+                style="margin-right: 20px"
                 @click="handleLook(scope.$index, scope.row)"
-              >查看</el-button>
-              <el-button
-                :disabled="scope.row.TaskStatus == '已完成'"
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row);
-                        taskBindVisible = true"
-              >标记</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button>
+              >查看
+              </el-button>
+              <el-dropdown
+                size="small"
+                trigger="click"
+              >
+                <el-button
+                  type="primary"
+                  size="mini"
+                >
+                  编辑<i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>
+                    <el-button
+                      :disabled="scope.row.TaskStatus == '已完成'"
+                      size="mini"
+                      type="primary"
+                      plain
+                      @click="handleEdit(scope.$index, scope.row);
+                              taskBindVisible = true"
+                    >标记
+                    </el-button>
+                  </el-dropdown-item>
+                  <el-dropdown-item style="padding-top:10px">
+                    <el-button
+                      disabled
+                      size="mini"
+                      type="info"
+                      plain
+                      @click="handleAssign(scope.$index, scope.row)"
+                    >指派
+                    </el-button>
+                  </el-dropdown-item>
+                  <el-dropdown-item style="padding-top:10px">
+                    <el-button
+                      size="mini"
+                      type="danger"
+                      plain
+                      @click="handleDelete(scope.$index, scope.row)"
+                    >删除
+                    </el-button>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </template>
           </el-table-column>
         </el-table>
@@ -142,10 +181,25 @@
               label="指派人"
               prop="Receiver"
             >
-              <el-input
+              <el-select
+                v-model="taskForm.Receiver"
+                size="small"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in memberList"
+                  :key="item.id"
+                  :label="item.username "
+                  :value="item.username"
+                >
+                  <span style="float: left">{{ item.username }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.cname }}</span>
+                </el-option>
+              </el-select>
+              <!-- <el-input
                 v-model="taskForm.Receiver"
                 autocomplete="off"
-              />
+              /> -->
             </el-form-item>
           </el-col>
         </el-form>
@@ -211,6 +265,7 @@ import { addTaskApi, deleteTaskApi, findTaskByPIDApi, taskBindModelApi } from '@
 import { getUser } from '@/utils/cookie'
 import { findModelByMidApi, findModelByPIDApi } from '@/api/model'
 import BimfaceLinkage from './BimfaceLinkage'
+import { findProjectMembersApi } from '@/api/project'
 export default {
   components: {
     BimfaceLinkage
@@ -235,7 +290,8 @@ export default {
       modelFileId: '',
       fileName: '',
       bimVisible: false,
-      currentTid: ''
+      currentTid: '',
+      memberList: []
     }
   },
   created() {
@@ -249,15 +305,28 @@ export default {
         if (res.data.length >= 1) {
           this.projectList = res.data
         }
+        if (this.$store.state.project.projectId) {
+          this.value = this.$store.state.project.projectId
+          this.selectDetail(this.$store.state.project.projectId)
+        }
       }).catch((err) => {
         console.log(err)
       })
     },
+    // 根据项目pid查询任务信息
     findTaskByPID(pid) {
-      // 根据项目pid查询任务信息
       findTaskByPIDApi(pid).then((res) => {
         console.log(res)
         this.taskList = res.data.data
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 根据项目pid查询项目成员列表
+    findProjectMembers(pid) {
+      findProjectMembersApi(pid).then((res) => {
+        console.log(res)
+        this.memberList = res.data
       }).catch((err) => {
         console.log(err)
       })
@@ -267,12 +336,9 @@ export default {
       // console.log(value)
       // 根据项目pid查询任务信息
       this.findTaskByPID(value)
-      // findTaskByPIDApi(value).then((res) => {
-      //   console.log(res)
-      //   this.taskList = res.data.data
-      // }).catch((err) => {
-      //   console.log(err)
-      // })
+      this.findProjectMembers(value)
+      this.$store.commit('project/SET_PID', value)
+      // console.log(this.$store.state.project.projectId)
     },
     // 新建任务
     addTask() {
@@ -285,7 +351,7 @@ export default {
         Creator: String(this.taskForm.Creator)
       }
       // console.log(data)
-      addTaskApi((data)).then((res) => {
+      addTaskApi(data).then((res) => {
         console.log(res)
         // 根据项目编号查询任务信息
         if (res.data.code === 200) {
@@ -328,6 +394,7 @@ export default {
         console.log(err)
       })
     },
+    // 查询任务标签信息
     handleLook(index, row) {
       console.log(index, row)
       this.currentTid = row.TID
@@ -367,6 +434,17 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+    },
+    // 指派任务，修改任务信息
+    handleAssign(index, row) {
+      console.log(row)
+      const data = {
+        TName: row.TName,
+        // Description: this.taskForm.Description,
+        Receiver: this.taskForm.Receiver,
+        Updater: String(getUser().id)
+      }
+      console.log(data)
     },
     handleDelete(index, row) {
       const _this = this

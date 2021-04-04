@@ -3,12 +3,14 @@
     <div class="top-info">
       <h2>{{ projectInfo.pname }}</h2>
       <div class="fr">
-        <!-- <el-button
+        <el-button
+          disabled
           size="mini"
+          class="addMember"
           type="primary"
-        >
-          项目成员
-        </el-button> -->
+          icon="el-icon-plus"
+          @click="memberDialogVisible = true"
+        >添加成员</el-button>
       </div>
     </div>
     <div class="member-list">
@@ -29,38 +31,17 @@
             label="所属公司"
             prop="cname"
           />
-          <el-table-column align="right">
-            <template
-              slot="header"
-              slot-scope=""
-            >
-              <div class="right-bar">
-                <el-button
-                  disabled
-                  size="medium"
-                  class="addMember"
-                  type="primary"
-                  icon="el-icon-plus"
-                  @click="memberDialogVisible = true"
-                >添加成员</el-button>
-                <!-- <el-input
-              v-model="search"
-              disabled
-              size="medium"
-              placeholder="输入关键字搜索"
-            /> -->
-              </div>
-            </template>
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button
                 v-if="scope.row.roleinproject !== '项目创建者'"
-                size="medium"
+                size="mini"
                 @click="handleEdit(scope.$index, scope.row);
                         open()"
               >编辑</el-button>
               <el-button
                 v-if="scope.row.roleinproject !== '项目创建者'"
-                size="medium"
+                size="mini"
                 type="danger"
                 @click="deleteMember(scope.$index, scope.row);
 
