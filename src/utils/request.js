@@ -13,9 +13,9 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // 针对请求 Access Token进行跨域配置
-    if (config.headers.Authorization) {
-      config.baseURL = '/proxy'
-    }
+    // if (config.headers.Authorization) {
+    //   config.baseURL = '/proxy'
+    // }
     // 加载loading
     // loadingInstance = Loading.service({
     //   fullscreen: true,
