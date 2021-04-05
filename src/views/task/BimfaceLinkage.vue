@@ -196,12 +196,6 @@ export default {
           <div class="bf-menu-item user-item" id="finish">
             图片标记
           </div>
-          <div class="bf-menu-item user-item" id="starting">
-            警告
-          </div>
-          <div class="bf-menu-item user-item" id="delay">
-            危险
-          </div>
         </div>
         <div class="bf-menu-item user-item">新建3D标记</div>
       </div>

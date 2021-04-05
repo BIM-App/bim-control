@@ -47,6 +47,7 @@ export default {
 <style lang="scss" scoped>
 .container {
   display: flex;
+  cursor: pointer;
   .company-info {
     display: flex;
     flex-direction: column;

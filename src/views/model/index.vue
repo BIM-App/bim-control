@@ -153,7 +153,7 @@
           <el-button
             type="primary"
             @click="
-              allUpload();
+              addModel();
             "
           >确 定
           </el-button>
@@ -213,13 +213,17 @@ export default {
         if (res.data.length >= 1) {
           this.projectList = res.data
         }
+        if (this.$store.state.project.projectIdModel) {
+          this.value = this.$store.state.project.projectIdModel
+          this.selectDetail(this.$store.state.project.projectIdModel)
+        }
       }).catch((err) => {
         console.log(err)
       })
     },
     // 切换当前项目以查看模型
     selectDetail(value) {
-      console.log(value)
+      // console.log(value)
       findModelByPIDApi(value).then((res) => {
         console.log('模型列表查询', res)
         if (Object.keys(res.data.data).length === 0) {
@@ -230,6 +234,7 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+      this.$store.commit('project/SET_PID_Model', value)
     },
     // 上传添加模型
     addModel() {

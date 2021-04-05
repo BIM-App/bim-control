@@ -34,6 +34,18 @@ export const addTaskApi = data => {
   })
 }
 
+// 修改任务信息
+export const updateTaskByTIDApi = (tid, data) => {
+  return request({
+    url: '/Task/updateTaskByTID' + tid,
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data
+  })
+}
+
 // 根据tid删除任务
 export const deleteTaskApi = tid => {
   return request({
