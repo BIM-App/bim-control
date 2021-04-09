@@ -68,3 +68,11 @@ export const getModelTokenApi = (params, accessToken) => {
     params
   })
 }
+// 获取图纸列表
+export const getMapListApi = (fileId, accessToken) => {
+  return request({
+    url: '/data/v2/files/' + fileId + '/drawingsheets',
+    headers: { Authorization: 'Bearer' + ' ' + accessToken },
+    method: 'GET'
+  })
+}

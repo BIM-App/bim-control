@@ -27,7 +27,8 @@
     </div>
     <ul class="model-list">
       <li
-        v-for="item in modelList"
+        v-for="(item,index) in modelList"
+        v-show="index<3"
         :key="item.MId"
         @click="test(item.MId)"
       >
@@ -82,8 +83,15 @@ export default {
         if (Object.keys(res.data.data).length === 0) {
           this.modelList = ''
         } else {
-          this.modelList = res.data.data
+          const obj = res.data.data
+          const temp = []
+          for (const key in obj) {
+            temp.push(obj[key])
+          }
+          // console.log(temp)
+          this.modelList = temp
         }
+        // console.log('modelList', this.modelList)
       }).catch((err) => {
         console.log(err)
       })
@@ -119,6 +127,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: left;
+    overflow: hidden;
     // background-color: skyblue;
     li {
       margin: 10px 10px;
@@ -128,6 +137,7 @@ export default {
       border-radius: 5px;
       background: rgb(227, 244, 255);
       cursor: pointer;
+      overflow: hidden;
       img {
         min-width: 233px;
         height: 233px;
