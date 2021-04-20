@@ -1,10 +1,7 @@
 <template>
   <div class="taskAside">
     <div class="top-info">
-      <div>
-        任务列表（{{ taskList.length }}）
-        <span class="datanav">！当前项目：{{ "测试项目" }}</span>
-      </div>
+      <h2>任务列表（{{ taskList.length }}）</h2>
       <div class="fr">
         <el-link
           :underline="false"
@@ -31,43 +28,7 @@ export default {
   name: 'TaskList',
   data() {
     return {
-      taskList: [
-        {
-          tname: '这是一条测试任务',
-          description: 'xxx项目的xxxx位置出现xxxxx问题，请尽快修复',
-          Creator: 'kzz'
-        },
-        {
-          tname: '这是一条测试任务',
-          description: 'xxx项目的xxxx位置出现xxxxx问题，请尽快修复',
-          Creator: 'kzz'
-        },
-        {
-          tname: '这是一条测试任务',
-          description: 'xxx项目的xxxx位置出现xxxxx问题，请尽快修复',
-          Creator: 'kzz'
-        },
-        {
-          tname: '这是一条测试任务',
-          description: 'xxx项目的xxxx位置出现xxxxx问题，请尽快修复',
-          Creator: 'kzz'
-        },
-        {
-          tname: '这是一条测试任务',
-          description: 'xxx项目的xxxx位置出现xxxxx问题，请尽快修复',
-          Creator: 'kzz'
-        },
-        {
-          tname: '这是一条测试任务',
-          description: 'xxx项目的xxxx位置出现xxxxx问题，请尽快修复',
-          Creator: 'kzz'
-        },
-        {
-          tname: '这是一条测试任务',
-          description: 'xxx项目的xxxx位置出现xxxxx问题，请尽快修复',
-          Creator: 'kzz'
-        }
-      ]
+      taskList: []
     }
   },
   created() {
@@ -105,7 +66,6 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #fff;
-  overflow: auto;
   // margin-top: 10px;
   // height: auto;
   // background-color: lightgreen;
@@ -121,12 +81,6 @@ export default {
     font-weight: 700;
     border-bottom: 1px solid #f3f4f5;
     // background-color: #eee;
-    .datanav {
-      font-size: 12px;
-      font-weight: 400;
-      color: #f04844;
-      padding: 0 30px 0 -10px;
-    }
   }
   .task-list {
     // padding-right: 50px;
@@ -145,23 +99,5 @@ export default {
       transition: all 0.2s ease-in-out;
     }
   }
-}
-.taskname {
-  // color: #4b5053;
-  display: flex;
-  justify-content: space-between;
-  font-weight: 700;
-  font-size: 16px;
-}
-.taskmsg {
-  margin: 8px 0;
-  color: #4b5053;
-  font-size: 15px;
-  margin-bottom: 15px;
-}
-.taskCreator {
-  color: #72777a;
-  font-size: 12px;
-  line-height: 1.8;
 }
 </style>

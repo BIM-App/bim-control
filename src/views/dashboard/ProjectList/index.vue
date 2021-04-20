@@ -88,7 +88,7 @@ export default {
   .project-list {
     // height: 50vh;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: no-wrap;
     justify-content: space-between;
     // align-items: center;
     // background-color: skyblue;

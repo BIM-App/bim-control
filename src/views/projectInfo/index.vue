@@ -290,7 +290,7 @@ export default {
   // background-color: rgb(227, 244, 255);
   .model-list {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: no-wrap;
     justify-content: left;
     // background-color: skyblue;
     li {

@@ -61,6 +61,7 @@
           v-if="dialogVisible"
           :model-file-id="modelFileId"
           :file-name="fileName"
+          :model-id="modelId"
         />
         <!-- <span
           slot="footer"
@@ -183,6 +184,7 @@ export default {
       currentModel: {},
       modelFileId: '',
       fileName: '',
+      modelId: '',
       addModelDialogVisible: false,
       loading: false,
       loadModel: false,
@@ -205,6 +207,7 @@ export default {
       this.currentModel = item
       this.modelFileId = item.MFile
       this.fileName = item.MName
+      this.modelId = item.MId
     },
     // 获取参与项目列表
     findProjects() {
